@@ -1,0 +1,19 @@
+{
+  "name": "@dodo/nextjs",
+  "version": "0.1.0",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean"
+  },
+  "dependencies": {
+    "@dodo/core": "*",
+    "next": "^15.3.5",
+    "zod": "^3.25.73"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5"
+  },
+  "type": "module"
+}
