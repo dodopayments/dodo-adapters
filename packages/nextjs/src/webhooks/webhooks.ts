@@ -1,15 +1,12 @@
 import { Webhook } from "standardwebhooks";
-import {
-    type WebhooksConfig,
-    handleWebhookPayload,
-  } from "@dodo/core"
+import { type WebhookHandlerConfig, handleWebhookPayload } from "@dodo/core";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export const Webhooks = ({
   webhookKey,
   ...eventHandlers
-}: WebhooksConfig) => {
+}: WebhookHandlerConfig) => {
   const webhook = new Webhook(webhookKey);
 
   return async (request: NextRequest) => {
