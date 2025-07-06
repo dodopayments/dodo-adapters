@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "description": "Dodo Payments adapter for Deno runtime",
   "scripts": {
-    "build": "deno run --allow-write --allow-read build.ts",
-    "dev": "deno run --allow-write --allow-read --watch build.ts",
-    "format": "deno fmt",
-    "check-format": "deno fmt --check",
-    "check-types": "deno check src/index.ts",
-    "test": "deno test"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit",
+    "test": "echo \"No tests specified\""
   },
   "exports": {
     ".": {
@@ -37,10 +37,12 @@
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",
+    "prettier": "^3.6.2",
     "tsup": "^8.3.5"
   },
   "peerDependencies": {
-    "zod": "^3.25.73"
+    "zod": "^3.25.73",
+    "standardwebhooks": "^1.0.0"
   },
   "type": "module"
 }

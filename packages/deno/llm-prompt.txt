@@ -6,7 +6,7 @@ First, determine how the user wants to install the package. There are two main a
 
 1. **NPM Package (Recommended):**
    ```bash
-   npm install @dodo/deno zod
+   npm install @dodo/deno zod standardwebhooks
    ```
 
 2. **Deno Import Maps:** Add to `deno.json`:
@@ -14,7 +14,8 @@ First, determine how the user wants to install the package. There are two main a
    {
      "imports": {
        "@dodo/deno": "npm:@dodo/deno",
-       "zod": "npm:zod"
+       "zod": "npm:zod",
+       "standardwebhooks": "npm:standardwebhooks"
      }
    }
    ```
@@ -180,11 +181,11 @@ Here's how you should structure your response:
 
    **For Deno's built-in HTTP server:**
    ```typescript
-       // main.ts or routes/webhook.ts
-    import { Webhook } from "@dodo/deno";
-    import { WebhookPayload } from "@dodo/core";
+               // main.ts or routes/webhook.ts
+     import { Webhooks } from "@dodo/deno";
+     import { WebhookPayload } from "@dodo/core";
 
-    const webhookHandler = Webhook({
+     const webhookHandler = Webhooks({
      webhookKey: Deno.env.get("DODO_WEBHOOK_SECRET")!,
      onPayload: async (payload: WebhookPayload) => {
        console.log("Received webhook:", payload);
@@ -208,12 +209,12 @@ Here's how you should structure your response:
 
    **For Fresh framework:**
    ```typescript
-       // routes/api/webhook/dodo-payments.ts
-    import { Handlers } from "$fresh/server.ts";
-    import { Webhook } from "@dodo/deno";
-    import { WebhookPayload } from "@dodo/core";
+               // routes/api/webhook/dodo-payments.ts
+     import { Handlers } from "$fresh/server.ts";
+     import { Webhooks } from "@dodo/deno";
+     import { WebhookPayload } from "@dodo/core";
 
-    const webhookHandler = Webhook({
+     const webhookHandler = Webhooks({
      webhookKey: Deno.env.get("DODO_WEBHOOK_SECRET")!,
      onPayload: async (payload: WebhookPayload) => {
        console.log("Received webhook:", payload);

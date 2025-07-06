@@ -16,7 +16,7 @@ const customerPortalHandler = CustomerPortal({
     if (!authHeader) {
       throw new Error("No authorization header");
     }
-    
+
     // Your authentication logic here
     const customerId = "customer_example_id";
     return customerId;

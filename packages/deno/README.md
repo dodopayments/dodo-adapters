@@ -9,7 +9,7 @@ A TypeScript library that exports request handlers for Checkout, Customer Portal
 You can install this package via npm, or import it directly using Deno's import maps:
 
 ```bash
-npm install @dodo/deno zod
+npm install @dodo/deno zod standardwebhooks
 ```
 
 Or with Deno import maps (`deno.json`):
@@ -18,7 +18,8 @@ Or with Deno import maps (`deno.json`):
 {
   "imports": {
     "@dodo/deno": "npm:@dodo/deno",
-    "zod": "npm:zod"
+    "zod": "npm:zod",
+    "standardwebhooks": "npm:standardwebhooks"
   }
 }
 ```
@@ -45,11 +46,11 @@ const checkoutHandler = Checkout({
 // Using with Deno's built-in HTTP server
 Deno.serve({ port: 8000 }, async (req) => {
   const url = new URL(req.url);
-  
+
   if (url.pathname === "/checkout") {
     return await checkoutHandler(req);
   }
-  
+
   return new Response("Not Found", { status: 404 });
 });
 ```
@@ -134,7 +135,7 @@ const customerPortalHandler = CustomerPortal({
     if (!authHeader) {
       throw new Error("No authorization header");
     }
-    
+
     // Your authentication logic here
     // This is just an example - implement your actual auth logic
     const token = authHeader.replace("Bearer ", "");
@@ -146,11 +147,11 @@ const customerPortalHandler = CustomerPortal({
 // Using with Deno's built-in HTTP server
 Deno.serve({ port: 8000 }, async (req) => {
   const url = new URL(req.url);
-  
+
   if (url.pathname === "/customer-portal") {
     return await customerPortalHandler(req);
   }
-  
+
   return new Response("Not Found", { status: 404 });
 });
 ```
@@ -159,10 +160,10 @@ Deno.serve({ port: 8000 }, async (req) => {
 
 ```typescript
 // routes/webhook.ts
-import { Webhook } from "@dodo/deno";
+import { Webhooks } from "@dodo/deno";
 import { WebhookPayload } from "@dodo/core";
 
-const webhookHandler = Webhook({
+const webhookHandler = Webhooks({
   webhookKey: Deno.env.get("DODO_WEBHOOK_SECRET")!,
   onPayload: async (payload: WebhookPayload) => {
     // Handle the payload
@@ -174,11 +175,11 @@ const webhookHandler = Webhook({
 // Using with Deno's built-in HTTP server
 Deno.serve({ port: 8000 }, async (req) => {
   const url = new URL(req.url);
-  
+
   if (url.pathname === "/api/webhook/dodo-payments") {
     return await webhookHandler(req);
   }
-  
+
   return new Response("Not Found", { status: 404 });
 });
 ```
@@ -188,10 +189,10 @@ Or with Fresh framework:
 ```typescript
 // routes/api/webhook/dodo-payments.ts
 import { Handlers } from "$fresh/server.ts";
-import { Webhook } from "@dodo/deno";
+import { Webhooks } from "@dodo/deno";
 import { WebhookPayload } from "@dodo/core";
 
-const webhookHandler = Webhook({
+const webhookHandler = Webhooks({
   webhookKey: Deno.env.get("DODO_WEBHOOK_SECRET")!,
   onPayload: async (payload: WebhookPayload) => {
     console.log("Received webhook:", payload);
@@ -205,7 +206,7 @@ export const handler: Handlers = {
 
 #### Supported Webhook Event Handlers
 
-The `Webhook` function accepts an object with various `onEventName` properties, where `EventName` corresponds to the type of webhook event. Each handler is an `async` function that receives the parsed payload for that specific event type. Below is a comprehensive list of all supported event handlers with their function signatures:
+The `Webhooks` function accepts an object with various `onEventName` properties, where `EventName` corresponds to the type of webhook event. Each handler is an `async` function that receives the parsed payload for that specific event type. Below is a comprehensive list of all supported event handlers with their function signatures:
 
 - `onPayload?: (payload: WebhookPayload) => Promise<void>;`
 - `onPaymentSucceeded?: (payload: WebhookPayload) => Promise<void>;`
@@ -241,6 +242,7 @@ The Deno adapter requires the following permissions:
 - `--allow-env` - For reading environment variables (API keys, secrets)
 
 Example run command:
+
 ```bash
 deno run --allow-net --allow-env main.ts
 ```
@@ -280,7 +282,7 @@ If you're using Fresh, you can create route handlers as shown in the examples ab
 ```typescript
 // main.ts
 import { Application, Router } from "https://deno.land/x/oak/mod.ts";
-import { Checkout, CustomerPortal, Webhook } from "@dodo/deno";
+import { Checkout, CustomerPortal, Webhooks } from "@dodo/deno";
 
 const router = new Router();
 
@@ -298,7 +300,7 @@ const customerPortalHandler = CustomerPortal({
   },
 });
 
-const webhookHandler = Webhook({
+const webhookHandler = Webhooks({
   webhookKey: Deno.env.get("DODO_WEBHOOK_SECRET")!,
   onPayload: async (payload) => {
     console.log("Webhook received:", payload);

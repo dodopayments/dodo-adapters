@@ -18,7 +18,8 @@
     "$fresh/": "https://deno.land/x/fresh@1.6.8/",
     "@dodo/deno": "npm:@dodo/deno",
     "@dodo/core": "npm:@dodo/core",
-    "zod": "npm:zod"
+    "zod": "npm:zod",
+    "standardwebhooks": "npm:standardwebhooks"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

@@ -29,12 +29,14 @@ SUCCESS_URL=https://your-site.com/success
 A simple example using Deno's built-in HTTP server without any frameworks.
 
 **Features:**
+
 - Checkout handler
 - Customer portal handler
 - Webhook handler
 - Basic HTML page with navigation
 
 **Run:**
+
 ```bash
 cd packages/deno/examples
 deno run --allow-net --allow-env basic-server.ts
@@ -47,17 +49,20 @@ deno run --allow-net --allow-env basic-server.ts
 A complete Fresh framework example with separate route files.
 
 **Features:**
+
 - Fresh route handlers
 - TypeScript configuration
 - Import maps for dependencies
 
 **Files:**
+
 - `routes/checkout.ts` - Checkout route handler
 - `routes/customer-portal.ts` - Customer portal route handler
 - `routes/api/webhook/dodo-payments.ts` - Webhook route handler
 - `deno.json` - Configuration with import maps
 
 **Run:**
+
 ```bash
 cd packages/deno/examples/fresh-example
 deno task start
@@ -70,11 +75,13 @@ deno task start
 ### Testing Checkout
 
 Visit the checkout URL with a product ID:
+
 ```
 http://localhost:8000/checkout?productId=pdt_your_product_id
 ```
 
 **Query Parameters:**
+
 - `productId` (required) - Your product ID from Dodo Payments
 - `quantity` (optional) - Number of items
 - `fullName`, `email`, etc. (optional) - Customer information
@@ -82,6 +89,7 @@ http://localhost:8000/checkout?productId=pdt_your_product_id
 ### Testing Customer Portal
 
 Visit the customer portal URL:
+
 ```
 http://localhost:8000/customer-portal
 ```
@@ -91,11 +99,13 @@ http://localhost:8000/customer-portal
 ### Testing Webhooks
 
 Set up a webhook in your Dodo Payments dashboard pointing to:
+
 ```
 http://localhost:8000/api/webhook/dodo-payments
 ```
 
 **For local testing**, you can use tools like [ngrok](https://ngrok.com/) to expose your local server:
+
 ```bash
 ngrok http 8000
 ```
@@ -107,6 +117,7 @@ Then use the ngrok URL in your webhook settings.
 ### Permission Errors
 
 Make sure to run Deno with the required permissions:
+
 ```bash
 deno run --allow-net --allow-env your-script.ts
 ```
@@ -118,6 +129,7 @@ Ensure your `.env` file is in the correct location and contains valid API keys.
 ### Webhook Verification
 
 For webhook testing, ensure:
+
 1. Your webhook secret matches the one in your Dodo Payments dashboard
 2. Your webhook URL is publicly accessible (use ngrok for local testing)
 3. The webhook endpoint accepts POST requests
@@ -135,11 +147,11 @@ getCustomerId: async (req: Request) => {
   if (!token) {
     throw new Error("No authorization token");
   }
-  
+
   // Verify token and extract customer ID
   const customerId = await verifyTokenAndGetCustomerId(token);
   return customerId;
-}
+};
 ```
 
 ### Handling Specific Webhook Events
@@ -147,7 +159,7 @@ getCustomerId: async (req: Request) => {
 Add specific event handlers to your webhook configuration:
 
 ```typescript
-const webhookHandler = Webhook({
+const webhookHandler = Webhooks({
   webhookKey: Deno.env.get("DODO_WEBHOOK_SECRET")!,
   onPaymentSucceeded: async (payload) => {
     // Handle successful payment
@@ -172,6 +184,7 @@ const webhookHandler = Webhook({
 ### Other Platforms
 
 Ensure your deployment platform supports:
+
 - Deno runtime
 - Environment variables
 - Network access for API calls
@@ -179,6 +192,7 @@ Ensure your deployment platform supports:
 ## Support
 
 For issues with the examples:
+
 1. Check the main [README](../README.md) for detailed documentation
 2. Verify your environment variables are set correctly
 3. Ensure your Dodo Payments credentials are valid

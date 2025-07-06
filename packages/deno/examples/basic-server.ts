@@ -1,11 +1,11 @@
 /**
  * Basic example showing how to use @dodo/deno with Deno's built-in HTTP server
- * 
+ *
  * Run with:
  * deno run --allow-net --allow-env examples/basic-server.ts
  */
 
-import { Checkout, CustomerPortal, Webhook } from "../src/index.ts";
+import { Checkout, CustomerPortal, Webhooks } from "../src/index.ts";
 import { WebhookPayload } from "@dodo/core";
 
 // Setup handlers
@@ -29,7 +29,7 @@ const customerPortalHandler = CustomerPortal({
   },
 });
 
-const webhookHandler = Webhook({
+const webhookHandler = Webhooks({
   webhookKey: Deno.env.get("DODO_WEBHOOK_SECRET")!,
   onPayload: async (payload: WebhookPayload) => {
     console.log("Received webhook:", payload.type);
@@ -49,18 +49,19 @@ Deno.serve({ port: 8000 }, async (req: Request) => {
     if (url.pathname === "/checkout") {
       return await checkoutHandler(req);
     }
-    
+
     if (url.pathname === "/customer-portal") {
       return await customerPortalHandler(req);
     }
-    
+
     if (url.pathname === "/api/webhook/dodo-payments") {
       return await webhookHandler(req);
     }
-    
+
     // Basic routes
     if (url.pathname === "/") {
-      return new Response(`
+      return new Response(
+        `
         <html>
           <head><title>Dodo Payments Deno Example</title></head>
           <body>
@@ -73,11 +74,13 @@ Deno.serve({ port: 8000 }, async (req: Request) => {
             </ul>
           </body>
         </html>
-      `, {
-        headers: { "Content-Type": "text/html" },
-      });
+      `,
+        {
+          headers: { "Content-Type": "text/html" },
+        },
+      );
     }
-    
+
     return new Response("Not Found", { status: 404 });
   } catch (error) {
     console.error("Error handling request:", error);

@@ -23,7 +23,7 @@ export const CustomerPortal = ({
     try {
       const session =
         await dodopayments.customers.customerPortal.create(customerId);
-      
+
       return new Response(null, {
         status: 302,
         headers: {
@@ -34,7 +34,7 @@ export const CustomerPortal = ({
       console.error("Error creating customer portal session:", error);
       return new Response(
         `Failed to create customer portal session: ${error.message}`,
-        { status: 500 }
+        { status: 500 },
       );
     }
   };
