@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import DodoPayments, { ClientOptions } from "dodopayments";
 
@@ -28,7 +28,7 @@ export const CustomerPortal = ({
       redirect(session.link);
     } catch (error: any) {
       console.error("Error creating customer portal session:", error);
-      return new Response(
+      return new NextResponse(
         `Failed to create customer portal session: ${error.message}`,
         {
           status: 500,

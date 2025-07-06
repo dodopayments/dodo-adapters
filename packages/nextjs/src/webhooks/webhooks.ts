@@ -6,7 +6,7 @@ import {
   type WebhookHandlerConfig,
   handleWebhookPayload,
 } from "@dodo/core/webhook";
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { WebhookPayloadSchema } from "@dodo/core/schemas/webhook";
 
@@ -18,7 +18,7 @@ export const Webhooks = ({
 
   return async (req: NextRequest) => {
     if (req.method !== "POST") {
-      return new Response("Method not allowed. Use POST", { status: 405 });
+      return new NextResponse("Method not allowed. Use POST", { status: 405 });
     }
 
     const headerList = await headers();
