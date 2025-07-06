@@ -9,7 +9,7 @@
     "check-types": "tsc --noEmit"
   },
   "exports": {
-    ".": {
+    "./webhook": {
       "types": "./src/webhook/index.ts",
       "default": "./dist/webhook/index.js"
     },

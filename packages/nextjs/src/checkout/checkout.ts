@@ -1,8 +1,12 @@
 import { NextRequest } from "next/server";
 import { redirect } from "next/navigation";
-import { buildCheckoutUrl, checkoutQuerySchema } from "@dodo/core/checkout";
+import {
+  buildCheckoutUrl,
+  CheckoutHandlerConfig,
+  checkoutQuerySchema,
+} from "@dodo/core/checkout";
 
-export const Checkout = ({ bearerToken, environment }: any) => {
+export const Checkout = (config: CheckoutHandlerConfig) => {
   const getHandler = async (req: NextRequest) => {
     const { searchParams } = new URL(req.url);
     const queryParams = Object.fromEntries(searchParams);
@@ -23,7 +27,7 @@ export const Checkout = ({ bearerToken, environment }: any) => {
     let url = "";
 
     try {
-      url = await buildCheckoutUrl(data, bearerToken, environment);
+      url = await buildCheckoutUrl({ queryParams: data, ...config });
     } catch (error: any) {
       return new Response(error.message, { status: 400 });
     }

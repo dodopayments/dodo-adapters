@@ -2,8 +2,8 @@
   "name": "@dodo/nextjs",
   "version": "0.1.0",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "check-types": "tsc --noEmit"
@@ -23,16 +23,23 @@
       "types": "./dist/webhooks/webhooks.d.ts",
       "import": "./dist/webhooks/webhooks.js",
       "require": "./dist/webhooks/webhooks.cjs"
+    },
+    "./customer-portal": {
+      "types": "./dist/customer-portal/customer-portal.d.ts",
+      "import": "./dist/customer-portal/customer-portal.js",
+      "require": "./dist/customer-portal/customer-portal.cjs"
     }
   },
   "dependencies": {
-    "@dodo/core": "*",
-    "next": "^15.3.5",
-    "zod": "^3.25.73"
+    "@dodo/core": "*"
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",
     "tsup": "^8.3.5"
+  },
+  "peerDependencies": {
+    "next": "^15.3.4",
+    "zod": "^3.25.73"
   },
   "type": "module"
 }

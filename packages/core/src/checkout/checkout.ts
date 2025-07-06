@@ -1,10 +1,14 @@
 import { z } from "zod";
-import DodoPayments from "dodopayments";
+import DodoPayments, { ClientOptions } from "dodopayments";
+
+export type CheckoutHandlerConfig = Pick<
+  ClientOptions,
+  "bearerToken" | "environment"
+> & { successUrl?: string };
 
 export const checkoutQuerySchema = z.object({
   productId: z.string(),
   quantity: z.string().optional(),
-  redirect_url: z.string().optional(),
   // Customer fields
   fullName: z.string().optional(),
   firstName: z.string().optional(),
@@ -34,11 +38,14 @@ export const checkoutQuerySchema = z.object({
   // We'll handle metadata separately in the handler
 });
 
-export const buildCheckoutUrl = async (
-  queryParams: z.infer<typeof checkoutQuerySchema>,
-  bearerToken?: string,
-  environment?: "test_mode" | "live_mode",
-) => {
+export const buildCheckoutUrl = async ({
+  queryParams,
+  successUrl,
+  bearerToken,
+  environment,
+}: CheckoutHandlerConfig & {
+  queryParams: z.infer<typeof checkoutQuerySchema>;
+}) => {
   const { success, data, error } = checkoutQuerySchema.safeParse(queryParams);
 
   if (!success) {
@@ -48,7 +55,6 @@ export const buildCheckoutUrl = async (
   const {
     productId,
     quantity,
-    redirect_url,
     fullName,
     firstName,
     lastName,
@@ -95,7 +101,10 @@ export const buildCheckoutUrl = async (
   const url = new URL(`${checkoutBaseURL}/buy/${productId}`);
 
   url.searchParams.set("quantity", quantity || "1");
-  url.searchParams.set("redirect_url", redirect_url || "");
+
+  if (successUrl) {
+    url.searchParams.set("redirect_url", successUrl);
+  }
 
   // Customer/billing fields
   if (fullName) url.searchParams.set("fullName", fullName);
