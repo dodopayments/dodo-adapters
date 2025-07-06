@@ -16,6 +16,10 @@
     "./schemas/webhook": {
       "types": "./src/schemas/webhook.ts",
       "default": "./dist/schemas/webhook.js"
+    },
+    "./checkout": {
+      "types": "./src/checkout/checkout.ts",
+      "default": "./dist/checkout/checkout.js"
     }
   },
   "peerDependencies": {
