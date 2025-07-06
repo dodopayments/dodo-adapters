@@ -10,6 +10,9 @@
       "persistent": true
     },
     "lint": {},
+    "test": {
+      "dependsOn": ["^test"]
+    },
     "format": {
       "dependsOn": ["^format"]
     },
@@ -20,7 +23,7 @@
       "dependsOn": ["^check-types"]
     },
     "ci": {
-      "dependsOn": ["check-format", "check-types", "build"]
+      "dependsOn": ["check-format", "check-types", "build", "test"]
     }
   }
 }
