@@ -1,0 +1,46 @@
+{
+  "name": "@dodo/deno",
+  "version": "0.1.0",
+  "description": "Dodo Payments adapter for Deno runtime",
+  "scripts": {
+    "build": "deno run --allow-write --allow-read build.ts",
+    "dev": "deno run --allow-write --allow-read --watch build.ts",
+    "format": "deno fmt",
+    "check-format": "deno fmt --check",
+    "check-types": "deno check src/index.ts",
+    "test": "deno test"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./checkout": {
+      "types": "./dist/checkout/checkout.d.ts",
+      "import": "./dist/checkout/checkout.js",
+      "require": "./dist/checkout/checkout.cjs"
+    },
+    "./webhooks": {
+      "types": "./dist/webhooks/webhooks.d.ts",
+      "import": "./dist/webhooks/webhooks.js",
+      "require": "./dist/webhooks/webhooks.cjs"
+    },
+    "./customer-portal": {
+      "types": "./dist/customer-portal/customer-portal.d.ts",
+      "import": "./dist/customer-portal/customer-portal.js",
+      "require": "./dist/customer-portal/customer-portal.cjs"
+    }
+  },
+  "dependencies": {
+    "@dodo/core": "*"
+  },
+  "devDependencies": {
+    "@dodo/typescript-config": "*",
+    "tsup": "^8.3.5"
+  },
+  "peerDependencies": {
+    "zod": "^3.25.73"
+  },
+  "type": "module"
+}
