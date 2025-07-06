@@ -18,7 +18,8 @@
     "format": "turbo run format",
     "check-format": "turbo run check-format",
     "check-types": "turbo run check-types",
-    "ci": "turbo run ci"
+    "ci": "turbo run ci",
+    "test": "turbo run test"
   },
   "dependencies": {
     "dodopayments": "^1.37.2",

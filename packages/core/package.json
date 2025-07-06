@@ -4,6 +4,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "check-types": "tsc --noEmit"
@@ -26,6 +28,7 @@
     "zod": "^3.25.74"
   },
   "devDependencies": {
-    "@dodo/typescript-config": "*"
+    "@dodo/typescript-config": "*",
+    "vitest": "^2.0.4"
   }
 }
