@@ -5,7 +5,8 @@
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean",
     "dev": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --watch",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit"
   },
   "exports": {
     ".": {

@@ -19,7 +19,8 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "check-format": "turbo run check-format"
+    "check-format": "turbo run check-format",
+    "check-types": "turbo run check-types"
   },
   "dependencies": {
     "dodopayments": "^1.37.2",

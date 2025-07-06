@@ -16,8 +16,11 @@
     "check-format": {
       "dependsOn": ["^check-format"]
     },
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
     "ci": {
-      "dependsOn": ["check-format"]
+      "dependsOn": ["check-format", "check-types", "build"]
     }
   }
 }

@@ -5,7 +5,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit"
   },
   "exports": {
     ".": {
