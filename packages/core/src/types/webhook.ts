@@ -27,7 +27,7 @@ import {
   SubscriptionFailedPayloadSchema,
   SubscriptionExpiredPayloadSchema,
   LicenseKeyCreatedPayloadSchema,
-} from "../schemas";
+} from "../schemas/webhook";
 import { z } from "zod";
 
 // expands the type, improves readability for type users
@@ -108,4 +108,3 @@ export type WebhookEventHandlers = {
     payload: z.infer<typeof LicenseKeyCreatedPayloadSchema>,
   ) => Promise<void>;
 };
-

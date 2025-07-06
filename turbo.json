@@ -6,8 +6,21 @@
       "outputs": ["dist/**"]
     },
     "dev": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
-    "lint": {}
+    "lint": {},
+    "format": {
+      "dependsOn": ["^format"]
+    },
+    "check-format": {
+      "dependsOn": ["^check-format"]
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
+    "ci": {
+      "dependsOn": ["check-format", "check-types", "build"]
+    }
   }
 }

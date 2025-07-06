@@ -1,2 +1,2 @@
-export * from "./webhooks/webhooks"
-export * from "./checkout/checkout"
+export * from "./checkout/checkout";
+export * from "./webhooks/webhooks";

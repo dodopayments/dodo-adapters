@@ -7,6 +7,7 @@
   "devDependencies": {
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "prettier": "^3.6.2",
     "react-server-dom-webpack": "^19.1.0",
     "tsup": "^8.5.0",
     "turbo": "^2.0.0",
@@ -16,7 +17,11 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "check-format": "turbo run check-format",
+    "check-types": "turbo run check-types",
+    "ci": "turbo run ci"
   },
   "dependencies": {
     "dodopayments": "^1.37.2",
