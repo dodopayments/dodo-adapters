@@ -25,7 +25,7 @@ export const Webhooks = ({
       Object.entries(c.req.header()).map(([key, value]) => [
         key.toLowerCase(),
         Array.isArray(value) ? value.join(", ") : value,
-      ])
+      ]),
     );
 
     try {
@@ -46,10 +46,7 @@ export const Webhooks = ({
 
     if (!success) {
       console.error("Error parsing webhook payload", error.issues);
-      return c.text(
-        `Error parsing webhook payload: ${error.message}`,
-        400,
-      );
+      return c.text(`Error parsing webhook payload: ${error.message}`, 400);
     }
 
     // do not catch errors here, let them bubble up to the user

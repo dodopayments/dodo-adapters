@@ -31,14 +31,17 @@ import { Checkout } from "@dodo/honojs";
 
 const app = new Hono();
 
-app.get("/checkout", Checkout({
-  // Can be omitted if DODO_PAYMENTS_API_KEY environment variable is set.
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  // URL to redirect to after successful checkout, can be omitted.
-  successUrl: process.env.SUCCESS_URL!,
-  // Omit or set to "live_mode" for production
-  environment: "test_mode",
-}));
+app.get(
+  "/checkout",
+  Checkout({
+    // Can be omitted if DODO_PAYMENTS_API_KEY environment variable is set.
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+    // URL to redirect to after successful checkout, can be omitted.
+    successUrl: process.env.SUCCESS_URL!,
+    // Omit or set to "live_mode" for production
+    environment: "test_mode",
+  }),
+);
 
 export default app;
 ```
@@ -96,18 +99,21 @@ import { CustomerPortal } from "@dodo/honojs";
 
 const app = new Hono();
 
-app.get("/customer-portal", CustomerPortal({
-  // Can be omitted if DODO_PAYMENTS_API_KEY environment variable is set.
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  // Omit or set to "live_mode" for production
-  environment: "test_mode",
-  // Write logic to get customerId from Hono.js context here
-  getCustomerId: async (c) => {
-    // Example: Extract customer ID from JWT token or session
-    // return c.get("customerId") || "";
-    return "";
-  },
-}));
+app.get(
+  "/customer-portal",
+  CustomerPortal({
+    // Can be omitted if DODO_PAYMENTS_API_KEY environment variable is set.
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+    // Omit or set to "live_mode" for production
+    environment: "test_mode",
+    // Write logic to get customerId from Hono.js context here
+    getCustomerId: async (c) => {
+      // Example: Extract customer ID from JWT token or session
+      // return c.get("customerId") || "";
+      return "";
+    },
+  }),
+);
 
 export default app;
 ```
@@ -122,14 +128,17 @@ import { WebhookPayload } from "@dodo/core";
 
 const app = new Hono();
 
-app.post("/webhook/dodo-payments", Webhooks({
-  webhookKey: process.env.DODO_WEBHOOK_SECRET!,
-  onPayload: async (payload: WebhookPayload) => {
-    // handle the payload
-    console.log("Received webhook:", payload);
-  },
-  // ... other event handlers for granular control
-}));
+app.post(
+  "/webhook/dodo-payments",
+  Webhooks({
+    webhookKey: process.env.DODO_WEBHOOK_SECRET!,
+    onPayload: async (payload: WebhookPayload) => {
+      // handle the payload
+      console.log("Received webhook:", payload);
+    },
+    // ... other event handlers for granular control
+  }),
+);
 
 export default app;
 ```
@@ -173,32 +182,41 @@ import { WebhookPayload } from "@dodo/core";
 const app = new Hono();
 
 // Checkout route
-app.get("/checkout", Checkout({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  successUrl: process.env.SUCCESS_URL!,
-  environment: "test_mode",
-}));
+app.get(
+  "/checkout",
+  Checkout({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+    successUrl: process.env.SUCCESS_URL!,
+    environment: "test_mode",
+  }),
+);
 
 // Customer portal route
-app.get("/customer-portal", CustomerPortal({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  environment: "test_mode",
-  getCustomerId: async (c) => {
-    // Implement your customer ID extraction logic here
-    return c.get("customerId") || "";
-  },
-}));
+app.get(
+  "/customer-portal",
+  CustomerPortal({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+    environment: "test_mode",
+    getCustomerId: async (c) => {
+      // Implement your customer ID extraction logic here
+      return c.get("customerId") || "";
+    },
+  }),
+);
 
 // Webhook route
-app.post("/webhook/dodo-payments", Webhooks({
-  webhookKey: process.env.DODO_WEBHOOK_SECRET!,
-  onPayload: async (payload: WebhookPayload) => {
-    console.log("Received webhook:", payload);
-  },
-  onPaymentSucceeded: async (payload) => {
-    console.log("Payment succeeded:", payload.data.payment_id);
-  },
-}));
+app.post(
+  "/webhook/dodo-payments",
+  Webhooks({
+    webhookKey: process.env.DODO_WEBHOOK_SECRET!,
+    onPayload: async (payload: WebhookPayload) => {
+      console.log("Received webhook:", payload);
+    },
+    onPaymentSucceeded: async (payload) => {
+      console.log("Payment succeeded:", payload.data.payment_id);
+    },
+  }),
+);
 
 export default app;
 ```
