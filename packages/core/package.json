@@ -10,8 +10,8 @@
   },
   "exports": {
     "./webhook": {
-      "types": "./src/webhook/index.ts",
-      "default": "./dist/webhook/index.js"
+      "types": "./src/webhook/webhook.ts",
+      "default": "./dist/webhook/webhook.js"
     },
     "./schemas/webhook": {
       "types": "./src/schemas/webhook.ts",
