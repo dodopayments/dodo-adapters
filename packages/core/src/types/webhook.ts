@@ -108,4 +108,3 @@ export type WebhookEventHandlers = {
     payload: z.infer<typeof LicenseKeyCreatedPayloadSchema>,
   ) => Promise<void>;
 };
-

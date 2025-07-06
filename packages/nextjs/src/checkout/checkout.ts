@@ -36,10 +36,7 @@ const checkoutQuerySchema = z.object({
   // We'll handle metadata separately in the handler
 });
 
-export const Checkout = ({
-  bearerToken,
-  environment,
-}: any) => {
+export const Checkout = ({ bearerToken, environment }: any) => {
   const getHandler = async (req: NextRequest) => {
     const { searchParams } = new URL(req.url);
     const queryParams = Object.fromEntries(searchParams);
@@ -86,9 +83,9 @@ export const Checkout = ({
     } = data;
 
     const baseURL =
-    environment === "test_mode"
-      ? "https://test.dodopayments.com"
-      : "https://live.dodopayments.com";
+      environment === "test_mode"
+        ? "https://test.dodopayments.com"
+        : "https://live.dodopayments.com";
 
     const dodopayments = new DodoPayments({
       bearerToken,
@@ -102,8 +99,6 @@ export const Checkout = ({
       console.error(err);
       return new Response(`Product not found`, { status: 404 });
     }
-
-   
 
     const url = new URL(`${baseURL}/buy/${productId}`);
 
@@ -122,19 +117,27 @@ export const Checkout = ({
     if (zipCode) url.searchParams.set("zipCode", zipCode);
 
     // Disable flags (must be set to 'true' to disable)
-    if (disableFullName === "true") url.searchParams.set("disableFullName", "true");
-    if (disableFirstName === "true") url.searchParams.set("disableFirstName", "true");
-    if (disableLastName === "true") url.searchParams.set("disableLastName", "true");
+    if (disableFullName === "true")
+      url.searchParams.set("disableFullName", "true");
+    if (disableFirstName === "true")
+      url.searchParams.set("disableFirstName", "true");
+    if (disableLastName === "true")
+      url.searchParams.set("disableLastName", "true");
     if (disableEmail === "true") url.searchParams.set("disableEmail", "true");
-    if (disableCountry === "true") url.searchParams.set("disableCountry", "true");
-    if (disableAddressLine === "true") url.searchParams.set("disableAddressLine", "true");
+    if (disableCountry === "true")
+      url.searchParams.set("disableCountry", "true");
+    if (disableAddressLine === "true")
+      url.searchParams.set("disableAddressLine", "true");
     if (disableCity === "true") url.searchParams.set("disableCity", "true");
     if (disableState === "true") url.searchParams.set("disableState", "true");
-    if (disableZipCode === "true") url.searchParams.set("disableZipCode", "true");
+    if (disableZipCode === "true")
+      url.searchParams.set("disableZipCode", "true");
 
     // Advanced controls
-    if (paymentCurrency) url.searchParams.set("paymentCurrency", paymentCurrency);
-    if (showCurrencySelector) url.searchParams.set("showCurrencySelector", showCurrencySelector);
+    if (paymentCurrency)
+      url.searchParams.set("paymentCurrency", paymentCurrency);
+    if (showCurrencySelector)
+      url.searchParams.set("showCurrencySelector", showCurrencySelector);
     if (paymentAmount) url.searchParams.set("paymentAmount", paymentAmount);
     if (showDiscounts) url.searchParams.set("showDiscounts", showDiscounts);
 

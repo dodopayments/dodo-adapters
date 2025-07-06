@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --watch"
+    "dev": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --watch",
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
   },
   "exports": {
     ".": {

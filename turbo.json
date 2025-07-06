@@ -9,6 +9,15 @@
       "cache": false,
       "persistent": true
     },
-    "lint": {}
+    "lint": {},
+    "format": {
+      "dependsOn": ["^format"]
+    },
+    "check-format": {
+      "dependsOn": ["^check-format"]
+    },
+    "ci": {
+      "dependsOn": ["check-format"]
+    }
   }
 }
