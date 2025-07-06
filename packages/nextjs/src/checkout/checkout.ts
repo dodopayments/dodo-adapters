@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import {
   buildCheckoutUrl,
@@ -15,11 +15,11 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
 
     if (!success) {
       if (error.errors.some((e: any) => e.path.toString() === "productId")) {
-        return new Response("Please provide productId query parameter", {
+        return new NextResponse("Please provide productId query parameter", {
           status: 400,
         });
       }
-      return new Response(`Invalid query parameters.\n ${error.message}`, {
+      return new NextResponse(`Invalid query parameters.\n ${error.message}`, {
         status: 400,
       });
     }
@@ -29,7 +29,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
     try {
       url = await buildCheckoutUrl({ queryParams: data, ...config });
     } catch (error: any) {
-      return new Response(error.message, { status: 400 });
+      return new NextResponse(error.message, { status: 400 });
     }
 
     redirect(url);
