@@ -1,135 +1,149 @@
-# Turborepo starter
+# Dodo Payments Adapters
 
-This Turborepo starter is maintained by the Turborepo core team.
+A collection of framework-specific adapters for integrating Dodo Payments into your applications.
 
-## Using this example
+## Available Adapters
 
-Run the following command:
+### Framework Adapters
 
-```sh
-npx create-turbo@latest
+- `@dodo/nextjs`: Next.js adapter for App Router
+- `@dodo/honojs`: Hono.js adapter for lightweight web applications
+- `@dodo/core`: Core functionality shared across all adapters
+- `@dodo/typescript-config`: TypeScript configurations used throughout the monorepo
+
+Each package is 100% [TypeScript](https://www.typescriptlang.org/).
+
+## Quick Start
+
+### Next.js Adapter
+
+```bash
+npm install @dodo/nextjs zod next
 ```
 
-## What's inside?
+### Hono.js Adapter
 
-This Turborepo includes the following packages/apps:
+```bash
+npm install @dodo/honojs zod hono
+# or with Bun (recommended)
+bun add @dodo/honojs zod hono
+```
 
-### Apps and Packages
+### Development Tools
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
+This monorepo includes the following development tools:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
+- [Turbo](https://turbo.build/) for build system and monorepo management
+
+## Documentation
+
+For detailed implementation guides and examples:
+
+- **Next.js**: See [packages/nextjs/README.md](packages/nextjs/README.md)
+- **Hono.js**: See [packages/honojs/README.md](packages/honojs/README.md)
+- **Core**: See [packages/core/README.md](packages/core/README.md) (if available)
+
+## Development
 
 ### Build
 
-To build all apps and packages, run the following command:
+To build all packages, run:
 
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+```bash
+npm install
 npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+To build a specific adapter:
 
+```bash
+# Build Next.js adapter
+npx turbo build --filter=@dodo/nextjs
+
+# Build Hono.js adapter
+npx turbo build --filter=@dodo/honojs
+
+# Build core package
+npx turbo build --filter=@dodo/core
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+### Development Mode
 
-### Develop
+To develop all packages with file watching:
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+```bash
 npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+To develop a specific adapter:
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+```bash
+# Develop Next.js adapter
+npx turbo dev --filter=@dodo/nextjs
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+# Develop Hono.js adapter  
+npx turbo dev --filter=@dodo/honojs
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+# Develop core package
+npx turbo dev --filter=@dodo/core
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Using Bun (Recommended for Hono.js)
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+For faster development when working with the Hono.js adapter:
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```bash
+bun install
+bun run dev --filter=@dodo/honojs
 ```
 
-## Useful Links
+## Features
 
-Learn more about the power of Turborepo:
+### Checkout Handler
+- Redirect users to Dodo Payments checkout
+- Support for query parameters (product ID, quantity, customer info)
+- Customizable success URLs
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+### Customer Portal Handler
+- Secure customer portal access
+- Subscription management
+- Payment history
+
+### Webhook Handler
+- Secure webhook verification
+- Support for all Dodo Payments event types
+- Granular event handlers
+
+## Environment Variables
+
+All adapters support the following environment variables:
+
+```env
+DODO_PAYMENTS_API_KEY=your-api-key
+SUCCESS_URL=https://your-app.com/success
+DODO_WEBHOOK_SECRET=your-webhook-secret
+```
+
+## Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Run the build and ensure all tests pass
+6. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For support and questions:
+- Check the adapter-specific documentation
+- Open an issue on GitHub
+- Visit the Dodo Payments documentation
