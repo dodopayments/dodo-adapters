@@ -1,4 +1,4 @@
-import { WebhookEventHandlers, WebhookPayload, Resolve } from "../types";
+import { WebhookEventHandlers, WebhookPayload, Resolve } from "../types/webhook";
 
 export type WebhookHandlerConfig = Resolve<
   {

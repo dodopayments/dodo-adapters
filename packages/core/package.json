@@ -1,12 +1,24 @@
 {
-    "name": "@dodo/core",
-    "version": "0.1.0",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "scripts": {
-        "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean"
+  "name": "@dodo/core",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/webhook/index.ts",
+      "default": "./dist/webhook/index.js"
     },
-    "peerDependencies": {
-        "zod": "^3.25.74"
+    "./schemas/webhook": {
+      "types": "./src/schemas/webhook.ts",
+      "default": "./dist/schemas/webhook.js"
     }
+  },
+  "peerDependencies": {
+    "zod": "^3.25.74"
+  },
+  "devDependencies": {
+    "@dodo/typescript-config": "*"
+  }
 }

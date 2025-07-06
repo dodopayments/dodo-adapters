@@ -1,11 +1,19 @@
 {
   "name": "@dodo/nextjs",
   "version": "0.1.0",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean"
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "exports": {
+    "./checkout": {
+      "types": "./src/checkout/checkout.ts",
+      "default": "./dist/checkout/checkout.js"
+    },
+    "./webhooks": {
+      "types": "./src/webhooks/webhooks.ts",
+      "default": "./dist/webhooks/webhooks.js"
+    }
   },
   "dependencies": {
     "@dodo/core": "*",
@@ -13,7 +21,7 @@
     "zod": "^3.25.73"
   },
   "devDependencies": {
-    "tsup": "^8.3.5"
+    "@dodo/typescript-config": "*"
   },
   "type": "module"
 }
