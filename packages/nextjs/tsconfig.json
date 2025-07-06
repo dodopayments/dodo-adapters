@@ -1,7 +1,12 @@
 {
   "extends": "@dodo/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

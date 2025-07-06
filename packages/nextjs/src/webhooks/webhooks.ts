@@ -1,45 +1,66 @@
-import { Webhook } from "standardwebhooks";
-import { type WebhookHandlerConfig, handleWebhookPayload } from "@dodo/core";
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import {
+  Webhook as StandardWebhook,
+  WebhookVerificationError,
+} from "standardwebhooks";
+import {
+  type WebhookHandlerConfig,
+  handleWebhookPayload,
+} from "@dodo/core/webhook";
+import { NextResponse, NextRequest } from "next/server";
+import { headers } from "next/headers";
+import { WebhookPayloadSchema } from "@dodo/core/schemas/webhook";
 
 export const Webhooks = ({
   webhookKey,
   ...eventHandlers
 }: WebhookHandlerConfig) => {
-  const webhook = new Webhook(webhookKey);
+  const standardWebhook = new StandardWebhook(webhookKey);
 
-  return async (request: NextRequest) => {
-    const requestBody = await request.text();
-
-    const webhookHeaders = {
-      "webhook-id": request.headers.get("webhook-id") ?? "",
-      "webhook-timestamp": request.headers.get("webhook-timestamp") ?? "",
-      "webhook-signature": request.headers.get("webhook-signature") ?? "",
-    };
-
-    try {
-      await webhook.verify(requestBody, webhookHeaders);
-    } catch (error) {
-      return NextResponse.json({ status: 403 });
+  return async (req: NextRequest) => {
+    if (req.method !== "POST") {
+      return new Response("Method not allowed. Use POST", { status: 405 });
     }
 
-    let webhookPayload;
-    try {
-      webhookPayload = JSON.parse(requestBody);
-    } catch (error) {
-      return NextResponse.json({ status: 400 });
-    }
+    const headerList = await headers();
+    const headerObject = Object.fromEntries(headerList.entries());
+
+    const rawBody = await req.text();
 
     try {
-      await handleWebhookPayload(webhookPayload, {
-        webhookKey,
-        ...eventHandlers,
+      standardWebhook.verify(rawBody, headerObject);
+    } catch (err) {
+      if (err instanceof WebhookVerificationError) {
+        return new NextResponse(err.message, { status: 401 });
+      }
+
+      return new NextResponse("Error while verifying webhook", {
+        status: 500,
       });
-    } catch (error) {
-      return NextResponse.json({ status: 400 });
     }
 
-    return NextResponse.json({ status: 200 });
+    const {
+      success,
+      data: payload,
+      error,
+    } = WebhookPayloadSchema.safeParse(JSON.parse(rawBody));
+
+    if (!success) {
+      console.error("Error parsing webhook payload", error.issues);
+      return new NextResponse(
+        `Error parsing webhook payload: ${error.message}`,
+        {
+          status: 400,
+        },
+      );
+    }
+
+    // do not catch errors here, let them bubble up to the user
+    // as they will originate from the handlers passed by the user
+    await handleWebhookPayload(payload, {
+      webhookKey,
+      ...eventHandlers,
+    });
+
+    return new NextResponse(null, { status: 200 });
   };
 };
