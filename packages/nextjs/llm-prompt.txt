@@ -71,13 +71,17 @@ Here's how you should structure your response:
       // Omit or set to "live_mode" for production 
       environment: "test_mode",
       // Write logic to get customerId from request here
-      getCustomerId: (req: NextRequest) => "" // IMPORTANT: Implement your logic to get the customer ID from the request (e.g., from session or auth token)
+      getCustomerId: async (req: NextRequest) => {
+        // IMPORTANT: Implement your logic to get the customer ID from the request 
+        // (e.g., from session or auth token)
+        return ""; // Return the customer ID
+      }
     })
     ```
     **Configuration & Usage:**
     *   `bearerToken`: Your Dodo Payments API key. It's recommended to set this via the `DODO_PAYMENTS_API_KEY` environment variable.
     *   `environment`: (Optional) Set to `"test_mode"` for testing, or omit/set to `"live_mode"` for production.
-    *   `getCustomerId`: **Crucial.** You must implement this function to extract the Dodo Payments `customerId` from the incoming `NextRequest`. This is how the customer portal knows which customer to display.
+    *   `getCustomerId`: **Crucial.** You must implement this async function to extract the Dodo Payments `customerId` from the incoming `NextRequest`. This is how the customer portal knows which customer to display.
 
     ---
     **If `Webhook Route Handler` is selected:**
@@ -91,16 +95,15 @@ Here's how you should structure your response:
     1.  **Access Webhook Settings:** Navigate to the DodoPayments Dashboard and go to Settings > Webhooks.
     2.  **Create Webhook Endpoint:** Click on Add Webhook to create a new webhook endpoint. You can create up to 5 webhook endpoints to receive notifications at different URLs or for different purposes.
     3.  **Configure Endpoint:** Enter the URL where you want to receive webhook events.
-    4.  **Get Secret Key:** Obtain your webhook Secret Key from the settings page. You’ll use this to verify the authenticity of received webhooks. Keep your webhook secret key secure and never expose it in client-side code or public repositories.
+    4.  **Get Secret Key:** Obtain your webhook Secret Key from the settings page. You'll use this to verify the authenticity of received webhooks. Keep your webhook secret key secure and never expose it in client-side code or public repositories.
     **Code Snippet:**
     ```typescript
     // app/api/webhook/dodo-payments/route.ts
-    import { Webhook } from '@dodo/nextjs'
-    import { WebhookPayload } from '@dodo/core' // Ensure you have @dodo/core installed or copy its types
+    import { Webhooks } from '@dodo/nextjs'
 
-    export const POST = Webhook({
-      webhookSecret: process.env.DODO_WEBHOOK_SECRET!, // Your Dodo Payments webhook secret
-      onPayload: async (payload: WebhookPayload) => {
+    export const POST = Webhooks({
+      webhookKey: process.env.DODO_WEBHOOK_SECRET!, // Your Dodo Payments webhook secret
+      onPayload: async (payload) => {
         // Implement your logic here to handle any webhook payload
         console.log('Received webhook payload:', payload);
       },
@@ -111,9 +114,9 @@ Here's how you should structure your response:
     })
     ```
     **Configuration & Usage:**
-    *   `webhookSecret`: **Required.** Your Dodo Payments webhook secret. This is used to verify the authenticity of incoming webhooks. You *must* set this as an environment variable in your deployment environment/platform (e.g., Vercel, Netlify, AWS, etc.).
+    *   `webhookKey`: **Required.** Your Dodo Payments webhook secret. This is used to verify the authenticity of incoming webhooks. You *must* set this as an environment variable in your deployment environment/platform (e.g., Vercel, Netlify, AWS, etc.).
     *   `onPayload`: An `async` function that will be called for *any* incoming webhook payload.
-    *   **Specific Event Handlers:** The `Webhook` function also accepts properties like `onPaymentSucceeded`, `onRefundSucceeded`, `onSubscriptionActive`, etc. These are `async` functions that receive the `WebhookPayload` for that specific event type, allowing for more granular control. You can use `onPayload` for general handling or specific handlers for particular events.
+    *   **Specific Event Handlers:** The `Webhooks` function also accepts properties like `onPaymentSucceeded`, `onRefundSucceeded`, `onSubscriptionActive`, etc. These are `async` functions that receive the `WebhookPayload` for that specific event type, allowing for more granular control. You can use `onPayload` for general handling or specific handlers for particular events.
 
     ---
 
