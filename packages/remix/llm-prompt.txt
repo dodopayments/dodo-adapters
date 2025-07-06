@@ -143,16 +143,7 @@ Here's how you should structure your response:
 
     If the user needs assistance setting up environment variables for their specific deployment environment, ask them what platform they are using (e.g., Vercel, Netlify, AWS, etc.), and provide guidance. You can also add comments to their PR or chat depending on the context.
 
-4.  **Key Differences from Next.js:**
-
-    If the user is familiar with the Next.js adapter, highlight these key differences:
-    *   **Route Handlers:** Remix uses `loader` functions for GET requests and `action` functions for POST requests, instead of Next.js route handlers.
-    *   **Error Handling:** Remix throws responses using `throw new Response()` instead of returning them.
-    *   **Redirects:** Remix uses `throw redirect()` instead of `redirect()` for redirects.
-    *   **Request Headers:** Headers are accessed directly from the Request object instead of Next.js headers helper.
-    *   **File-based Routing:** Remix uses a different file naming convention for routes (e.g., `api.webhook.dodo-payments.ts` for nested routes).
-
-5.  **Troubleshooting:**
+4.  **Troubleshooting:**
 
     Common issues and solutions:
     *   **Module not found errors:** Ensure all peer dependencies are installed (`@remix-run/server-runtime`, `zod`).
@@ -160,7 +151,7 @@ Here's how you should structure your response:
     *   **Webhook not receiving events:** Verify the webhook URL is correct and accessible from the internet.
     *   **TypeScript errors:** Ensure you're importing the correct types from `@remix-run/server-runtime`.
 
-6.  **Next Steps:**
+5.  **Next Steps:**
 
     After integration, guide the user on testing their implementation:
     *   **Checkout:** Test by visiting `/checkout?productId=your-product-id` in your browser.
