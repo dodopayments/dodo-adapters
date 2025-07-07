@@ -89,7 +89,11 @@ export const GET = CustomerPortal({
   // Omit or set to "live_mode" for production
   environment: "test_mode",
   // Write logic to get customerId from request here
-  getCustomerId: (req: NextRequest) => "",
+  getCustomerId: async (req: NextRequest) => {
+    // Implement your logic to get the customer ID from the request
+    // (e.g., from session, auth token, etc.)
+    return ""; // Return the customer ID
+  },
 });
 ```
 
@@ -97,12 +101,11 @@ export const GET = CustomerPortal({
 
 ```typescript
 // app/api/webhook/dodo-payments/route.ts
-import { Webhook } from "@dodo/nextjs";
-import { WebhookPayload } from "@dodo/core";
+import { Webhooks } from "@dodo/nextjs";
 
-export const POST = Webhook({
-  webhookSecret: process.env.DODO_WEBHOOK_SECRET!,
-  onPayload: async (payload: WebhookPayload) => {
+export const POST = Webhooks({
+  webhookKey: process.env.DODO_WEBHOOK_SECRET!,
+  onPayload: async (payload) => {
     // handle the payload
   },
   // ... other event handlers for granular control
@@ -111,7 +114,7 @@ export const POST = Webhook({
 
 #### Supported Webhook Event Handlers
 
-The `Webhook` function accepts an object with various `onEventName` properties, where `EventName` corresponds to the type of webhook event. Each handler is an `async` function that receives the parsed payload for that specific event type. Below is a comprehensive list of all supported event handlers with their function signatures:
+The `Webhooks` function accepts an object with various `onEventName` properties, where `EventName` corresponds to the type of webhook event. Each handler is an `async` function that receives the parsed payload for that specific event type. Below is a comprehensive list of all supported event handlers with their function signatures:
 
 - `onPayload?: (payload: WebhookPayload) => Promise<void>;`
 - `onPaymentSucceeded?: (payload: WebhookPayload) => Promise<void>;`
@@ -162,4 +165,5 @@ You can set `DODO_PAYMENTS_API_KEY` environment variable to use your API key and
 
 ```env
 DODO_PAYMENTS_API_KEY=your-api-key
+DODO_WEBHOOK_SECRET=your-webhook-secret
 ```
