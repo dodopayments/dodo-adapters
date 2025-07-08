@@ -5,7 +5,7 @@ import {
   CheckoutHandlerConfig,
   checkoutQuerySchema,
   dynamicCheckoutBodySchema,
-} from "@dodo/core/checkout";
+} from "@dodopayments/core/checkout";
 
 export const Checkout = (config: CheckoutHandlerConfig) => {
   const getHandler = async (req: NextRequest) => {

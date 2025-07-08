@@ -5,10 +5,10 @@ import {
 import {
   type WebhookHandlerConfig,
   handleWebhookPayload,
-} from "@dodo/core/webhook";
+} from "@dodopayments/core/webhook";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { WebhookPayloadSchema } from "@dodo/core/schemas/webhook";
+import { WebhookPayloadSchema } from "@dodopayments/core/schemas/webhook";
 
 export const Webhooks = ({
   webhookKey,

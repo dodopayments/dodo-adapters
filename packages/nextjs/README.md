@@ -1,4 +1,4 @@
-# `@dodo/nextjs`
+# `@dodopayments/nextjs`
 
 > For AI Agents, see [llm-prompt.txt](llm-prompt.txt)
 
@@ -9,7 +9,7 @@ A typescript library that exports Handlers for Checkout, Customer Portal, and We
 You can install this package via npm or any other package manager of your choice:
 
 ```bash
-npm install @dodo/nextjs zod next
+npm install @dodopayments/nextjs zod next
 ```
 
 ## Quick Start
@@ -20,7 +20,7 @@ All the examples below assume you're using Next.js App Router.
 
 ```typescript
 // app/checkout/route.ts
-import { Checkout } from "@dodo/nextjs";
+import { Checkout } from "@dodopayments/nextjs";
 
 export const GET = Checkout({
   // Can be omitted if DODO_PAYMENTS_API_KEY environment variable is set.
@@ -80,7 +80,7 @@ If the `productId` is missing, the handler will return a 400 response. Invalid q
 
 ```typescript
 // app/customer-portal/route.ts
-import { CustomerPortal } from "@dodo/nextjs";
+import { CustomerPortal } from "@dodopayments/nextjs";
 import { NextRequest } from "next/server";
 
 export const GET = CustomerPortal({
@@ -101,7 +101,7 @@ export const GET = CustomerPortal({
 
 ```typescript
 // app/api/webhook/dodo-payments/route.ts
-import { Webhooks } from "@dodo/nextjs";
+import { Webhooks } from "@dodopayments/nextjs";
 
 export const POST = Webhooks({
   webhookKey: process.env.DODO_WEBHOOK_SECRET!,
@@ -150,13 +150,13 @@ This library is built with:
 To build this package, install the turborepo cli and run:
 
 ```bash
-turbo run build --filter=@dodo/nextjs
+turbo run build --filter=@dodopayments/nextjs
 ```
 
 To run in development mode:
 
 ```bash
-turbo run dev --filter=@dodo/nextjs
+turbo run dev --filter=@dodopayments/nextjs
 ```
 
 ## Environment Variables
