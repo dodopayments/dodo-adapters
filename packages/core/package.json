@@ -14,17 +14,20 @@
     "check-types": "tsc --noEmit"
   },
   "exports": {
+    "./checkout": {
+      "import": "./dist/checkout/checkout.js",
+      "require": "./dist/checkout/checkout.cjs",
+      "types": "./dist/checkout/checkout.d.ts"
+    },
     "./webhook": {
-      "types": "./dist/webhook/webhook.d.ts",
-      "default": "./dist/webhook/webhook.js"
+      "import": "./dist/webhook/webhook.js",
+      "require": "./dist/webhook/webhook.cjs",
+      "types": "./dist/webhook/webhook.d.ts"
     },
     "./schemas/webhook": {
-      "types": "./dist/schemas/webhook.d.ts",
-      "default": "./dist/schemas/webhook.js"
-    },
-    "./checkout": {
-      "types": "./dist/checkout/checkout.d.ts",
-      "default": "./dist/checkout/checkout.js"
+      "import": "./dist/schemas/webhook.js",
+      "require": "./dist/schemas/webhook.cjs",
+      "types": "./dist/schemas/webhook.d.ts"
     }
   },
   "dependencies": {
