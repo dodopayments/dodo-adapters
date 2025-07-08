@@ -74,7 +74,6 @@ export const dynamicCheckoutBodySchema = z.object({
   ).optional(),
   metadata: z.record(z.string(), z.string()).optional(),
   currency: z.string().optional(),
-  total_amount: z.number().optional(),
   // Allow any additional fields (for future compatibility)
 }).catchall(z.unknown());
 
@@ -203,8 +202,15 @@ export const buildCheckoutUrl = async ({
     discount_id,
     addons,
     metadata,
-    currency,
-    total_amount,
+    allowed_payment_method_types,
+    billing_currency,
+    discount_code,
+    on_demand,
+    payment_link,
+    return_url,
+    show_saved_payment_methods,
+    tax_id,
+    trial_period_days
   } = dyn;
 
   const dodopayments = new DodoPayments({
@@ -242,20 +248,26 @@ export const buildCheckoutUrl = async ({
       product_id: product_id!,
       quantity: quantity ? Number(quantity) : 1,
     };
-    subscriptionPayload.metadata = metadata ? metadata : {};
-    if (currency) subscriptionPayload.currency = currency;
-    if (discount_id) subscriptionPayload.discount_id = discount_id;
+    if (metadata) subscriptionPayload.metadata = metadata;
+    if (discount_code) subscriptionPayload.discount_code = discount_code;
     if (addons) subscriptionPayload.addons = addons;
-    subscriptionPayload.payment_link = true;
+    if (allowed_payment_method_types) subscriptionPayload.allowed_payment_method_types = allowed_payment_method_types;
+    if (billing_currency) subscriptionPayload.billing_currency = billing_currency;
+    if (on_demand) subscriptionPayload.on_demand = on_demand;
+    if (payment_link) subscriptionPayload.payment_link = payment_link;
+    if (return_url) subscriptionPayload.return_url = return_url;
+    if (show_saved_payment_methods) subscriptionPayload.show_saved_payment_methods = show_saved_payment_methods;
+    if (tax_id) subscriptionPayload.tax_id = tax_id;
+    if (trial_period_days) subscriptionPayload.trial_period_days = trial_period_days;
     let subscription;
     try {
       subscription = await dodopayments.subscriptions.create(subscriptionPayload as any);
     } catch (err) {
-      console.error(err);
-      throw new Error("Failed to create subscription payment");
+      console.error("Error when creating subscription", err);
+      throw new Error(err instanceof Error ? err.message : String(err));
     }
     if (!subscription || !subscription.payment_link) {
-      throw new Error("No payment link returned from Dodo Payments API (subscription)");
+      throw new Error("No payment link returned from Dodo Payments API (subscription). Make sure to set payment_link as true in payload");
     }
     return subscription.payment_link;
   } else {
@@ -270,20 +282,24 @@ export const buildCheckoutUrl = async ({
       customer: customer as any,
       product_cart: cart as any,
     };
-    paymentPayload.metadata = metadata ? metadata : {};
-    if (currency) paymentPayload.currency = currency;
-    if (typeof total_amount === "number") paymentPayload.total_amount = total_amount;
-    if (discount_id) paymentPayload.discount_id = discount_id;
-    paymentPayload.payment_link = true;
+    if (metadata) paymentPayload.metadata = metadata;
+    if (payment_link) paymentPayload.payment_link = payment_link;
+    if (allowed_payment_method_types) paymentPayload.allowed_payment_method_types = allowed_payment_method_types;
+    if (billing_currency) paymentPayload.billing_currency = billing_currency;
+    if (discount_code) paymentPayload.discount_code = discount_code;
+    if (return_url) paymentPayload.return_url = return_url;
+    if (show_saved_payment_methods) paymentPayload.show_saved_payment_methods = show_saved_payment_methods;
+    if (tax_id) paymentPayload.tax_id = tax_id;
+
     let payment;
     try {
       payment = await dodopayments.payments.create(paymentPayload as any);
     } catch (err) {
-      console.error(err);
-      throw new Error("Failed to create dynamic payment");
+      console.error("Error when creating payment link", err);
+      throw new Error(err instanceof Error ? err.message : String(err));
     }
     if (!payment || !payment.payment_link) {
-      throw new Error("No payment link returned from Dodo Payments API");
+      throw new Error("No payment link returned from Dodo Payments API. Make sure to set payment_link as true in payload.");
     }
     return payment.payment_link;
   }
