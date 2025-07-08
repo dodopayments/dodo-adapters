@@ -19,7 +19,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "*"
+    "@dodopayments/core": "^0.1.2"
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",
