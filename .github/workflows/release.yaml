@@ -27,6 +27,11 @@ jobs:
         run: npm run build
       - name: Verify package
         run: npm pack
+      - name: Upload core tarball
+        uses: actions/upload-artifact@v3
+        with:
+          name: core-tarball
+          path: packages/core/@dodopayments-core-*.tgz
       - name: Publish to NPM
         run: npm publish --access public
         env:
@@ -43,6 +48,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Download core tarball
+        uses: actions/download-artifact@v3
+        with:
+          name: core-tarball
+          path: ./
+      - name: Install core tarball
+        run: npm install ../@dodopayments-core-*.tgz
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
