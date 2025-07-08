@@ -1,6 +1,9 @@
 {
   "name": "@dodo/core",
   "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
