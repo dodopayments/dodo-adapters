@@ -24,7 +24,7 @@
       "require": "./dist/webhook/webhook.cjs",
       "types": "./dist/webhook/webhook.d.ts"
     },
-    "./schemas/webhook": {
+    "./schemas": {
       "import": "./dist/schemas/webhook.js",
       "require": "./dist/schemas/webhook.cjs",
       "types": "./dist/schemas/webhook.d.ts"
