@@ -12,23 +12,29 @@
   },
   "exports": {
     "./webhook": {
-      "types": "./src/webhook/webhook.ts",
+      "types": "./dist/webhook/webhook.d.ts",
       "default": "./dist/webhook/webhook.js"
     },
     "./schemas/webhook": {
-      "types": "./src/schemas/webhook.ts",
+      "types": "./dist/schemas/webhook.d.ts",
       "default": "./dist/schemas/webhook.js"
     },
     "./checkout": {
-      "types": "./src/checkout/checkout.ts",
+      "types": "./dist/checkout/checkout.d.ts",
       "default": "./dist/checkout/checkout.js"
     }
   },
   "peerDependencies": {
     "zod": "^3.25.74"
   },
+  "dependencies": {
+    "dodopayments": "^1.38.0"
+  },
   "devDependencies": {
     "@dodo/typescript-config": "*",
     "vitest": "^2.0.4"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
