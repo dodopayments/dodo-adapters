@@ -24,11 +24,12 @@
       "default": "./dist/checkout/checkout.js"
     }
   },
+  "dependencies": {
+    "dodopayments": "^1.37.2",
+    "standardwebhooks": "^1.0.0"
+  },
   "peerDependencies": {
     "zod": "^3.25.74"
-  },
-  "dependencies": {
-    "dodopayments": "^1.38.0"
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",

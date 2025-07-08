@@ -20,9 +20,5 @@
     "check-types": "turbo run check-types",
     "ci": "turbo run ci",
     "test": "turbo run test"
-  },
-  "dependencies": {
-    "dodopayments": "^1.37.2",
-    "standardwebhooks": "^1.0.0"
   }
 }
