@@ -45,6 +45,7 @@
   },
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "llm-prompt.txt"
   ]
 }

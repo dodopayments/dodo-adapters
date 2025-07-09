@@ -9,28 +9,19 @@ A typescript library that exports Handlers for Checkout, Customer Portal, and We
 You can install this package via npm or any other package manager of your choice:
 
 ```bash
-npm install @dodopayments/nextjs zod next
+npm install @dodopayments/nextjs
 ```
 
 ## Quick Start
 
 All the examples below assume you're using Next.js App Router.
 
-### 1. Checkout Route Handler
+## Static vs Dynamic Checkout
 
-```typescript
-// app/checkout/route.ts
-import { Checkout } from "@dodopayments/nextjs";
-
-export const GET = Checkout({
-  // Can be omitted if DODO_PAYMENTS_API_KEY environment variable is set.
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  // URL to redirect to after successful checkout, can be omitted.
-  successUrl: process.env.SUCCESS_URL!,
-  // Omit or set to "live_mode" for production
-  environment: "test_mode",
-});
-```
+### Static Checkout (GET):
+- Used for simple, single-product payments.
+- Parameters are passed as query parameters in the URL.
+- Best for straightforward use cases where the product and quantity are known in advance.
 
 #### Query Parameters
 
@@ -76,26 +67,63 @@ Any query parameter starting with `metadata_` will be passed as metadata to the 
 
 If the `productId` is missing, the handler will return a 400 response. Invalid query parameters will also result in a 400 response.
 
+## Dynamic Checkout** (POST):
+- Parameters are sent as a JSON body in a POST request.
+- Supports both one-time and recurring payments.
+- For a complete list of supported and POST body fields, refer to the below documentation.
+[Docs - One Time Payment Product](https://docs.dodopayments.com/api-reference/payments/post-payments)
+
+[Docs - Subscription Product](https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions)
+
+### 1. Checkout Route Handler
+
+```typescript
+// app/checkout/route.ts
+import { Checkout } from "@dodopayments/nextjs";
+
+export const GET = Checkout({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+  returnUrl: process.env.RETURN_URL!,
+  environment: "test_mode",
+  type: "static", // explicitly specify type (optional, defaults to 'static')
+});
+
+export const POST = Checkout({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+  returnUrl: process.env.RETURN_URL!,
+  environment: "test_mode",
+  type: "dynamic", // explicitly specify type for dynamic checkout
+});
+```
+
+> **Note:**
+> - Use `GET` for static checkout (single product, simple use cases).
+> - Use `POST` for dynamic checkout (subscriptions, carts, advanced features).
+> - The `type` property can be set to either `"static"` or `"dynamic"`. If not provided, it defaults to `"static"`.
+
+
+---
+
 ### 2. Customer Portal Route Handler
 
 ```typescript
 // app/customer-portal/route.ts
 import { CustomerPortal } from "@dodopayments/nextjs";
-import { NextRequest } from "next/server";
 
 export const GET = CustomerPortal({
-  // Can be omitted if DODO_PAYMENTS_API_KEY environment variable is set.
   bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  // Omit or set to "live_mode" for production
   environment: "test_mode",
-  // Write logic to get customerId from request here
-  getCustomerId: async (req: NextRequest) => {
-    // Implement your logic to get the customer ID from the request
-    // (e.g., from session, auth token, etc.)
-    return ""; // Return the customer ID
-  },
 });
 ```
+
+#### Query Parameters
+
+- `customer_id` (required): The customer ID for the portal session (e.g., `?customer_id=cus_123`)
+- `send_email` (optional, boolean): If set to `true`, sends an email to the customer with the portal link.
+
+Returns 400 if `customer_id` is missing.
+
+---
 
 ### 3. Webhook Route Handler
 
@@ -111,6 +139,17 @@ export const POST = Webhooks({
   // ... other event handlers for granular control
 });
 ```
+
+#### Webhook Handler Details
+
+- **Method:** Only POST requests are supported. Other methods return 405.
+- **Signature Verification:** The handler verifies the webhook signature using the `webhookKey` and returns 401 if verification fails.
+- **Payload Validation:** The payload is validated with Zod. Returns 400 for invalid payloads.
+- **Error Handling:**
+  - 401: Invalid signature
+  - 400: Invalid payload
+  - 500: Internal error during verification
+- **Event Routing:** Calls the appropriate event handler based on the payload type.
 
 #### Supported Webhook Event Handlers
 
@@ -161,9 +200,18 @@ turbo run dev --filter=@dodopayments/nextjs
 
 ## Environment Variables
 
-You can set `DODO_PAYMENTS_API_KEY` environment variable to use your API key and omit the `bearerToken` parameter.
+To keep your API keys and secrets secure, always use environment variables instead of hardcoding them. You can customize the variable names, but ensure you reference the correct names in your code.
 
+**Example `.env` file:**
 ```env
 DODO_PAYMENTS_API_KEY=your-api-key
 DODO_WEBHOOK_SECRET=your-webhook-secret
 ```
+
+**Usage in your code:**
+```typescript
+bearerToken: process.env.DODO_PAYMENTS_API_KEY!
+webhookKey: process.env.DODO_WEBHOOK_SECRET!
+```
+
+> **Tip:** Never commit your `.env` file or secrets to version control. Use environment variables for all sensitive information.
