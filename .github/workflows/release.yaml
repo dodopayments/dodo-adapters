@@ -8,9 +8,6 @@ jobs:
   release-core:
     name: Release @dodopayments/core
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/core
     steps:
       - uses: actions/checkout@v3
         with:
@@ -25,10 +22,12 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+        working-directory: packages/core
       - name: Verify package
         run: npm pack
       - name: Publish to NPM
         run: npm publish --access public
+        working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
@@ -36,9 +35,6 @@ jobs:
     name: Release @dodopayments/nextjs
     runs-on: ubuntu-latest
     needs: release-core
-    defaults:
-      run:
-        working-directory: packages/nextjs
     steps:
       - uses: actions/checkout@v3
         with:
@@ -53,9 +49,11 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+        working-directory: packages/nextjs
       - name: Verify package
         run: npm pack
       - name: Publish to NPM
         run: npm publish --access public
+        working-directory: packages/nextjs
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
