@@ -39,44 +39,49 @@ export const checkoutQuerySchema = z.object({
 });
 
 // Add Zod schema for dynamic checkout body
-export const dynamicCheckoutBodySchema = z.object({
-  // For subscription
-  product_id: z.string().optional(),
-  quantity: z.number().optional(),
+export const dynamicCheckoutBodySchema = z
+  .object({
+    // For subscription
+    product_id: z.string().optional(),
+    quantity: z.number().optional(),
 
-  // For one-time payment
-  product_cart: z.array(
-    z.object({
-      product_id: z.string(),
-      quantity: z.number(),
-    })
-  ).optional(),
+    // For one-time payment
+    product_cart: z
+      .array(
+        z.object({
+          product_id: z.string(),
+          quantity: z.number(),
+        }),
+      )
+      .optional(),
 
-  // Common fields
-  billing: z.object({
-    city: z.string(),
-    country: z.string(),
-    state: z.string(),
-    street: z.string(),
-    zipcode: z.string(),
-  }),
-  customer: z.object({
-    customer_id: z.string().optional(),
-    email: z.string().optional(),
-    name: z.string().optional(),
-  }),
-  discount_id: z.string().optional(),
-  addons: z.array(
-    z.object({
-      addon_id: z.string(),
-      quantity: z.number(),
-    })
-  ).optional(),
-  metadata: z.record(z.string(), z.string()).optional(),
-  currency: z.string().optional(),
-  // Allow any additional fields (for future compatibility)
-}).catchall(z.unknown());
-
+    // Common fields
+    billing: z.object({
+      city: z.string(),
+      country: z.string(),
+      state: z.string(),
+      street: z.string(),
+      zipcode: z.string(),
+    }),
+    customer: z.object({
+      customer_id: z.string().optional(),
+      email: z.string().optional(),
+      name: z.string().optional(),
+    }),
+    discount_id: z.string().optional(),
+    addons: z
+      .array(
+        z.object({
+          addon_id: z.string(),
+          quantity: z.number(),
+        }),
+      )
+      .optional(),
+    metadata: z.record(z.string(), z.string()).optional(),
+    currency: z.string().optional(),
+    // Allow any additional fields (for future compatibility)
+  })
+  .catchall(z.unknown());
 
 export const buildCheckoutUrl = async ({
   queryParams,
@@ -101,7 +106,9 @@ export const buildCheckoutUrl = async ({
   const { success, data, error } = parseResult;
 
   if (!success) {
-    throw new Error(`Invalid ${type === "dynamic" ? "body" : "query parameters"}.\n ${error.message}`);
+    throw new Error(
+      `Invalid ${type === "dynamic" ? "body" : "query parameters"}.\n ${error.message}`,
+    );
   }
 
   if (type !== "dynamic") {
@@ -148,7 +155,9 @@ export const buildCheckoutUrl = async ({
       throw new Error("Product not found");
     }
 
-    const url = new URL(`${environment === "test_mode" ? "https://test.checkout.dodopayments.com" : "https://checkout.dodopayments.com"}/buy/${productId}`);
+    const url = new URL(
+      `${environment === "test_mode" ? "https://test.checkout.dodopayments.com" : "https://checkout.dodopayments.com"}/buy/${productId}`,
+    );
     url.searchParams.set("quantity", quantity ? String(quantity) : "1");
     if (successUrl) url.searchParams.set("redirect_url", successUrl);
 
@@ -164,21 +173,34 @@ export const buildCheckoutUrl = async ({
     if (zipCode) url.searchParams.set("zipCode", String(zipCode));
 
     // Disable flags (must be set to 'true' to disable)
-    if (disableFullName === "true") url.searchParams.set("disableFullName", "true");
-    if (disableFirstName === "true") url.searchParams.set("disableFirstName", "true");
-    if (disableLastName === "true") url.searchParams.set("disableLastName", "true");
+    if (disableFullName === "true")
+      url.searchParams.set("disableFullName", "true");
+    if (disableFirstName === "true")
+      url.searchParams.set("disableFirstName", "true");
+    if (disableLastName === "true")
+      url.searchParams.set("disableLastName", "true");
     if (disableEmail === "true") url.searchParams.set("disableEmail", "true");
-    if (disableCountry === "true") url.searchParams.set("disableCountry", "true");
-    if (disableAddressLine === "true") url.searchParams.set("disableAddressLine", "true");
+    if (disableCountry === "true")
+      url.searchParams.set("disableCountry", "true");
+    if (disableAddressLine === "true")
+      url.searchParams.set("disableAddressLine", "true");
     if (disableCity === "true") url.searchParams.set("disableCity", "true");
     if (disableState === "true") url.searchParams.set("disableState", "true");
-    if (disableZipCode === "true") url.searchParams.set("disableZipCode", "true");
+    if (disableZipCode === "true")
+      url.searchParams.set("disableZipCode", "true");
 
     // Advanced controls
-    if (paymentCurrency) url.searchParams.set("paymentCurrency", String(paymentCurrency));
-    if (showCurrencySelector) url.searchParams.set("showCurrencySelector", String(showCurrencySelector));
-    if (paymentAmount) url.searchParams.set("paymentAmount", String(paymentAmount));
-    if (showDiscounts) url.searchParams.set("showDiscounts", String(showDiscounts));
+    if (paymentCurrency)
+      url.searchParams.set("paymentCurrency", String(paymentCurrency));
+    if (showCurrencySelector)
+      url.searchParams.set(
+        "showCurrencySelector",
+        String(showCurrencySelector),
+      );
+    if (paymentAmount)
+      url.searchParams.set("paymentAmount", String(paymentAmount));
+    if (showDiscounts)
+      url.searchParams.set("showDiscounts", String(showDiscounts));
 
     // Metadata: add all query params starting with metadata_
     for (const [key, value] of Object.entries(queryParams || {})) {
@@ -210,7 +232,7 @@ export const buildCheckoutUrl = async ({
     return_url,
     show_saved_payment_methods,
     tax_id,
-    trial_period_days
+    trial_period_days,
   } = dyn;
 
   const dodopayments = new DodoPayments({
@@ -224,7 +246,10 @@ export const buildCheckoutUrl = async ({
   if (!product_id && product_cart && product_cart.length > 0) {
     productIdToFetch = product_cart[0].product_id;
   }
-  if (!productIdToFetch) throw new Error("Missing required field: product_id or product_cart[0].product_id");
+  if (!productIdToFetch)
+    throw new Error(
+      "Missing required field: product_id or product_cart[0].product_id",
+    );
 
   let product;
   try {
@@ -235,10 +260,10 @@ export const buildCheckoutUrl = async ({
   }
   isSubscription = Boolean(product.is_recurring);
   // Required field validation
-  if (isSubscription && !product_id) throw new Error("Missing required field: product_id for subscription");
+  if (isSubscription && !product_id)
+    throw new Error("Missing required field: product_id for subscription");
   if (!billing) throw new Error("Missing required field: billing");
   if (!customer) throw new Error("Missing required field: customer");
-
 
   if (isSubscription) {
     // Use subscriptions.create for subscription products
@@ -251,32 +276,45 @@ export const buildCheckoutUrl = async ({
     if (metadata) subscriptionPayload.metadata = metadata;
     if (discount_code) subscriptionPayload.discount_code = discount_code;
     if (addons) subscriptionPayload.addons = addons;
-    if (allowed_payment_method_types) subscriptionPayload.allowed_payment_method_types = allowed_payment_method_types;
-    if (billing_currency) subscriptionPayload.billing_currency = billing_currency;
+    if (allowed_payment_method_types)
+      subscriptionPayload.allowed_payment_method_types =
+        allowed_payment_method_types;
+    if (billing_currency)
+      subscriptionPayload.billing_currency = billing_currency;
     if (on_demand) subscriptionPayload.on_demand = on_demand;
     if (payment_link) subscriptionPayload.payment_link = payment_link;
     if (return_url) subscriptionPayload.return_url = return_url;
-    if (show_saved_payment_methods) subscriptionPayload.show_saved_payment_methods = show_saved_payment_methods;
+    if (show_saved_payment_methods)
+      subscriptionPayload.show_saved_payment_methods =
+        show_saved_payment_methods;
     if (tax_id) subscriptionPayload.tax_id = tax_id;
-    if (trial_period_days) subscriptionPayload.trial_period_days = trial_period_days;
+    if (trial_period_days)
+      subscriptionPayload.trial_period_days = trial_period_days;
     let subscription;
     try {
-      subscription = await dodopayments.subscriptions.create(subscriptionPayload as any);
+      subscription = await dodopayments.subscriptions.create(
+        subscriptionPayload as any,
+      );
     } catch (err) {
       console.error("Error when creating subscription", err);
       throw new Error(err instanceof Error ? err.message : String(err));
     }
     if (!subscription || !subscription.payment_link) {
-      throw new Error("No payment link returned from Dodo Payments API (subscription). Make sure to set payment_link as true in payload");
+      throw new Error(
+        "No payment link returned from Dodo Payments API (subscription). Make sure to set payment_link as true in payload",
+      );
     }
     return subscription.payment_link;
   } else {
     // Use payments.create for one-time products
     let cart = product_cart;
     if (!cart && product_id) {
-      cart = [{ product_id: product_id, quantity: quantity ? Number(quantity) : 1 }];
+      cart = [
+        { product_id: product_id, quantity: quantity ? Number(quantity) : 1 },
+      ];
     }
-    if (!cart || cart.length === 0) throw new Error("Missing required field: product_cart or product_id");
+    if (!cart || cart.length === 0)
+      throw new Error("Missing required field: product_cart or product_id");
     const paymentPayload: any = {
       billing: billing as any,
       customer: customer as any,
@@ -284,11 +322,14 @@ export const buildCheckoutUrl = async ({
     };
     if (metadata) paymentPayload.metadata = metadata;
     if (payment_link) paymentPayload.payment_link = payment_link;
-    if (allowed_payment_method_types) paymentPayload.allowed_payment_method_types = allowed_payment_method_types;
+    if (allowed_payment_method_types)
+      paymentPayload.allowed_payment_method_types =
+        allowed_payment_method_types;
     if (billing_currency) paymentPayload.billing_currency = billing_currency;
     if (discount_code) paymentPayload.discount_code = discount_code;
     if (return_url) paymentPayload.return_url = return_url;
-    if (show_saved_payment_methods) paymentPayload.show_saved_payment_methods = show_saved_payment_methods;
+    if (show_saved_payment_methods)
+      paymentPayload.show_saved_payment_methods = show_saved_payment_methods;
     if (tax_id) paymentPayload.tax_id = tax_id;
 
     let payment;
@@ -299,7 +340,9 @@ export const buildCheckoutUrl = async ({
       throw new Error(err instanceof Error ? err.message : String(err));
     }
     if (!payment || !payment.payment_link) {
-      throw new Error("No payment link returned from Dodo Payments API. Make sure to set payment_link as true in payload.");
+      throw new Error(
+        "No payment link returned from Dodo Payments API. Make sure to set payment_link as true in payload.",
+      );
     }
     return payment.payment_link;
   }

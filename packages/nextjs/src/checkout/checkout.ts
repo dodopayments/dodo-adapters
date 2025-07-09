@@ -13,7 +13,9 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
     const queryParams = Object.fromEntries(searchParams);
 
     if (!queryParams.productId) {
-      return new NextResponse("Please provide productId query parameter", { status: 400 });
+      return new NextResponse("Please provide productId query parameter", {
+        status: 400,
+      });
     }
 
     const { success, data, error } = checkoutQuerySchema.safeParse(queryParams);

@@ -16,14 +16,16 @@ export const CustomerPortal = ({
     const { searchParams } = new URL(req.url);
     const customerId = searchParams.get("customer_id");
     const params = {
-      "send_email": false
-    }
+      send_email: false,
+    };
     const sendEmail = Boolean(searchParams.get("send_email"));
     if (sendEmail) {
-      params.send_email = sendEmail
+      params.send_email = sendEmail;
     }
     if (!customerId) {
-      return new NextResponse("Missing customerId in query parameters", { status: 400 });
+      return new NextResponse("Missing customerId in query parameters", {
+        status: 400,
+      });
     }
 
     const dodopayments = new DodoPayments({
@@ -32,9 +34,11 @@ export const CustomerPortal = ({
     });
 
     try {
-      const session =
-        await dodopayments.customers.customerPortal.create(customerId, params);
-        return NextResponse.redirect(session.link);
+      const session = await dodopayments.customers.customerPortal.create(
+        customerId,
+        params,
+      );
+      return NextResponse.redirect(session.link);
     } catch (error: any) {
       console.error("Error creating customer portal session:", error);
       return new NextResponse(
