@@ -28,9 +28,6 @@ jobs:
       - name: Build package
         run: npm run build
 
-      - name: Verify package
-        run: npm pack
-
       - name: Publish to NPM
         run: npm publish
         env:
