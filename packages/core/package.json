@@ -43,5 +43,20 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "keywords": [
+    "payments",
+    "dodo",
+    "core",
+    "webhooks",
+    "checkout",
+    "api",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dodo Payments",
+    "email": "support@dodopayments.com",
+    "url": "https://dodopayments.com"
+  },
+  "license": "Apache-2.0"
 }

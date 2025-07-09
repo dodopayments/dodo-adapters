@@ -21,6 +21,20 @@
   "dependencies": {
     "@dodopayments/core": "^0.1.2"
   },
+  "keywords": [
+    "payments",
+    "dodo",
+    "nextjs",
+    "webhooks",
+    "checkout",
+    "api",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dodo Payments",
+    "email": "support@dodopayments.com",
+    "url": "https://dodopayments.com"
+  },
   "devDependencies": {
     "@dodo/typescript-config": "*",
     "tsup": "^8.3.5"
