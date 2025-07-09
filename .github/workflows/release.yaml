@@ -1,34 +1,61 @@
-name: Publish Package to npmjs
-
+name: Release
 on:
-  push:
-    branches:
-      - main
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+  release:
+    types:
+      - published
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        node-version: [20]
+  release-core:
+    name: Release @dodopayments/core
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/core
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
-
       - name: Install dependencies
         run: npm ci
-
-      - name: Build package
+      - name: Build
         run: npm run build
-
+      - name: Verify package
+        run: npm pack
       - name: Publish to NPM
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
+
+  release-nextjs:
+    name: Release @dodopayments/nextjs
+    runs-on: ubuntu-latest
+    needs: release-core
+    defaults:
+      run:
+        working-directory: packages/nextjs
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Verify package
+        run: npm pack
+      - name: Publish to NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
