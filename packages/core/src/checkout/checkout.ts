@@ -4,7 +4,7 @@ import DodoPayments, { ClientOptions } from "dodopayments";
 export type CheckoutHandlerConfig = Pick<
   ClientOptions,
   "bearerToken" | "environment"
-> & { successUrl?: string; type?: "dynamic" | "static" };
+> & { returnUrl?: string; type?: "dynamic" | "static" };
 
 export const checkoutQuerySchema = z.object({
   productId: z.string(),
@@ -86,7 +86,7 @@ export const dynamicCheckoutBodySchema = z
 export const buildCheckoutUrl = async ({
   queryParams,
   body,
-  successUrl,
+  returnUrl,
   bearerToken,
   environment,
   type = "static",
@@ -159,7 +159,7 @@ export const buildCheckoutUrl = async ({
       `${environment === "test_mode" ? "https://test.checkout.dodopayments.com" : "https://checkout.dodopayments.com"}/buy/${productId}`,
     );
     url.searchParams.set("quantity", quantity ? String(quantity) : "1");
-    if (successUrl) url.searchParams.set("redirect_url", successUrl);
+    if (returnUrl) url.searchParams.set("redirect_url", returnUrl);
 
     // Customer/billing fields
     if (fullName) url.searchParams.set("fullName", String(fullName));
@@ -221,7 +221,6 @@ export const buildCheckoutUrl = async ({
     quantity,
     billing,
     customer,
-    discount_id,
     addons,
     metadata,
     allowed_payment_method_types,
@@ -229,7 +228,7 @@ export const buildCheckoutUrl = async ({
     discount_code,
     on_demand,
     payment_link,
-    return_url,
+    return_url: bodyReturnUrl,
     show_saved_payment_methods,
     tax_id,
     trial_period_days,
@@ -283,7 +282,12 @@ export const buildCheckoutUrl = async ({
       subscriptionPayload.billing_currency = billing_currency;
     if (on_demand) subscriptionPayload.on_demand = on_demand;
     if (payment_link) subscriptionPayload.payment_link = payment_link;
-    if (return_url) subscriptionPayload.return_url = return_url;
+    // Use bodyReturnUrl if present, otherwise use top-level returnUrl
+    if (bodyReturnUrl) {
+      subscriptionPayload.return_url = bodyReturnUrl;
+    } else if (returnUrl) {
+      subscriptionPayload.return_url = returnUrl;
+    }
     if (show_saved_payment_methods)
       subscriptionPayload.show_saved_payment_methods =
         show_saved_payment_methods;
@@ -327,7 +331,12 @@ export const buildCheckoutUrl = async ({
         allowed_payment_method_types;
     if (billing_currency) paymentPayload.billing_currency = billing_currency;
     if (discount_code) paymentPayload.discount_code = discount_code;
-    if (return_url) paymentPayload.return_url = return_url;
+    // Use bodyReturnUrl if present, otherwise use top-level returnUrl
+    if (bodyReturnUrl) {
+      paymentPayload.return_url = bodyReturnUrl;
+    } else if (returnUrl) {
+      paymentPayload.return_url = returnUrl;
+    }
     if (show_saved_payment_methods)
       paymentPayload.show_saved_payment_methods = show_saved_payment_methods;
     if (tax_id) paymentPayload.tax_id = tax_id;
