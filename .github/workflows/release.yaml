@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
       - name: Install dependencies
@@ -25,7 +25,7 @@ jobs:
       - name: Verify package
         run: npm pack
         working-directory: packages/core
-        
+
       - name: Check if core version already published
         id: check_core_version
         run: |
@@ -59,7 +59,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
       - name: Install dependencies
