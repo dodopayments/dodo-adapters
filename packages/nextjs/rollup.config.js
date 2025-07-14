@@ -1,11 +1,11 @@
-import typescript from '@rollup/plugin-typescript';
-import nodeResolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import dts from 'rollup-plugin-dts';
-import { execSync } from 'child_process';
-import fs from 'fs';
+import typescript from "@rollup/plugin-typescript";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import dts from "rollup-plugin-dts";
+import { execSync } from "child_process";
+import fs from "fs";
 
-const distDir = 'dist';
+const distDir = "dist";
 
 // Clean dist directory before build
 if (fs.existsSync(distDir)) {
@@ -15,40 +15,38 @@ if (fs.existsSync(distDir)) {
 const config = [
   // JS Bundles (ESM and CJS)
   {
-    input: 'src/index.ts',
+    input: "src/index.ts",
     output: [
       {
-        file: 'dist/index.js',
-        format: 'esm',
+        file: "dist/index.js",
+        format: "esm",
         sourcemap: true,
       },
       {
-        file: 'dist/index.cjs',
-        format: 'cjs',
+        file: "dist/index.cjs",
+        format: "cjs",
         sourcemap: true,
-        exports: 'named',
+        exports: "named",
       },
     ],
     plugins: [
       nodeResolve(),
       commonjs(),
       typescript({
-        tsconfig: './tsconfig.json',
+        tsconfig: "./tsconfig.json",
         declaration: true,
-        declarationDir: 'dist',
+        declarationDir: "dist",
         emitDeclarationOnly: false,
       }),
     ],
-    external: [
-      'next', 'zod', '@dodopayments/core'
-    ],
+    external: ["next", "zod", "@dodopayments/core"],
   },
   // Type Declarations
   {
-    input: 'dist/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'es' }],
+    input: "dist/index.d.ts",
+    output: [{ file: "dist/index.d.ts", format: "es" }],
     plugins: [dts()],
   },
 ];
 
-export default config; 
+export default config;
