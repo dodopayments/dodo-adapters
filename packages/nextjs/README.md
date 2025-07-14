@@ -1,10 +1,12 @@
 # `@dodopayments/nextjs`
 
-> **AI Agent Integration Guide:** See the AI Agent Prompt section below for detailed instructions and guidance for AI assistants.
 
 A typescript library that exports Handlers for Checkout, Customer Portal, and Webhook routes for easy integration with your Next.js app.
 
+> **AI Agent Integration Guide:** See the AI Agent Prompt section below for detailed instructions and guidance for AI assistants.
+
 ## Documentation
+
 Detailed documentation can be found at [Dodo Payments NextJS adaptor](https://docs.dodopayments.com/developer-resources/nextjs-adaptor)
 
 ## Installation
@@ -31,9 +33,7 @@ export const GET = Checkout({
   environment: "test_mode",
   type: "static", // explicitly specify type (optional, defaults to 'static')
 });
-
 ```
-
 
 ---
 
