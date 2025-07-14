@@ -5,7 +5,13 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.4",
     "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.45.0",
+    "rollup-plugin-dts": "^6.2.1",
     "tsup": "^8.5.0",
     "turbo": "^2.0.0",
     "typescript": "^5.0.0"

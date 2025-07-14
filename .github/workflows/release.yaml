@@ -25,9 +25,26 @@ jobs:
       - name: Verify package
         run: npm pack
         working-directory: packages/core
-      - name: Publish to NPM
+        
+      - name: Check if core version already published
+        id: check_core_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view @dodopayments/core@$VERSION version || echo "none")
+          echo "Core version in package.json: $VERSION"
+          echo "Published version on npm: $PUBLISHED"
+
+          if [ "$VERSION" = "$PUBLISHED" ]; then
+            echo "Core package already published. Skipping publish step."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Core package not yet published. Will publish."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish core to NPM
+        if: steps.check_core_version.outputs.skip == 'false'
         run: npm publish --access public
-        working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
