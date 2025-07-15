@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/core",
-  "version": "0.1.9",
+  "version": "0.1.12",
   "publishConfig": {
     "access": "public"
   },
