@@ -50,8 +50,6 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
-      - name: Remove node modules
-        run: rm -rf node_modules
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
