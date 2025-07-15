@@ -50,6 +50,15 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
+      - name: Remove node modules
+        run: rm -rf node_modules
+      - name: Install dependencies
+        run: npm install
+      - name: Install dependency - Rollup
+        run: npm install -D @rollup/rollup-linux-x64-gnu
+      - name: Build
+        run: npm run build
+        working-directory: packages/nextjs
       - name: Verify package
         run: npm pack
         working-directory: packages/nextjs
