@@ -18,6 +18,8 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
+      - name: Remove node modules
+        run: rm -rf node_modules
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -29,7 +31,6 @@ jobs:
         working-directory: packages/core
 
       - name: Publish core to NPM
-        if: steps.check_core_version.outputs.skip == 'false'
         run: npm publish --access public
         working-directory: packages/core
         env:
