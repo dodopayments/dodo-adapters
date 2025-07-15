@@ -26,11 +26,27 @@ jobs:
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build
         run: npm run build
+        working-directory: packages/core
       - name: Verify package
         run: npm pack
         working-directory: packages/core
 
+      - name: Check if version is newer
+        id: version_check_core
+        working-directory: packages/core
+        run: |
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view @dodopayments/core version || echo "0.0.0")
+          echo "Local version: $LOCAL_VERSION"
+          echo "Published version: $PUBLISHED_VERSION"
+          if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" = "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Publish core to NPM
+        if: steps.version_check_core.outputs.should_publish == 'true'
         run: npm publish --access public
         working-directory: packages/core
         env:
@@ -60,7 +76,23 @@ jobs:
       - name: Verify package
         run: npm pack
         working-directory: packages/nextjs
+
+      - name: Check if version is newer
+        id: version_check_nextjs
+        working-directory: packages/nextjs
+        run: |
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view @dodopayments/nextjs version || echo "0.0.0")
+          echo "Local version: $LOCAL_VERSION"
+          echo "Published version: $PUBLISHED_VERSION"
+          if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" = "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Publish to NPM
+        if: steps.version_check_nextjs.outputs.should_publish == 'true'
         run: npm publish --access public
         working-directory: packages/nextjs
         env:
