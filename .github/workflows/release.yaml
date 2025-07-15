@@ -70,6 +70,9 @@ jobs:
         run: npm install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
+      - name: Build core (ensure up-to-date)
+        run: npm run build
+        working-directory: packages/core
       - name: Build
         run: npm run build
         working-directory: packages/nextjs
