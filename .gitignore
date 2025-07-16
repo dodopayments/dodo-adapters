@@ -47,3 +47,5 @@ yarn-error.log*
 **/test-results
 
 tsconfig.tsbuildinfo
+
+.serena

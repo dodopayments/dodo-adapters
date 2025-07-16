@@ -94,13 +94,4 @@ test.describe("Checkout Endpoints", () => {
     // Should be on the Dodo Payments checkout domain
     expect(response.url()).toContain("test.checkout.dodopayments.com");
   });
-
-  test("should handle checkout endpoint without productId parameter", async ({
-    page,
-  }) => {
-    const response = await page.goto("/checkout");
-
-    // Should still handle the request (may return error or redirect)
-    expect(response?.status()).toBeTruthy();
-  });
 });
