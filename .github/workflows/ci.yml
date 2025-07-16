@@ -25,17 +25,28 @@ jobs:
       - name: Install dependencies
         run: rm -rf node_modules package-lock.json && npm install
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-        working-directory: examples/nextjs-basic
-
       - name: Run CI checks
         run: npm run ci
+  test:
+    name: Playwright Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: rm -rf node_modules package-lock.json && npm install
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: "npm run test:e2e"
+    - name: Upload Playwright Report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: nextjs-example/playwright-report
+        path: examples/nextjs-basic/playwright-report/
+        retention-days: 30
 
-      - name: Upload Playwright Report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: nextjs-example/playwright-report
-          path: examples/nextjs-basic/playwright-report/
-          retention-days: 30

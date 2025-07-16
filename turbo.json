@@ -13,6 +13,9 @@
     "test": {
       "dependsOn": ["^test"]
     },
+    "test:e2e": {
+      "dependsOn": ["^test:e2e", "build"]
+    },
     "format": {
       "dependsOn": ["^format"]
     },
@@ -20,10 +23,7 @@
       "dependsOn": ["^check-format"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
-    },
-    "@dodopayments/nextjs-basic": {
-      "dependsOn": ["@dodopayments/nextjs#build"]
+      "dependsOn": ["build", "^check-types"]
     },
     "ci": {
       "dependsOn": ["check-format", "check-types", "build", "test"]

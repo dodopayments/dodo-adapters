@@ -10,7 +10,8 @@
     "check-types": "tsc --noEmit",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "test": "playwright test",
+    "test": "echo 'No unit tests defined yet'",
+    "test:e2e": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed"
   },
