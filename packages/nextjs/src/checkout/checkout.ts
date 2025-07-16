@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { redirect } from "next/navigation";
 import {
   buildCheckoutUrl,
   CheckoutHandlerConfig,
@@ -39,7 +38,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       return new NextResponse(error.message, { status: 400 });
     }
 
-    redirect(url);
+    return NextResponse.redirect(url);
   };
 
   const postHandler = async (req: NextRequest) => {
@@ -64,7 +63,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
     } catch (error: any) {
       return new NextResponse(error.message, { status: 400 });
     }
-    redirect(url);
+    return NextResponse.redirect(url);
   };
 
   return (req: NextRequest) => {
