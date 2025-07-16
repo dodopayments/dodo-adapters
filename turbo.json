@@ -22,6 +22,9 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
+    "@dodopayments/nextjs-basic": {
+      "dependsOn": ["@dodopayments/nextjs#build"]
+    },
     "ci": {
       "dependsOn": ["check-format", "check-types", "build", "test"]
     }
