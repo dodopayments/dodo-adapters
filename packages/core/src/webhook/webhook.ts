@@ -4,6 +4,9 @@ import {
   Resolve,
 } from "../types/webhook";
 
+// Re-export types for external use
+export type { WebhookEventHandlers, WebhookPayload } from "../types/webhook";
+
 export type WebhookHandlerConfig = Resolve<
   {
     webhookKey: string;
