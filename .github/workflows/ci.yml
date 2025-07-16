@@ -25,5 +25,17 @@ jobs:
       - name: Install dependencies
         run: rm -rf node_modules package-lock.json && npm install
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        working-directory: examples/nextjs-basic
+
       - name: Run CI checks
         run: npm run ci
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nextjs-example/playwright-report
+          path: examples/nextjs-basic/playwright-report/
+          retention-days: 30
