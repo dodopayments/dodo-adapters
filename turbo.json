@@ -20,7 +20,7 @@
       "dependsOn": ["^check-format"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^check-types", "build"]
     },
     "ci": {
       "dependsOn": ["check-format", "check-types", "build", "test"]
