@@ -14,7 +14,8 @@
       "dependsOn": ["^test"]
     },
     "test:e2e": {
-      "dependsOn": ["^test:e2e", "build"]
+      "dependsOn": ["^test:e2e", "build"],
+      "passThroughEnv": ["DODO_PAYMENTS_API_KEY"]
     },
     "format": {
       "dependsOn": ["^format"]

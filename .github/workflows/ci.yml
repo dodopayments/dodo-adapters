@@ -29,8 +29,6 @@ jobs:
     name: Playwright Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    env:
-      DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -41,12 +39,14 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
+      env:
+        DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
       run: "npm run test:e2e"
     - name: Upload Playwright Report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: nextjs-example/playwright-report
+        name: nextjs-example-playwright-report
         path: examples/nextjs-basic/playwright-report/
         retention-days: 30
 
