@@ -10,6 +10,8 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    env:
+      DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

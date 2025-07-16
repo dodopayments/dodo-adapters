@@ -2,7 +2,8 @@
   "name": "dodo-adapters",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
