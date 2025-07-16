@@ -13,6 +13,10 @@
     "test": {
       "dependsOn": ["^test"]
     },
+    "test:e2e": {
+      "dependsOn": ["^test:e2e", "build"],
+      "passThroughEnv": ["DODO_PAYMENTS_API_KEY"]
+    },
     "format": {
       "dependsOn": ["^format"]
     },
@@ -20,7 +24,7 @@
       "dependsOn": ["^check-format"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["build", "^check-types"]
     },
     "ci": {
       "dependsOn": ["check-format", "check-types", "build", "test"]
