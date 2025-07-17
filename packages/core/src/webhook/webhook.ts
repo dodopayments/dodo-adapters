@@ -2,7 +2,12 @@ import {
   WebhookEventHandlers,
   WebhookPayload,
   Resolve,
+  WebhookPayloadSchema,
 } from "../schemas/webhook";
+import {
+  Webhook as StandardWebhook,
+  WebhookVerificationError,
+} from "standardwebhooks";
 
 export type WebhookHandlerConfig = Resolve<
   {
@@ -112,4 +117,38 @@ export const handleWebhookPayload = async (
   if (payload.type === "license_key.created" && config.onLicenseKeyCreated) {
     await config.onLicenseKeyCreated(payload);
   }
+};
+
+export const verifyWebhookPayload = async ({
+  webhookKey,
+  headers,
+  body,
+}: {
+  webhookKey: string;
+  headers: Record<string, string>;
+  body: string;
+}): Promise<WebhookPayload> => {
+  const standardWebhook = new StandardWebhook(webhookKey);
+
+  try {
+    standardWebhook.verify(body, headers);
+  } catch (e) {
+    if (e instanceof WebhookVerificationError) {
+      throw new Error(e.message);
+    }
+
+    throw e;
+  }
+
+  const {
+    success,
+    data: payload,
+    error,
+  } = WebhookPayloadSchema.safeParse(JSON.parse(body));
+
+  if (!success) {
+    throw new Error(error.message);
+  }
+
+  return payload;
 };

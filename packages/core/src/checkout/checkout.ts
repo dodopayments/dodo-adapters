@@ -92,7 +92,7 @@ export const buildCheckoutUrl = async ({
   type = "static",
 }: CheckoutHandlerConfig & {
   queryParams?: z.infer<typeof checkoutQuerySchema>;
-  body?: Record<string, unknown>;
+  body?: z.infer<typeof dynamicCheckoutBodySchema>;
 }) => {
   // For dynamic, use body; for static, use queryParams
   const inputData = type === "dynamic" ? body : queryParams;
