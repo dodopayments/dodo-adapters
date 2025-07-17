@@ -5,7 +5,6 @@ import { z } from "zod";
 import type { Product } from "../types";
 import {
   buildCheckoutUrl,
-  checkoutQuerySchema,
   dynamicCheckoutBodySchema,
 } from "@dodopayments/core/checkout";
 
@@ -116,96 +115,6 @@ export const checkout =
 
             throw new APIError("INTERNAL_SERVER_ERROR", {
               message: "Checkout creation failed",
-            });
-          }
-        },
-      ),
-      checkoutRedirect: createAuthEndpoint(
-        "/checkout/static",
-        {
-          method: "GET",
-          query: checkoutQuerySchema
-            .extend({
-              slug: z.string().optional(),
-              referenceId: z.string().optional(),
-            })
-            .partial({
-              productId: true,
-            })
-            .superRefine((obj, ctx) => {
-              for (const key of Object.keys(obj)) {
-                if (key.startsWith("metadata_")) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: `Invalid key: ${key}`,
-                    path: [key],
-                  });
-                }
-              }
-            }),
-        },
-        async (ctx) => {
-          const session = await getSessionFromCtx(ctx);
-          let dodoPaymentsProductId: string | undefined;
-
-          if (checkoutOptions.authenticatedUsersOnly && !session?.user.id) {
-            throw new APIError("UNAUTHORIZED", {
-              message: "You must be logged in to checkout",
-            });
-          }
-
-          if (ctx.query.slug) {
-            const resolvedProducts = await (typeof checkoutOptions.products ===
-            "function"
-              ? checkoutOptions.products()
-              : checkoutOptions.products);
-
-            const productId = resolvedProducts?.find(
-              (product) => product.slug === ctx.query.slug,
-            )?.productId;
-
-            if (!productId) {
-              throw new APIError("BAD_REQUEST", {
-                message: "Product not found",
-              });
-            }
-
-            dodoPaymentsProductId = productId;
-          } else {
-            dodoPaymentsProductId = ctx.query.productId;
-          }
-
-          if (!dodoPaymentsProductId) {
-            throw new APIError("BAD_REQUEST", {
-              message: "productId or slug not provided",
-            });
-          }
-
-          try {
-            const checkoutUrl = await buildCheckoutUrl({
-              queryParams: {
-                ...ctx.query,
-                productId: dodoPaymentsProductId,
-                // @ts-ignore
-                metadata_referenceId: ctx.query.referenceId,
-              },
-              bearerToken: dodopayments.bearerToken,
-              environment: dodopayments.baseURL.includes("test")
-                ? "test_mode"
-                : "live_mode",
-              type: "static",
-            });
-
-            return ctx.redirect(checkoutUrl);
-          } catch (e: unknown) {
-            if (e instanceof Error) {
-              ctx.context.logger.error(
-                `Checkout redirect handling failed. Error: ${e.message}`,
-              );
-            }
-
-            throw new APIError("INTERNAL_SERVER_ERROR", {
-              message: "Checkout redirect handling failed",
             });
           }
         },

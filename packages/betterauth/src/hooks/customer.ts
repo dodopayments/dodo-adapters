@@ -22,8 +22,9 @@ export const onUserCreate =
             );
           }
         } else {
-          // TODO: Add metadata to via getCustomerCreateParams option
-          // when it becomes available in the API
+          // TODO: Add metadata to customer object via
+          // getCustomerCreateParams option when it becomes
+          // available in the API
           await options.client.customers.create({
             email: user.email,
             name: user.name,
@@ -54,6 +55,9 @@ export const onUserUpdate =
         const existingCustomer = customers.items[0];
 
         if (existingCustomer) {
+          // TODO: Add metadata to customer object via
+          // getCustomerCreateParams option when it becomes
+          // available in the API
           await options.client.customers.update(existingCustomer.customer_id, {
             name: user.name,
           });

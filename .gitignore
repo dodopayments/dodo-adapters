@@ -50,4 +50,5 @@ tsconfig.tsbuildinfo
 
 .serena
 
-**/*.sqlite
+examples/**/*.sqlite
+packages/**/*.sqlite

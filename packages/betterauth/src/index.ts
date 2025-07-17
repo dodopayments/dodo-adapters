@@ -8,7 +8,7 @@ export * from "./plugins/portal";
 export * from "./plugins/checkout";
 export * from "./plugins/webhooks";
 
-export const dodopayments = <O extends DodoPaymentsOptions>(options: O) => {
+export const dodopayments = (options: DodoPaymentsOptions) => {
   const plugins = options.use
     .map((use) => use(options.client))
     .reduce((acc, plugin) => {
