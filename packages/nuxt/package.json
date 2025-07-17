@@ -1,0 +1,55 @@
+{
+  "name": "@dodopayments/nuxt",
+  "version": "0.1.0",
+  "description": "Dodo Payments Nuxt integration",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/module.js",
+  "exports": {
+    ".": {
+      "import": "./dist/module.js",
+      "types": "./dist/module.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "dependencies": {
+    "@dodopayments/core": "^0.1.13"
+  },
+  "devDependencies": {
+    "rollup": "^4.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "rimraf": "^5.0.0"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.1",
+    "zod": "^3.25.74"
+  },
+  "keywords": [
+    "payments",
+    "dodo",
+    "nuxt",
+    "webhooks",
+    "checkout",
+    "api",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dodo Payments",
+    "email": "support@dodopayments.com",
+    "url": "https://dodopayments.com"
+  },
+  "license": "Apache-2.0"
+}
