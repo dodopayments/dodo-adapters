@@ -1,4 +1,4 @@
-import type DodoPayments from "dodopayments";
+import type { DodoPayments } from "dodopayments";
 import { APIError } from "better-auth/api";
 import { sessionMiddleware } from "better-auth/api";
 import { createAuthEndpoint } from "better-auth/plugins";
@@ -20,24 +20,14 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          // Find customer by email
           const customers = await dodopayments.customers.list({
             email: ctx.context.session?.user.email,
           });
+          const customer = customers.items[0];
 
-          const customer = customers.items?.[0];
-
-          if (!customer) {
-            throw new APIError("BAD_REQUEST", {
-              message: "Customer not found",
-            });
-          }
-
-          // Create customer portal session
           const customerSession =
             await dodopayments.customers.customerPortal.create(
               customer.customer_id,
-              {},
             );
 
           return ctx.json({
@@ -47,7 +37,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
         } catch (e: unknown) {
           if (e instanceof Error) {
             ctx.context.logger.error(
-              `Dodo Payments customer portal creation failed. Error: ${e.message}`,
+              `DodoPayments customer portal creation failed. Error: ${e.message}`,
             );
           }
 
@@ -65,7 +55,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
           .object({
             page: z.coerce.number().optional(),
             limit: z.coerce.number().optional(),
-            status: z.enum(["active", "cancelled", "expired"]).optional(),
+            active: z.coerce.boolean().optional(),
           })
           .optional(),
         use: [sessionMiddleware],
@@ -78,33 +68,28 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          // Find customer by email
           const customers = await dodopayments.customers.list({
             email: ctx.context.session?.user.email,
           });
-
-          const customer = customers.items?.[0];
-
-          if (!customer) {
-            throw new APIError("BAD_REQUEST", {
-              message: "Customer not found",
-            });
-          }
+          const customer = customers.items[0];
 
           const subscriptions = await dodopayments.subscriptions.list({
             customer_id: customer.customer_id,
+            page_number: ctx.query?.page,
+            page_size: ctx.query?.limit,
+            status: ctx.query?.active ? "active" : undefined,
           });
 
           return ctx.json(subscriptions);
         } catch (e: unknown) {
           if (e instanceof Error) {
             ctx.context.logger.error(
-              `Dodo Payments subscriptions list failed. Error: ${e.message}`,
+              `DodoPayments subscriptions list failed. Error: ${e.message}`,
             );
           }
 
           throw new APIError("INTERNAL_SERVER_ERROR", {
-            message: "Subscriptions list failed",
+            message: "DodoPayments subscriptions list failed",
           });
         }
       },
@@ -117,6 +102,21 @@ export const portal = () => (dodopayments: DodoPayments) => {
           .object({
             page: z.coerce.number().optional(),
             limit: z.coerce.number().optional(),
+            status: z
+              .enum([
+                "succeeded",
+                "failed",
+                "cancelled",
+                "processing",
+                "requires_customer_action",
+                "requires_merchant_action",
+                "requires_payment_method",
+                "requires_confirmation",
+                "requires_capture",
+                "partially_captured",
+                "partially_captured_and_capturable",
+              ])
+              .optional(),
           })
           .optional(),
         use: [sessionMiddleware],
@@ -129,33 +129,28 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          // Find customer by email
           const customers = await dodopayments.customers.list({
             email: ctx.context.session?.user.email,
           });
-
-          const customer = customers.items?.[0];
-
-          if (!customer) {
-            throw new APIError("BAD_REQUEST", {
-              message: "Customer not found",
-            });
-          }
+          const customer = customers.items[0];
 
           const payments = await dodopayments.payments.list({
             customer_id: customer.customer_id,
+            page_number: ctx.query?.page,
+            page_size: ctx.query?.limit,
+            status: ctx.query?.status,
           });
 
           return ctx.json(payments);
         } catch (e: unknown) {
           if (e instanceof Error) {
             ctx.context.logger.error(
-              `Dodo Payments payments list failed. Error: ${e.message}`,
+              `DodoPayments orders list failed. Error: ${e.message}`,
             );
           }
 
           throw new APIError("INTERNAL_SERVER_ERROR", {
-            message: "Payments list failed",
+            message: "Orders list failed",
           });
         }
       },

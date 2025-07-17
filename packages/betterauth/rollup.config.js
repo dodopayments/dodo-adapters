@@ -21,14 +21,12 @@ const config = [
         file: "dist/index.js",
         format: "esm",
         sourcemap: true,
-        inlineDynamicImports: true,
       },
       {
         file: "dist/index.cjs",
         format: "cjs",
         sourcemap: true,
         exports: "named",
-        inlineDynamicImports: true,
       },
     ],
     plugins: [
@@ -41,15 +39,7 @@ const config = [
         emitDeclarationOnly: false,
       }),
     ],
-    external: [
-      "better-auth",
-      "better-auth/api",
-      "better-auth/plugins",
-      "dodopayments",
-      "zod",
-      "@dodopayments/core",
-      "standardwebhooks",
-    ],
+    external: ["next", "zod", "@dodopayments/core"],
   },
   // Type Declarations
   {

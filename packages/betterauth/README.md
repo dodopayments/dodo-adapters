@@ -1,174 +1,145 @@
 # @dodopayments/betterauth
 
-A [Better Auth](https://github.com/better-auth/better-auth) plugin for integrating [Dodo Payments](https://dodopayments.com) payments and subscriptions into your authentication flow.
+The official Dodo Payments adapter for `better-auth`.
 
-## Features
-
-- Checkout Integration
-- Customer Portal
-- Automatic Customer creation on signup
-- Usage-based billing support
-- Secure webhook handling
+This adapter provides a seamless integration between Dodo Payments and `better-auth`, allowing you to easily add payment functionalities to your application.
 
 ## Installation
 
 ```bash
-pnpm add better-auth @dodopayments/betterauth dodopayments
+npm install @dodopayments/betterauth dodopayments better-auth zod
 ```
 
-## Preparation
+## Usage
 
-Get your Dodo Payments API key and add it to your environment:
+To get started, you need to initialize the `dodopayments` plugin and add it to your `better-auth` configuration.
 
-```bash
-# .env
-DODO_PAYMENTS_API_KEY=...
-```
-
-## Configuring BetterAuth Server
-
-The Dodo Payments plugin comes with several plugins for checkout, portal, usage, and webhooks.
+### Initialization
 
 ```typescript
-import { betterAuth } from "better-auth";
-import {
-  dodopayments,
-  checkout,
-  portal,
-  usage,
-  webhooks,
-} from "@dodopayments/betterauth";
+// src/lib/auth.ts
+import { BetterAuth } from "better-auth";
+import { dodopayments, checkout, portal, webhooks } from "@dodopayments/betterauth";
 import DodoPayments from "dodopayments";
 
-const dodoClient = new DodoPayments({
-  apiKey: process.env.DODO_PAYMENTS_API_KEY!,
-  // ...other config options
+// First, create a `DodoPayments` client instance:
+export const dodoPayments = new DodoPayments({
+  // Can be omitted if DODO_PAYMENTS_API_KEY is set in
+  // environment
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  // can be omitted for "live_mode"
+  environment: "test_mode",
 });
 
-const auth = betterAuth({
-  // ... Better Auth config
+// Configure the `dodopayments` adapter in your `better-auth` setup:
+export const { auth, endpoints, client } = BetterAuth({
   plugins: [
     dodopayments({
-      client: dodoClient,
+      client: new DodoPayments({
+      }),
       createCustomerOnSignUp: true,
       use: [
         checkout({
+          // This can also be an async function if you want to 
+          // dynamically provide these
           products: [
             {
-              productId: "prod_123", // Dodo Payments Product ID
-              slug: "pro", // Custom slug for easy reference
-            },
+              // ID of the product from the Dodo Payments
+              // api/dashboard
+              productId: "pdt_xxxxxxxxxxxxxxxxxxxxx",
+              // an alias for the product, can be used for checkout
+              // by passing the 'slug' parameter to the checkout
+              // endpoint
+              slug: "product-name"
+            }
           ],
-          successUrl: "/success?checkout_id={CHECKOUT_ID}",
+          successUrl: "/success",
+          // require users to be signed in to use checkout
+          // default is false
           authenticatedUsersOnly: true,
         }),
         portal(),
-        usage(),
         webhooks({
-          secret: process.env.DODO_WEBHOOK_SECRET,
-          // Add webhook handlers as needed
+          webhookKey: process.env.DODO_WEBHOOK_SECRET!,
+          // handle the payload here
+          onPayload: async (payload) => {}
+          // or use on of the granular payload handlers
+          onPaymentSucceeded: async (payload) => {}
         }),
       ],
     }),
+    // ... other plugins
   ],
 });
 ```
 
-## Configuring BetterAuth Client
+### Endpoints
 
-Use the BetterAuth client to interact with Dodo Payments features.
+This adapter creates the following endpoints. The base path for these endpoints is determined by the location of your `better-auth` configuration file. For example, if your configuration is in `app/api/auth/[...all].ts`, the endpoints will be prefixed with `/api/auth`.
 
-```typescript
-import { createAuthClient } from "better-auth/react";
-import { dodoClient } from "@dodopayments/betterauth";
-
-export const authClient = createAuthClient({
-  plugins: [dodoClient()],
-});
-```
-
-## Configuration Options
-
-```typescript
-import {
-  dodopayments,
-  checkout,
-  portal,
-  usage,
-  webhooks,
-} from "@dodopayments/betterauth";
-import DodoPayments from "dodopayments";
-
-const dodoClient = new DodoPayments({
-  apiKey: process.env.DODO_PAYMENTS_API_KEY!,
-});
-
-const auth = betterAuth({
-  plugins: [
-    dodopayments({
-      client: dodoClient,
-      createCustomerOnSignUp: true,
-      getCustomerCreateParams: ({ user }, request) => ({
-        metadata: {
-          customField: "value",
-        },
-      }),
-      use: [
-        // Add Dodo Payments plugins here
-      ],
-    }),
-  ],
-});
-```
-
-### Required Options
-
-- `client`: DodoPayments client instance
-
-### Optional Options
-
-- `createCustomerOnSignUp`: Automatically create a Dodo Payments customer when a user signs up
-- `getCustomerCreateParams`: Custom function to provide additional customer creation metadata
+-   **POST** `/checkout`
+-   **GET** `/checkout/static`
+-   **GET** `/customer/portal`
+-   **GET** `/customer/subscriptions/list`
+-   **GET** `/customer/payments/list`
+-   **POST** `/webhooks/dodopayments`
 
 ## Plugins
 
 ### Checkout
 
-```typescript
-checkout({
-  products: [{ productId: "prod_123", slug: "pro" }],
-  successUrl: "/success?checkout_id={CHECKOUT_ID}",
-  authenticatedUsersOnly: true,
-});
-```
+The `checkout` plugin provides endpoints for creating dynamic and static checkouts.
+
+#### Options
+
+-   `products`: An array of products or a function that returns an array of products. This allows you to use slugs instead of product IDs.
+-   `successUrl`: The URL to redirect to after a successful checkout.
+-   `authenticatedUsersOnly`: A boolean to restrict checkout to authenticated users.
 
 ### Portal
 
-```typescript
-portal();
-```
-
-### Usage
-
-```typescript
-usage();
-```
+The `portal` plugin provides endpoints for managing customer portals and viewing subscriptions and payments.
 
 ### Webhooks
 
+The `webhooks` plugin handles incoming webhooks from Dodo Payments. You need to provide a `webhookKey` for signature verification and can define handlers for different webhook events.
+
+#### Options
+
+-   `webhookKey`: Your Dodo Payments webhook secret.
+-   `onPaymentSuccess`: Handler for the `payment.succeeded` event.
+-   `onSubscriptionCreated`: Handler for the `subscription.created` event.
+-   ... and more.
+
+## Automatic Customer Creation
+
+By setting `createCustomerOnSignUp: true`, a new Dodo Payments customer will be created automatically whenever a new user signs up in your application.
+
+## Client-side Usage
+
+You can use the `dodopaymentsClient` to interact with the endpoints from the client-side.
+
+First, initialize the client:
+
 ```typescript
-webhooks({
-  secret: process.env.DODO_WEBHOOK_SECRET,
-  // Add webhook handlers as needed
+// src/lib/client.ts
+import { createAuthClient } from "better-auth/client";
+import { dodopaymentsClient } from "@dodopayments/betterauth";
+
+export const authClient = createAuthClient({
+  plugins: [dodopaymentsClient()],
 });
 ```
 
-## Example Usage
+Now you can call the endpoints:
 
-- Use `authClient.checkout(...)` to start a checkout session
-- Use `authClient.customer.portal()` to redirect to the customer portal
-- Use `authClient.usage.list()` to list usage events
+```typescript
+// Example: Creating a checkout
+const checkout = await client.dodopayments.checkout.mutate({
+  slug: "my-product-slug",
+});
 
----
-
-For more details, see the Better Auth and Dodo Payments documentation.
+if (checkout.redirect) {
+  window.location.href = checkout.url;
+}
+``` 

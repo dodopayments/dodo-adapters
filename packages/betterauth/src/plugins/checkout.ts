@@ -1,13 +1,13 @@
 import type DodoPayments from "dodopayments";
 import { APIError, getSessionFromCtx } from "better-auth/api";
 import { createAuthEndpoint } from "better-auth/plugins";
+import { z } from "zod";
+import type { Product } from "../types";
 import {
-  dynamicCheckoutBodySchema,
   buildCheckoutUrl,
   checkoutQuerySchema,
+  dynamicCheckoutBodySchema,
 } from "@dodopayments/core/checkout";
-import type { Product } from "../types";
-import { z } from "zod";
 
 export interface CheckoutOptions {
   /**
@@ -24,14 +24,6 @@ export interface CheckoutOptions {
   authenticatedUsersOnly?: boolean;
 }
 
-// Create betterauth-specific schema that extends the core schema
-const betterAuthCheckoutSchema = dynamicCheckoutBodySchema.extend({
-  // Add betterauth-specific fields
-  slug: z.string().optional(),
-  products: z.array(z.string()).optional(),
-  referenceId: z.string().optional(),
-});
-
 export const checkout =
   (checkoutOptions: CheckoutOptions = {}) =>
   (dodopayments: DodoPayments) => {
@@ -40,16 +32,17 @@ export const checkout =
         "/checkout",
         {
           method: "POST",
-          body: betterAuthCheckoutSchema,
+          body: dynamicCheckoutBodySchema.extend({
+            slug: z.string().optional(),
+            referenceId: z.string().optional(),
+          }),
         },
         async (ctx) => {
           const session = await getSessionFromCtx(ctx);
 
-          // Handle POST request - dynamic checkout using buildCheckoutUrl
-          let productIds: string[] = [];
-          let productCart: Array<{ product_id: string; quantity: number }> = [];
+          let dodoPaymentsProductId: string | undefined;
 
-          if (ctx.body.slug) {
+          if (ctx.body?.slug) {
             const resolvedProducts = await (typeof checkoutOptions.products ===
             "function"
               ? checkoutOptions.products()
@@ -65,20 +58,9 @@ export const checkout =
               });
             }
 
-            productCart = [{ product_id: productId, quantity: 1 }];
-          } else if (ctx.body.products) {
-            productIds = Array.isArray(ctx.body.products)
-              ? ctx.body.products.filter(
-                  (id) => typeof id === "string" && id !== undefined,
-                )
-              : [ctx.body.products].filter(
-                  (id) => typeof id === "string" && id !== undefined,
-                );
-
-            productCart = productIds.map((id) => ({
-              product_id: id,
-              quantity: 1,
-            }));
+            dodoPaymentsProductId = productId;
+          } else {
+            dodoPaymentsProductId = ctx.body.product_id;
           }
 
           if (checkoutOptions.authenticatedUsersOnly && !session?.user.id) {
@@ -87,102 +69,48 @@ export const checkout =
             });
           }
 
-          if (productCart.length === 0) {
-            throw new APIError("BAD_REQUEST", {
-              message: "No products specified for checkout",
-            });
-          }
-
           try {
-            // Prepare dynamic checkout body data
-            const checkoutData: any = {
-              product_cart: productCart,
-              payment_link: true, // Always generate payment link
-            };
-
-            // Add customer info - required by API
-            if (session?.user.id) {
-              // For authenticated users, find or create customer by email
-              try {
-                const customers = await dodopayments.customers.list({
-                  email: session.user.email,
-                });
-
-                let customer = customers.items?.[0];
-
-                if (!customer) {
-                  // Create customer if doesn't exist
-                  customer = await dodopayments.customers.create({
-                    email: session.user.email,
-                    name: session.user.name,
-                  });
-                }
-
-                checkoutData.customer = { customer_id: customer.customer_id };
-              } catch (error) {
-                // Fallback: use email-based customer creation
-                checkoutData.customer = {
-                  email: session.user.email,
-                  name: session.user.name,
-                };
-              }
-            } else {
-              // Provide default customer for unauthenticated users
-              checkoutData.customer = {
-                email: "demo@example.com",
-                name: "Guest User",
-              };
-            }
-
-            // Add billing address - required by API
-            if (ctx.body.billing) {
-              checkoutData.billing = ctx.body.billing;
-            } else {
-              // Provide default billing address
-              checkoutData.billing = {
-                city: "Default City",
-                country: "US",
-                state: "CA",
-                street: "123 Default St",
-                zipcode: "12345",
-              };
-            }
-
-            // Add metadata if provided
-            if (ctx.body.metadata || ctx.body.referenceId) {
-              const baseMeta = ctx.body.referenceId
-                ? { referenceId: ctx.body.referenceId }
-                : {};
-              const meta =
-                ctx.body.metadata &&
-                typeof ctx.body.metadata === "object" &&
-                !Array.isArray(ctx.body.metadata)
-                  ? ctx.body.metadata
-                  : {};
-              checkoutData.metadata = Object.assign({}, baseMeta, meta);
-            }
-
-            // Use buildCheckoutUrl for dynamic checkout
             const checkoutUrl = await buildCheckoutUrl({
-              body: checkoutData,
+              body: {
+                ...ctx.body,
+                product_cart: dodoPaymentsProductId
+                  ? [
+                      {
+                        product_id: dodoPaymentsProductId,
+                        quantity: 1,
+                      },
+                    ]
+                  : undefined,
+                metadata: ctx.body.referenceId
+                  ? {
+                      referenceId: ctx.body.referenceId,
+                      ...ctx.body.metadata,
+                    }
+                  : ctx.body.metadata,
+              },
               bearerToken: dodopayments.bearerToken,
               environment: dodopayments.baseURL.includes("test")
                 ? "test_mode"
                 : "live_mode",
-              returnUrl: checkoutOptions.successUrl,
+              returnUrl: checkoutOptions.successUrl
+                ? new URL(
+                    checkoutOptions.successUrl,
+                    ctx.request?.url,
+                  ).toString()
+                : undefined,
               type: "dynamic",
             });
 
-            return new Response(null, {
-              status: 307,
-              headers: {
-                Location: checkoutUrl,
-              },
+            const redirectUrl = new URL(checkoutUrl);
+
+            return ctx.json({
+              url: redirectUrl.toString(),
+              redirect: true,
             });
           } catch (e: unknown) {
             if (e instanceof Error) {
               ctx.context.logger.error(
-                `Dynamic checkout creation failed. Error: ${e.message}`,
+                `DodoPayments checkout creation failed. Error: ${e.message}`,
               );
             }
 
@@ -192,46 +120,85 @@ export const checkout =
           }
         },
       ),
-      "checkout-url": createAuthEndpoint(
-        "/checkout-url",
+      checkoutRedirect: createAuthEndpoint(
+        "/checkout/static",
         {
           method: "GET",
-          query: checkoutQuerySchema,
+          query: checkoutQuerySchema
+            .extend({
+              slug: z.string().optional(),
+              referenceId: z.string().optional(),
+            })
+            .partial({
+              productId: true,
+            })
+            .superRefine((obj, ctx) => {
+              for (const key of Object.keys(obj)) {
+                if (key.startsWith("metadata_")) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: `Invalid key: ${key}`,
+                    path: [key],
+                  });
+                }
+              }
+            }),
         },
         async (ctx) => {
-          const session = await getSessionFromCtx(ctx);
+          let dodoPaymentsProductId: string | undefined;
 
-          if (checkoutOptions.authenticatedUsersOnly && !session?.user.id) {
-            throw new APIError("UNAUTHORIZED", {
-              message: "You must be logged in to checkout",
+          if (ctx.query.slug) {
+            const resolvedProducts = await (typeof checkoutOptions.products ===
+            "function"
+              ? checkoutOptions.products()
+              : checkoutOptions.products);
+
+            const productId = resolvedProducts?.find(
+              (product) => product.slug === ctx.query.slug,
+            )?.productId;
+
+            if (!productId) {
+              throw new APIError("BAD_REQUEST", {
+                message: "Product not found",
+              });
+            }
+
+            dodoPaymentsProductId = productId;
+          } else {
+            dodoPaymentsProductId = ctx.query.productId;
+          }
+
+          if (!dodoPaymentsProductId) {
+            throw new APIError("BAD_REQUEST", {
+              message: "productId or slug not provided",
             });
           }
 
           try {
             const checkoutUrl = await buildCheckoutUrl({
-              queryParams: ctx.query,
+              queryParams: {
+                ...ctx.query,
+                productId: dodoPaymentsProductId,
+                // @ts-ignore
+                metadata_referenceId: ctx.query.referenceId,
+              },
               bearerToken: dodopayments.bearerToken,
               environment: dodopayments.baseURL.includes("test")
                 ? "test_mode"
                 : "live_mode",
-              returnUrl: checkoutOptions.successUrl,
               type: "static",
             });
 
-            return new Response(null, {
-              status: 307,
-              headers: {
-                Location: checkoutUrl,
-              },
-            });
+            return ctx.redirect(checkoutUrl);
           } catch (e: unknown) {
             if (e instanceof Error) {
               ctx.context.logger.error(
-                `Static checkout URL generation failed. Error: ${e.message}`,
+                `Checkout redirect handling failed. Error: ${e.message}`,
               );
             }
+
             throw new APIError("INTERNAL_SERVER_ERROR", {
-              message: `Checkout URL generation failed: ${String(e)}`,
+              message: "Checkout redirect handling failed",
             });
           }
         },
