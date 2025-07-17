@@ -35,6 +35,7 @@ export const checkout =
             slug: z.string().optional(),
             referenceId: z.string().optional(),
           }),
+          requireRequest: true,
         },
         async (ctx) => {
           const session = await getSessionFromCtx(ctx);
@@ -72,6 +73,11 @@ export const checkout =
             const checkoutUrl = await buildCheckoutUrl({
               body: {
                 ...ctx.body,
+                customer: {
+                  email: session?.user.email,
+                  name: session?.user.name,
+                  ...ctx.body.customer,
+                },
                 product_cart: dodoPaymentsProductId
                   ? [
                       {

@@ -55,7 +55,17 @@ export const portal = () => (dodopayments: DodoPayments) => {
           .object({
             page: z.coerce.number().optional(),
             limit: z.coerce.number().optional(),
-            active: z.coerce.boolean().optional(),
+            status: z
+              .enum([
+                "active",
+                "cancelled",
+                "on_hold",
+                "pending",
+                "paused",
+                "failed",
+                "expired",
+              ])
+              .optional(),
           })
           .optional(),
         use: [sessionMiddleware],
@@ -75,12 +85,13 @@ export const portal = () => (dodopayments: DodoPayments) => {
 
           const subscriptions = await dodopayments.subscriptions.list({
             customer_id: customer.customer_id,
-            page_number: ctx.query?.page,
+            // page number is 0-indexed
+            page_number: ctx.query?.page ? ctx.query.page - 1 : undefined,
             page_size: ctx.query?.limit,
-            status: ctx.query?.active ? "active" : undefined,
+            status: ctx.query?.status,
           });
 
-          return ctx.json(subscriptions);
+          return ctx.json({ items: subscriptions.items });
         } catch (e: unknown) {
           if (e instanceof Error) {
             ctx.context.logger.error(
@@ -136,12 +147,13 @@ export const portal = () => (dodopayments: DodoPayments) => {
 
           const payments = await dodopayments.payments.list({
             customer_id: customer.customer_id,
-            page_number: ctx.query?.page,
+            // page number is 0-indexed
+            page_number: ctx.query?.page ? ctx.query.page - 1 : undefined,
             page_size: ctx.query?.limit,
             status: ctx.query?.status,
           });
 
-          return ctx.json(payments);
+          return ctx.json({ items: payments.items });
         } catch (e: unknown) {
           if (e instanceof Error) {
             ctx.context.logger.error(

@@ -107,9 +107,11 @@ export default function CheckoutPage() {
       const result = await authClient.checkout({
         product_id: productId,
         quantity: 1,
-        billing: {
-          name: billingInfo.name,
+        customer: {
           email: billingInfo.email,
+          name: billingInfo.name,
+        },
+        billing: {
           phone: billingInfo.phone,
           street: billingInfo.street,
           city: billingInfo.city,

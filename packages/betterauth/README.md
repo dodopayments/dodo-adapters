@@ -178,6 +178,13 @@ const checkoutWithProductId = await authClient.checkout({
     email: "customer@example.com",
     name: "John Doe",
   },
+  billing: {
+    city: "San Francisco",
+    country: "US",
+    state: "CA",
+    street: "123 Market St",
+    zipcode: "94103"
+  }
 });
 
 // Example: Getting customer portal URL
