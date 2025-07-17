@@ -145,7 +145,14 @@ export const checkout =
             }),
         },
         async (ctx) => {
+          const session = await getSessionFromCtx(ctx);
           let dodoPaymentsProductId: string | undefined;
+
+          if (checkoutOptions.authenticatedUsersOnly && !session?.user.id) {
+            throw new APIError("UNAUTHORIZED", {
+              message: "You must be logged in to checkout",
+            });
+          }
 
           if (ctx.query.slug) {
             const resolvedProducts = await (typeof checkoutOptions.products ===

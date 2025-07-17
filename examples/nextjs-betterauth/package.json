@@ -1,5 +1,5 @@
 {
-  "name": "@dodopayments/nextjs-basic-example",
+  "name": "@dodopayments/nextjs-betterauth-example",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,10 +16,14 @@
     "test:headed": "playwright test --headed"
   },
   "dependencies": {
-    "@dodopayments/nextjs": "../../packages/nextjs",
+    "@dodopayments/betterauth": "*",
+    "better-auth": "^1.2.12",
+    "better-sqlite3": "^12.2.0",
+    "dodopayments": "*",
     "next": "^15.3.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",
