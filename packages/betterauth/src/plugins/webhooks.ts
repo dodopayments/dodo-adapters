@@ -33,7 +33,7 @@ export const webhooks =
           }
 
           const rawBody = await ctx.request.text();
-          
+
           // Get headers from the request
           const headers: Record<string, string> = {};
           if (ctx.request.headers) {
@@ -45,12 +45,18 @@ export const webhooks =
           // Verify webhook signature using StandardWebhook (same as Next.js adapter)
           if (secret) {
             try {
-              const { Webhook: StandardWebhook, WebhookVerificationError } = await import("standardwebhooks");
+              const { Webhook: StandardWebhook, WebhookVerificationError } =
+                await import("standardwebhooks");
               const standardWebhook = new StandardWebhook(secret);
               standardWebhook.verify(rawBody, headers);
             } catch (err: unknown) {
-              if (err instanceof Error && err.constructor.name === "WebhookVerificationError") {
-                ctx.context.logger.error(`Webhook verification failed: ${err.message}`);
+              if (
+                err instanceof Error &&
+                err.constructor.name === "WebhookVerificationError"
+              ) {
+                ctx.context.logger.error(
+                  `Webhook verification failed: ${err.message}`,
+                );
                 throw new APIError("UNAUTHORIZED", {
                   message: err.message,
                 });
@@ -67,7 +73,9 @@ export const webhooks =
             event = JSON.parse(rawBody) as WebhookPayload;
           } catch (err: unknown) {
             if (err instanceof Error) {
-              ctx.context.logger.error(`Webhook payload parsing failed: ${err.message}`);
+              ctx.context.logger.error(
+                `Webhook payload parsing failed: ${err.message}`,
+              );
               throw new APIError("BAD_REQUEST", {
                 message: `Webhook Error: ${err.message}`,
               });
@@ -103,4 +111,4 @@ export const webhooks =
         },
       ),
     };
-  };;
+  };

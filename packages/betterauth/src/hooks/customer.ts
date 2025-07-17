@@ -48,7 +48,7 @@ export const onUserCreate =
         });
       }
     }
-  };;;
+  };
 
 export const onUserUpdate =
   (options: DodoPaymentsOptions) =>
@@ -79,4 +79,4 @@ export const onUserUpdate =
         }
       }
     }
-  };;;
+  };

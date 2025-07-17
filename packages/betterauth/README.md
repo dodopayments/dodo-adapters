@@ -31,7 +31,13 @@ The Dodo Payments plugin comes with several plugins for checkout, portal, usage,
 
 ```typescript
 import { betterAuth } from "better-auth";
-import { dodopayments, checkout, portal, usage, webhooks } from "@dodopayments/betterauth";
+import {
+  dodopayments,
+  checkout,
+  portal,
+  usage,
+  webhooks,
+} from "@dodopayments/betterauth";
 import DodoPayments from "dodopayments";
 
 const dodoClient = new DodoPayments({
@@ -50,21 +56,21 @@ const auth = betterAuth({
           products: [
             {
               productId: "prod_123", // Dodo Payments Product ID
-              slug: "pro" // Custom slug for easy reference
-            }
+              slug: "pro", // Custom slug for easy reference
+            },
           ],
           successUrl: "/success?checkout_id={CHECKOUT_ID}",
-          authenticatedUsersOnly: true
+          authenticatedUsersOnly: true,
         }),
         portal(),
         usage(),
         webhooks({
           secret: process.env.DODO_WEBHOOK_SECRET,
           // Add webhook handlers as needed
-        })
+        }),
       ],
-    })
-  ]
+    }),
+  ],
 });
 ```
 
@@ -84,10 +90,18 @@ export const authClient = createAuthClient({
 ## Configuration Options
 
 ```typescript
-import { dodopayments, checkout, portal, usage, webhooks } from "@dodopayments/betterauth";
+import {
+  dodopayments,
+  checkout,
+  portal,
+  usage,
+  webhooks,
+} from "@dodopayments/betterauth";
 import DodoPayments from "dodopayments";
 
-const dodoClient = new DodoPayments({ apiKey: process.env.DODO_PAYMENTS_API_KEY! });
+const dodoClient = new DodoPayments({
+  apiKey: process.env.DODO_PAYMENTS_API_KEY!,
+});
 
 const auth = betterAuth({
   plugins: [
@@ -108,39 +122,45 @@ const auth = betterAuth({
 ```
 
 ### Required Options
+
 - `client`: DodoPayments client instance
 
 ### Optional Options
+
 - `createCustomerOnSignUp`: Automatically create a Dodo Payments customer when a user signs up
 - `getCustomerCreateParams`: Custom function to provide additional customer creation metadata
 
 ## Plugins
 
 ### Checkout
+
 ```typescript
 checkout({
-  products: [ { productId: "prod_123", slug: "pro" } ],
+  products: [{ productId: "prod_123", slug: "pro" }],
   successUrl: "/success?checkout_id={CHECKOUT_ID}",
   authenticatedUsersOnly: true,
-})
+});
 ```
 
 ### Portal
+
 ```typescript
-portal()
+portal();
 ```
 
 ### Usage
+
 ```typescript
-usage()
+usage();
 ```
 
 ### Webhooks
+
 ```typescript
 webhooks({
   secret: process.env.DODO_WEBHOOK_SECRET,
   // Add webhook handlers as needed
-})
+});
 ```
 
 ## Example Usage
@@ -151,4 +171,4 @@ webhooks({
 
 ---
 
-For more details, see the Better Auth and Dodo Payments documentation. 
+For more details, see the Better Auth and Dodo Payments documentation.
