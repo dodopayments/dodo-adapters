@@ -19,7 +19,12 @@ To get started, you need to initialize the `dodopayments` plugin and add it to y
 ```typescript
 // src/lib/auth.ts
 import { BetterAuth } from "better-auth";
-import { dodopayments, checkout, portal, webhooks } from "@dodopayments/betterauth";
+import {
+  dodopayments,
+  checkout,
+  portal,
+  webhooks,
+} from "@dodopayments/betterauth";
 import DodoPayments from "dodopayments";
 
 // First, create a `DodoPayments` client instance:
@@ -41,7 +46,7 @@ export const { auth, endpoints, client } = BetterAuth({
       createCustomerOnSignUp: true,
       use: [
         checkout({
-          // This can also be an async function if you want to 
+          // This can also be an async function if you want to
           // dynamically provide these
           products: [
             {
@@ -51,8 +56,8 @@ export const { auth, endpoints, client } = BetterAuth({
               // an alias for the product, can be used for checkout
               // by passing the 'slug' parameter to the checkout
               // endpoint
-              slug: "product-name"
-            }
+              slug: "product-name",
+            },
           ],
           successUrl: "/success",
           // require users to be signed in to use checkout
@@ -113,9 +118,9 @@ The `checkout` plugin provides client-side methods for creating checkout links.
 
 #### Options
 
--   `products`: An array of products or a function that returns an array of products. Each product should have `productId` and `slug` properties. This allows you to use slugs instead of product IDs in checkout requests.
--   `successUrl`: The URL to redirect to after a successful checkout.
--   `authenticatedUsersOnly`: A boolean to restrict checkout to authenticated users only (default: false).
+- `products`: An array of products or a function that returns an array of products. Each product should have `productId` and `slug` properties. This allows you to use slugs instead of product IDs in checkout requests.
+- `successUrl`: The URL to redirect to after a successful checkout.
+- `authenticatedUsersOnly`: A boolean to restrict checkout to authenticated users only (default: false).
 
 ### Portal
 
@@ -127,16 +132,16 @@ The `webhooks` plugin handles incoming webhooks from Dodo Payments. You need to 
 
 #### Options
 
--   `webhookKey`: Your Dodo Payments webhook secret.
--   `onPayload`: Generic handler for all webhook payloads.
--   `onPaymentSucceeded`: Handler for the `payment.succeeded` event.
--   `onSubscriptionCreated`: Handler for the `subscription.created` event.
--   `onSubscriptionUpdated`: Handler for the `subscription.updated` event.
--   `onSubscriptionCancelled`: Handler for the `subscription.cancelled` event.
--   `onRefundCreated`: Handler for the `refund.created` event.
--   `onDisputeCreated`: Handler for the `dispute.created` event.
--   `onLicenseKeyActivated`: Handler for the `license_key.activated` event.
--   `onLicenseKeyDeactivated`: Handler for the `license_key.deactivated` event.
+- `webhookKey`: Your Dodo Payments webhook secret.
+- `onPayload`: Generic handler for all webhook payloads.
+- `onPaymentSucceeded`: Handler for the `payment.succeeded` event.
+- `onSubscriptionCreated`: Handler for the `subscription.created` event.
+- `onSubscriptionUpdated`: Handler for the `subscription.updated` event.
+- `onSubscriptionCancelled`: Handler for the `subscription.cancelled` event.
+- `onRefundCreated`: Handler for the `refund.created` event.
+- `onDisputeCreated`: Handler for the `dispute.created` event.
+- `onLicenseKeyActivated`: Handler for the `license_key.activated` event.
+- `onLicenseKeyDeactivated`: Handler for the `license_key.deactivated` event.
 
 ## Automatic Customer Creation
 
@@ -183,8 +188,8 @@ const checkoutWithProductId = await authClient.checkout({
     country: "US",
     state: "CA",
     street: "123 Market St",
-    zipcode: "94103"
-  }
+    zipcode: "94103",
+  },
 });
 
 // Example: Getting customer portal URL
@@ -210,4 +215,4 @@ const payments = await authClient.customer.payments.list({
     status: "succeeded", // omit this to get all payments
   },
 });
-``` 
+```

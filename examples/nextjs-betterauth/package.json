@@ -10,12 +10,7 @@
     "check-types": "tsc --noEmit",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "test": "echo 'No unit tests defined yet'",
-    "betterauth:db": "npx -y @better-auth/cli@latest migrate -y",
-    "test:e2e": "npm run betterauth:db && playwright test",
-    "test:ui": "playwright test --ui",
-    "test:headed": "playwright test --headed",
-    "create-products": "npx tsx scripts/create-sample-products.ts"
+    "test": "echo 'No unit tests defined yet'"
   },
   "dependencies": {
     "@dodopayments/betterauth": "*",
@@ -29,6 +24,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

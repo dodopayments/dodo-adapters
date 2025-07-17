@@ -56,10 +56,14 @@ export function UserProfile() {
   return (
     <div style={{ maxWidth: 600, margin: "0 auto", padding: "2rem" }}>
       <h2>Welcome, {user.name}!</h2>
-      
+
       <div style={{ marginBottom: "2rem" }}>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>ID:</strong> {user.id}</p>
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
+        <p>
+          <strong>ID:</strong> {user.id}
+        </p>
         {user.image && (
           <img
             src={user.image}

@@ -51,11 +51,9 @@ export function AuthForm() {
   return (
     <div style={{ maxWidth: 400, margin: "0 auto", padding: "2rem" }}>
       <h2>{isSignUp ? "Sign Up" : "Sign In"}</h2>
-      
+
       {error && (
-        <div style={{ color: "red", marginBottom: "1rem" }}>
-          {error}
-        </div>
+        <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
       )}
 
       <form onSubmit={handleSubmit} style={{ marginBottom: "2rem" }}>
@@ -78,7 +76,7 @@ export function AuthForm() {
             />
           </div>
         )}
-        
+
         <div style={{ marginBottom: "1rem" }}>
           <label htmlFor="email">Email:</label>
           <input
@@ -163,7 +161,9 @@ export function AuthForm() {
           cursor: "pointer",
         }}
       >
-        {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
+        {isSignUp
+          ? "Already have an account? Sign In"
+          : "Don't have an account? Sign Up"}
       </button>
     </div>
   );
