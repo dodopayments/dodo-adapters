@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Navigation } from "@/components/navigation";
 
 export const metadata: Metadata = {
   title: "Dodo Payments NextJS Adapter Example",
@@ -13,8 +14,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
             * {
               margin: 0;
               padding: 0;
@@ -91,10 +93,14 @@ export default function RootLayout({
               margin: 1rem 0;
               border-radius: 4px;
             }
-          `
-        }} />
+          `,
+          }}
+        />
       </head>
-      <body>{children}</body>
+      <body>
+        <Navigation />
+        {children}
+      </body>
     </html>
   );
 }
