@@ -2,7 +2,7 @@ import {
   WebhookEventHandlers,
   WebhookPayload,
   Resolve,
-} from "../types/webhook";
+} from "../schemas/webhook";
 
 export type WebhookHandlerConfig = Resolve<
   {
