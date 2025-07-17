@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "test": "echo 'No unit tests defined yet'",
-    "test:e2e": "playwright test",
+    "betterauth:db": "npx -y @better-auth/cli@latest migrate -y",
+    "test:e2e": "npm run betterauth:db && playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed"
   },

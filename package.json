@@ -27,6 +27,6 @@
     "check-types": "turbo run check-types",
     "ci": "turbo run ci",
     "test": "turbo run test",
-    "test:e2e": "turbo run test:e2e"
+    "test:e2e": "turbo run test:e2e --concurrency=1"
   }
 }
