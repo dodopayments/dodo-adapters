@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     name: Build and Test
+    env:
+      DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,6 +29,8 @@ jobs:
         run: npm run ci
   test:
     name: Playwright Tests
+    env:
+      DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -39,8 +43,6 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      env:
-        DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
       run: "npm run test:e2e"
     - name: Upload Playwright Report
       uses: actions/upload-artifact@v4

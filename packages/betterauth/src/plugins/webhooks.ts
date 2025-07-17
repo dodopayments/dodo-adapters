@@ -51,7 +51,7 @@ export const webhooks =
             });
           } catch (err: unknown) {
             if (err instanceof Error) {
-              ctx.context.logger.error(`${err.message}`);
+              ctx.context.logger.error(`Webhook Error: ${err.message}`);
               throw new APIError("BAD_REQUEST", {
                 message: `Webhook Error: ${err.message}`,
               });
@@ -69,11 +69,11 @@ export const webhooks =
               ctx.context.logger.error(
                 `DodoPayments webhook failed. Error: ${e.message}`,
               );
-            } else {
-              ctx.context.logger.error(
-                `DodoPayments webhook failed. Error: ${e}`,
-              );
             }
+
+            ctx.context.logger.error(
+              `DodoPayments webhook failed. Error: ${e}`,
+            );
 
             throw new APIError("BAD_REQUEST", {
               message: "Webhook error: See server logs for more information.",
