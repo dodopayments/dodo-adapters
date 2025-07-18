@@ -177,7 +177,6 @@ File Creation: Create a new file at server/routes/api/checkout.get.ts in your Nu
 Code Snippet:
 
 // server/routes/api/checkout.get.ts
-import { checkoutHandler } from '@dodopayments/nuxt/server';
 
 export default defineEventHandler((event) => {
   const {
@@ -220,7 +219,6 @@ File Creation: Create a new file at server/routes/api/customer-portal.get.ts in 
 Code Snippet:
 
 // server/routes/api/customer-portal.get.ts
-import { customerPortalHandler } from '@dodopayments/nuxt/server';
 
 export default defineEventHandler((event) => {
   const {
@@ -248,7 +246,6 @@ File Creation: Create a new file at server/routes/api/webhook.post.ts in your Nu
 Code Snippet:
 
 // server/routes/api/webhook.post.ts
-import { Webhooks } from '@dodopayments/nuxt/server';
 
 export default defineEventHandler((event) => {
   const {
