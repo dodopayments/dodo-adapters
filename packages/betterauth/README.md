@@ -1,4 +1,4 @@
-# @dodopayments/betterauth
+# @dodopayments/better-auth
 
 The official Dodo Payments adapter for `better-auth`.
 
@@ -7,7 +7,7 @@ This adapter provides a seamless integration between Dodo Payments and `better-a
 ## Installation
 
 ```bash
-npm install @dodopayments/betterauth dodopayments better-auth zod
+npm install @dodopayments/better-auth dodopayments better-auth zod
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ import {
   checkout,
   portal,
   webhooks,
-} from "@dodopayments/betterauth";
+} from "@dodopayments/better-auth";
 import DodoPayments from "dodopayments";
 
 // First, create a `DodoPayments` client instance:
@@ -156,7 +156,7 @@ First, initialize the client:
 ```typescript
 // src/lib/auth-client.ts
 import { createAuthClient } from "better-auth/react";
-import { dodopaymentsClient } from "@dodopayments/betterauth";
+import { dodopaymentsClient } from "@dodopayments/better-auth";
 
 export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",

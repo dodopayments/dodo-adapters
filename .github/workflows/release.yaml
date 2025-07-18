@@ -102,7 +102,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
 
   release-betterauth:
-    name: Release @dodopayments/betterauth
+    name: Release @dodopayments/better-auth
     runs-on: ubuntu-latest
     needs: release-core
     steps:
@@ -134,7 +134,7 @@ jobs:
         working-directory: packages/betterauth
         run: |
           LOCAL_VERSION=$(node -p "require('./package.json').version")
-          PUBLISHED_VERSION=$(npm view @dodopayments/betterauth version || echo "0.0.0")
+          PUBLISHED_VERSION=$(npm view @dodopayments/better-auth version || echo "0.0.0")
           echo "Local version: $LOCAL_VERSION"
           echo "Published version: $PUBLISHED_VERSION"
           if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" = "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then

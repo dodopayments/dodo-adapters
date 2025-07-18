@@ -1,5 +1,5 @@
 {
-  "name": "@dodopayments/betterauth",
+  "name": "@dodopayments/better-auth",
   "version": "0.1.0",
   "publishConfig": {
     "access": "public"
@@ -22,8 +22,9 @@
     "@dodopayments/core": "*"
   },
   "keywords": [
+    "dodopayments",
+    "better-auth",
     "payments",
-    "dodo",
     "webhooks",
     "checkout",
     "api",
