@@ -19,6 +19,12 @@ export const portal = () => (dodopayments: DodoPayments) => {
           });
         }
 
+        if (!ctx.context.session?.user.emailVerified) {
+          throw new APIError("UNAUTHORIZED", {
+            message: "User email not verified",
+          });
+        }
+
         try {
           const customers = await dodopayments.customers.list({
             email: ctx.context.session?.user.email,
@@ -74,6 +80,12 @@ export const portal = () => (dodopayments: DodoPayments) => {
         if (!ctx.context.session.user.id) {
           throw new APIError("BAD_REQUEST", {
             message: "User not found",
+          });
+        }
+
+        if (!ctx.context.session?.user.emailVerified) {
+          throw new APIError("UNAUTHORIZED", {
+            message: "User email not verified",
           });
         }
 
@@ -136,6 +148,12 @@ export const portal = () => (dodopayments: DodoPayments) => {
         if (!ctx.context.session.user.id) {
           throw new APIError("BAD_REQUEST", {
             message: "User not found",
+          });
+        }
+
+        if (!ctx.context.session?.user.emailVerified) {
+          throw new APIError("UNAUTHORIZED", {
+            message: "User email not verified",
           });
         }
 
