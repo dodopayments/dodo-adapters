@@ -92,7 +92,7 @@ export const buildCheckoutUrl = async ({
   type = "static",
 }: CheckoutHandlerConfig & {
   queryParams?: z.infer<typeof checkoutQuerySchema>;
-  body?: Record<string, unknown>;
+  body?: z.infer<typeof dynamicCheckoutBodySchema>;
 }) => {
   // For dynamic, use body; for static, use queryParams
   const inputData = type === "dynamic" ? body : queryParams;
@@ -227,7 +227,6 @@ export const buildCheckoutUrl = async ({
     billing_currency,
     discount_code,
     on_demand,
-    payment_link,
     return_url: bodyReturnUrl,
     show_saved_payment_methods,
     tax_id,
@@ -281,7 +280,7 @@ export const buildCheckoutUrl = async ({
     if (billing_currency)
       subscriptionPayload.billing_currency = billing_currency;
     if (on_demand) subscriptionPayload.on_demand = on_demand;
-    if (payment_link) subscriptionPayload.payment_link = payment_link;
+    subscriptionPayload.payment_link = true;
     // Use bodyReturnUrl if present, otherwise use top-level returnUrl
     if (bodyReturnUrl) {
       subscriptionPayload.return_url = bodyReturnUrl;
@@ -296,9 +295,8 @@ export const buildCheckoutUrl = async ({
       subscriptionPayload.trial_period_days = trial_period_days;
     let subscription;
     try {
-      subscription = await dodopayments.subscriptions.create(
-        subscriptionPayload as any,
-      );
+      subscription =
+        await dodopayments.subscriptions.create(subscriptionPayload);
     } catch (err) {
       console.error("Error when creating subscription", err);
       throw new Error(err instanceof Error ? err.message : String(err));
@@ -325,7 +323,7 @@ export const buildCheckoutUrl = async ({
       product_cart: cart as any,
     };
     if (metadata) paymentPayload.metadata = metadata;
-    if (payment_link) paymentPayload.payment_link = payment_link;
+    paymentPayload.payment_link = true;
     if (allowed_payment_method_types)
       paymentPayload.allowed_payment_method_types =
         allowed_payment_method_types;

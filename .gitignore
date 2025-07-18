@@ -12,6 +12,8 @@ node_modules
 .env.test.local
 .env.production.local
 
+!.env.example
+
 # Testing
 coverage
 
@@ -40,3 +42,13 @@ yarn-error.log*
 /packages/dodo-webhook-test
 
 */sample-nextjs-usage
+
+**/playwright-report
+**/test-results
+
+tsconfig.tsbuildinfo
+
+.serena
+
+examples/**/*.sqlite
+packages/**/*.sqlite

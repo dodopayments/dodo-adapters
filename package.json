@@ -2,7 +2,8 @@
   "name": "dodo-adapters",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
@@ -25,6 +26,7 @@
     "check-format": "turbo run check-format",
     "check-types": "turbo run check-types",
     "ci": "turbo run ci",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e --concurrency=1"
   }
 }
