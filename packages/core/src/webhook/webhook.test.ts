@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { handleWebhookPayload } from "./webhook";
 import type { WebhookHandlerConfig } from "./webhook";
-import type { WebhookPayload } from "../types/webhook";
+import type { WebhookPayload } from "../schemas/webhook";
 
 describe("handleWebhookPayload", () => {
   it("should call onPayload for any event type", async () => {
