@@ -5,7 +5,7 @@ import {
   checkout,
   portal,
   webhooks,
-} from "@dodopayments/betterauth";
+} from "@dodopayments/better-auth";
 import DodoPayments from "dodopayments";
 
 export const dodoPayments = new DodoPayments({

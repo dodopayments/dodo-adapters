@@ -13,7 +13,7 @@
     "test": "echo 'No unit tests defined yet'"
   },
   "dependencies": {
-    "@dodopayments/betterauth": "*",
+    "@dodopayments/better-auth": "*",
     "better-auth": "^1.2.12",
     "better-sqlite3": "^12.2.0",
     "dodopayments": "*",
