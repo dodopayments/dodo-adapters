@@ -150,7 +150,7 @@ jobs:
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
   
-    release-nuxt:
+  release-nuxt:
     name: Release @dodopayments/nuxt
     runs-on: ubuntu-latest
     needs: release-core
