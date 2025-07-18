@@ -45,12 +45,12 @@ jobs:
             echo "should_publish=false" >> $GITHUB_OUTPUT
           fi
 
-      # - name: Publish core to NPM
-      #   if: steps.version_check_core.outputs.should_publish == 'true'
-      #   run: npm publish --access public
-      #   working-directory: packages/core
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
+      - name: Publish core to NPM
+        if: steps.version_check_core.outputs.should_publish == 'true'
+        run: npm publish --access public
+        working-directory: packages/core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-nextjs:
     name: Release @dodopayments/nextjs
@@ -94,12 +94,12 @@ jobs:
             echo "should_publish=false" >> $GITHUB_OUTPUT
           fi
 
-      # - name: Publish to NPM
-      #   if: steps.version_check_nextjs.outputs.should_publish == 'true'
-      #   run: npm publish --access public
-      #   working-directory: packages/nextjs
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
+      - name: Publish to NPM
+        if: steps.version_check_nextjs.outputs.should_publish == 'true'
+        run: npm publish --access public
+        working-directory: packages/nextjs
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
 
   release-betterauth:
     name: Release @dodopayments/betterauth
@@ -129,26 +129,26 @@ jobs:
         run: npm pack
         working-directory: packages/betterauth
 
-      # - name: Check if version is newer
-      #   id: version_check_betterauth
-      #   working-directory: packages/betterauth
-      #   run: |
-      #     LOCAL_VERSION=$(node -p "require('./package.json').version")
-      #     PUBLISHED_VERSION=$(npm view @dodopayments/betterauth version || echo "0.0.0")
-      #     echo "Local version: $LOCAL_VERSION"
-      #     echo "Published version: $PUBLISHED_VERSION"
-      #     if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" = "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then
-      #       echo "should_publish=true" >> $GITHUB_OUTPUT
-      #     else
-      #       echo "should_publish=false" >> $GITHUB_OUTPUT
-      #     fi
+      - name: Check if version is newer
+        id: version_check_betterauth
+        working-directory: packages/betterauth
+        run: |
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view @dodopayments/betterauth version || echo "0.0.0")
+          echo "Local version: $LOCAL_VERSION"
+          echo "Published version: $PUBLISHED_VERSION"
+          if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" = "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
 
-      # - name: Publish to NPM
-      #   if: steps.version_check_betterauth.outputs.should_publish == 'true'
-      #   run: npm publish --access public
-      #   working-directory: packages/betterauth
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
+      - name: Publish to NPM
+        if: steps.version_check_betterauth.outputs.should_publish == 'true'
+        run: npm publish --access public
+        working-directory: packages/betterauth
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
   
   release-nuxt:
     name: Release @dodopayments/nuxt
@@ -178,23 +178,23 @@ jobs:
         run: npm pack
         working-directory: packages/nuxt
 
-      # - name: Check if version is newer
-      #   id: version_check_nextjs
-      #   working-directory: packages/nextjs
-      #   run: |
-      #     LOCAL_VERSION=$(node -p "require('./package.json').version")
-      #     PUBLISHED_VERSION=$(npm view @dodopayments/nextjs version || echo "0.0.0")
-      #     echo "Local version: $LOCAL_VERSION"
-      #     echo "Published version: $PUBLISHED_VERSION"
-      #     if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" = "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then
-      #       echo "should_publish=true" >> $GITHUB_OUTPUT
-      #     else
-      #       echo "should_publish=false" >> $GITHUB_OUTPUT
-      #     fi
+      - name: Check if version is newer
+        id: version_check_nuxt
+        working-directory: packages/nuxt
+        run: |
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view @dodopayments/nuxt version || echo "0.0.0")
+          echo "Local version: $LOCAL_VERSION"
+          echo "Published version: $PUBLISHED_VERSION"
+          if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" = "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
 
-      # - name: Publish to NPM
-      #   if: steps.version_check_nextjs.outputs.should_publish == 'true'
-      #   run: npm publish --access public
-      #   working-directory: packages/nextjs
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
+      - name: Publish to NPM
+        if: steps.version_check_nuxt.outputs.should_publish == 'true'
+        run: npm publish --access public
+        working-directory: packages/nuxt
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 

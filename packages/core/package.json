@@ -16,7 +16,6 @@
   "exports": {
     "./checkout": {
       "import": "./dist/checkout/checkout.js",
-      "require": "./dist/checkout/checkout.cjs",
       "types": "./dist/checkout/checkout.d.ts"
     },
     "./webhook": {
