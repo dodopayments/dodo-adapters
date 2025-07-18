@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/nuxt",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dodo Payments Nuxt integration",
   "type": "module",
   "publishConfig": {
