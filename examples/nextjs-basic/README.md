@@ -103,11 +103,11 @@ app/
 
 ## Environment Variables
 
-| Variable                | Description                               | Required           |
-| ----------------------- | ----------------------------------------- | ------------------ |
-| `DODO_PAYMENTS_API_KEY` | Your Dodo Payments API key                | Yes                |
-| `DODO_PAYMENTS_WEBHOOK_SECRET`   | Webhook secret for signature verification | Yes (for webhooks) |
-| `RETURN_URL`            | URL to redirect after successful checkout | Optional           |
+| Variable                       | Description                               | Required           |
+| ------------------------------ | ----------------------------------------- | ------------------ |
+| `DODO_PAYMENTS_API_KEY`        | Your Dodo Payments API key                | Yes                |
+| `DODO_PAYMENTS_WEBHOOK_SECRET` | Webhook secret for signature verification | Yes (for webhooks) |
+| `RETURN_URL`                   | URL to redirect after successful checkout | Optional           |
 
 ## Testing
 
