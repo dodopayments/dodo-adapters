@@ -21,13 +21,16 @@ export const Webhooks = ({
       return new NextResponse("Method not allowed. Use POST", { status: 405 });
     }
 
-    const headerList = await headers();
-    const headerObject = Object.fromEntries(headerList.entries());
+    const headers = {
+      "webhook-id": req.headers.get("webhook-id") ?? "",
+      "webhook-timestamp": req.headers.get("webhook-timestamp") ?? "",
+      "webhook-signature": req.headers.get("webhook-signature") ?? "",
+    };
 
     const rawBody = await req.text();
 
     try {
-      standardWebhook.verify(rawBody, headerObject);
+      standardWebhook.verify(rawBody, headers);
     } catch (err) {
       if (err instanceof WebhookVerificationError) {
         return new NextResponse(err.message, { status: 401 });
