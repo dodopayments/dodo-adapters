@@ -16,7 +16,7 @@
     "test:headed": "playwright test --headed"
   },
   "dependencies": {
-    "@dodopayments/nextjs": "../../packages/nextjs",
+    "@dodopayments/nextjs": "*",
     "next": "^15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
