@@ -107,8 +107,8 @@ export default function Home() {
             (defaults to /dashboard)
           </li>
           <li>
-            <code>DODO_WEBHOOK_SECRET</code> - Your webhook secret for signature
-            verification
+            <code>DODO_PAYMENTS_WEBHOOK_SECRET</code> - Your webhook secret for
+            signature verification
           </li>
           <li>
             <code>NODE_ENV</code> - Set to "production" for live mode, otherwise

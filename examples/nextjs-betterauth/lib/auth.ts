@@ -37,7 +37,7 @@ export const auth = betterAuth({
         }),
         portal(),
         webhooks({
-          webhookKey: process.env.DODO_WEBHOOK_SECRET!,
+          webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
           onPayload: async (payload) => {
             console.log("Webhook payload received:", payload);
           },

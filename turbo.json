@@ -4,7 +4,10 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-      "passThroughEnv": ["DODO_PAYMENTS_API_KEY"]
+      "passThroughEnv": [
+        "DODO_PAYMENTS_API_KEY",
+        "DODO_PAYMENTS_WEBHOOK_SECRET"
+      ]
     },
     "dev": {
       "cache": false,
@@ -16,7 +19,10 @@
     },
     "test:e2e": {
       "dependsOn": ["^test:e2e", "build"],
-      "passThroughEnv": ["DODO_PAYMENTS_API_KEY"]
+      "passThroughEnv": [
+        "DODO_PAYMENTS_API_KEY",
+        "DODO_PAYMENTS_WEBHOOK_SECRET"
+      ]
     },
     "format": {
       "dependsOn": ["^format"]

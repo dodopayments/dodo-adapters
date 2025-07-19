@@ -61,8 +61,8 @@ export default function Home() {
             <code>RETURN_URL</code> - URL to redirect after successful checkout
           </li>
           <li>
-            <code>DODO_WEBHOOK_SECRET</code> - Your webhook secret for signature
-            verification
+            <code>DODO_PAYMENTS_WEBHOOK_SECRET</code> - Your webhook secret for
+            signature verification
           </li>
         </ul>
       </div>

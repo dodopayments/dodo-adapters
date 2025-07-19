@@ -11,6 +11,7 @@ jobs:
     name: Build and Test
     env:
       DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
+      DODO_PAYMENTS_WEBHOOK_SECRET: ${{ secrets.DODO_PAYMENTS_WEBHOOK_SECRET }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,11 +20,11 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
           cache: 'npm'
 
       - name: Install dependencies
-        run: rm -rf node_modules package-lock.json && npm install
+        run: rm -rf package-lock.json && npm install
 
       - name: Run CI checks
         run: npm run ci
@@ -31,6 +32,7 @@ jobs:
     name: Playwright Tests
     env:
       DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
+      DODO_PAYMENTS_WEBHOOK_SECRET: ${{ secrets.DODO_PAYMENTS_WEBHOOK_SECRET }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
