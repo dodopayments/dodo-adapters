@@ -41,7 +41,7 @@ This example showcases all three main functionalities of the Dodo Payments NextJ
 4. Edit `.env.local` with your actual Dodo Payments credentials:
    ```env
    DODO_PAYMENTS_API_KEY=your-actual-api-key
-   DODO_WEBHOOK_SECRET=your-actual-webhook-secret
+   DODO_PAYMENTS_WEBHOOK_SECRET=your-actual-webhook-secret
    RETURN_URL=http://localhost:3000/success
    ```
 
@@ -106,7 +106,7 @@ app/
 | Variable                | Description                               | Required           |
 | ----------------------- | ----------------------------------------- | ------------------ |
 | `DODO_PAYMENTS_API_KEY` | Your Dodo Payments API key                | Yes                |
-| `DODO_WEBHOOK_SECRET`   | Webhook secret for signature verification | Yes (for webhooks) |
+| `DODO_PAYMENTS_WEBHOOK_SECRET`   | Webhook secret for signature verification | Yes (for webhooks) |
 | `RETURN_URL`            | URL to redirect after successful checkout | Optional           |
 
 ## Testing

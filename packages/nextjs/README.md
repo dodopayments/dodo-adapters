@@ -64,7 +64,7 @@ Returns 400 if `customer_id` is missing.
 import { Webhooks } from "@dodopayments/nextjs";
 
 export const POST = Webhooks({
-  webhookKey: process.env.DODO_WEBHOOK_SECRET!,
+  webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
   onPayload: async (payload) => {
     // handle the payload
   },
@@ -192,7 +192,7 @@ Code Snippet:
 import { Webhooks } from '@dodopayments/nextjs'
 
 export const POST = Webhooks({
-webhookKey: process.env.DODO_WEBHOOK_SECRET!,
+webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
 onPayload: async (payload) => {
 // handle the payload
 },
@@ -273,17 +273,17 @@ To ensure the adapter functions correctly, you will need to manually set up the 
 
     RETURN_URL: (Optional) The URL to redirect to after a successful checkout (for Checkout handler).
 
-    DODO_WEBHOOK_SECRET: Your Dodo Payments Webhook Secret (required for Webhook handler).
+    DODO_PAYMENTS_WEBHOOK_SECRET: Your Dodo Payments Webhook Secret (required for Webhook handler).
 
 Example .env file:
 
 DODO_PAYMENTS_API_KEY=your-api-key
-DODO_WEBHOOK_SECRET=your-webhook-secret
+DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
 
 Usage in your code:
 
 bearerToken: process.env.DODO_PAYMENTS_API_KEY!
-webhookKey: process.env.DODO_WEBHOOK_SECRET!
+webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!
 
 Important: Never commit sensitive environment variables directly into your version control. Use environment variables for all sensitive information.
 

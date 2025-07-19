@@ -92,7 +92,7 @@ Here's how you should structure your response:
     import { Webhooks } from '@dodopayments/nextjs'
 
     export const POST = Webhooks({
-      webhookKey: process.env.DODO_WEBHOOK_SECRET!,
+      webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
       onPayload: async (payload) => {
         // handle the payload
       },
@@ -141,18 +141,18 @@ Here's how you should structure your response:
 
     *   `DODO_PAYMENTS_API_KEY`: Your Dodo Payments API Key (required for Checkout and Customer Portal).
     *   `RETURN_URL`: (Optional) The URL to redirect to after a successful checkout (for Checkout handler).
-    *   `DODO_WEBHOOK_SECRET`: Your Dodo Payments Webhook Secret (required for Webhook handler).
+    *   `DODO_PAYMENTS_WEBHOOK_SECRET`: Your Dodo Payments Webhook Secret (required for Webhook handler).
 
     **Example `.env` file:**
     ```env
     DODO_PAYMENTS_API_KEY=your-api-key
-    DODO_WEBHOOK_SECRET=your-webhook-secret
+    DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
     ```
 
     **Usage in your code:**
     ```typescript
     bearerToken: process.env.DODO_PAYMENTS_API_KEY!
-    webhookKey: process.env.DODO_WEBHOOK_SECRET!
+    webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!
     ```
 
     **Important:** Never commit sensitive environment variables directly into your version control. Use environment variables for all sensitive information.
