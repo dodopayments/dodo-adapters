@@ -26,15 +26,10 @@ export const Webhooks = ({
       "webhook-signature": req.get("webhook-signature") ?? "",
     };
 
-    // Note: express.json({ verify }) middleware is required for this to work
-    // req.rawBody is expected to be a Buffer (raw body)
-    const raw = (req as any).rawBody;
-    if (!raw) {
-      return res.status(500).send("Raw body not available. Ensure express.json() is configured with a verify function that sets req.rawBody.");
-    }
+    const requestBody = JSON.stringify(req.body);
 
     try {
-      standardWebhook.verify(raw, headers);
+      standardWebhook.verify(requestBody, headers);
     } catch (err) {
       if (err instanceof WebhookVerificationError) {
         return res.status(401).send(err.message);
@@ -44,14 +39,11 @@ export const Webhooks = ({
       return res.status(500).send("Error while verifying webhook");
     }
 
-    // req.body is already parsed JSON
-    const parsedBody = req.body;
-
     const {
       success,
       data: payload,
       error,
-    } = WebhookPayloadSchema.safeParse(parsedBody);
+    } = WebhookPayloadSchema.safeParse(req.body);
 
     if (!success) {
       console.error("Error parsing webhook payload", error.issues);
