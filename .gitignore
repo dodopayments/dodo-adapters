@@ -52,3 +52,6 @@ tsconfig.tsbuildinfo
 
 examples/**/*.sqlite
 packages/**/*.sqlite
+
+
+*.tgz
