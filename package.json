@@ -10,6 +10,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.4",
+    "@types/express": "^5.0.3",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "rollup": "^4.45.0",
@@ -29,5 +30,10 @@
     "ci": "turbo run ci",
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e --concurrency=1"
+  },
+  "dependencies": {
+    "@dodopayments/core": "^0.1.13",
+    "express": "^5.1.0",
+    "standardwebhooks": "^1.0.0"
   }
 }
