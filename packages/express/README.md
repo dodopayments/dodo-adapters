@@ -6,7 +6,7 @@ A typescript library that exports Handlers for Checkout, Customer Portal, and We
 
 ## Documentation
 
-Detailed documentation can be found at [Dodo Payments express adaptor](https://docs.dodopayments.com/developer-resources/express-adaptor)
+Detailed documentation can be found at [Dodo Payments Express adaptor](https://docs.dodopayments.com/developer-resources/express-adaptor)
 
 ## Installation
 
@@ -79,6 +79,8 @@ app.post('/api/webhook',
 ```
 
 ---
+
+## Prompt for LLM
 
 ```
 You are an expert Express.js developer assistant. Your task is to guide a user through integrating the @dodopayments/express adapter into their existing Express.js project.
