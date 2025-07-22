@@ -1,52 +1,52 @@
 {
-    "name": "@dodopayments/express",
-    "version": "0.1.1",
-    "publishConfig": {
-        "access": "public"
-    },
-    "scripts": {
-        "build": "rollup -c",
-        "dev": "rollup -c -w",
-        "format": "prettier --write .",
-        "check-format": "prettier --check .",
-        "check-types": "tsc --noEmit"
-    },
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
-        }
-    },
-    "dependencies": {
-        "@dodopayments/core": "^0.1.7",
-        "express": "^5.1.0"
-    },
-    "keywords": [
-        "payments",
-        "express",
-        "webhooks",
-        "checkout",
-        "api",
-        "typescript"
-    ],
-    "author": {
-        "name": "Dodo Payments",
-        "email": "support@dodopayments.com",
-        "url": "https://dodopayments.com"
-    },
-    "devDependencies": {
-        "@dodo/typescript-config": "*",
-        "@rollup/plugin-commonjs": "^25.0.0",
-        "@rollup/plugin-node-resolve": "^15.0.0",
-        "@rollup/plugin-typescript": "^11.0.0",
-        "@types/express": "^5.0.3",
-        "rimraf": "^5.0.0",
-        "rollup": "^4.0.0",
-        "rollup-plugin-dts": "^6.1.0"
-    },
-    "type": "module",
-    "files": [
-        "dist"
-    ]
+  "name": "@dodopayments/express",
+  "version": "0.1.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "dependencies": {
+    "@dodopayments/core": "^0.1.7",
+    "express": "^5.1.0"
+  },
+  "keywords": [
+    "payments",
+    "express",
+    "webhooks",
+    "checkout",
+    "api",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dodo Payments",
+    "email": "support@dodopayments.com",
+    "url": "https://dodopayments.com"
+  },
+  "devDependencies": {
+    "@dodo/typescript-config": "*",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/express": "^5.0.3",
+    "rimraf": "^5.0.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-dts": "^6.1.0"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ]
 }

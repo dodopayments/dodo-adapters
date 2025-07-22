@@ -1,19 +1,11 @@
 {
-    "extends": "../typescript-config/base.json",
-    "compilerOptions": {
-      "outDir": "dist",
-      "declarationDir": "dist",
-      "target": "ES2020",
-      "declarationMap": false
-    },
-    "include": [
-      "src",
-    ],
-    "exclude": [
-      "dist",
-      "node_modules",
-      "playground",
-      ".output"
-    ]
-  }
-  
+  "extends": "../typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "target": "ES2020",
+    "declarationMap": false
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules", "playground", ".output"]
+}
