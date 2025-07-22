@@ -1,6 +1,6 @@
 {
-  "name": "@dodopayments/express",
-  "version": "0.1.2",
+  "name": "@dodopayments/astro",
+  "version": "0.1.1",
   "publishConfig": {
     "access": "public"
   },
@@ -19,12 +19,11 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.1.7",
-    "express": "^5.1.0"
+    "@dodopayments/core": "^0.1.7"
   },
   "keywords": [
     "payments",
-    "express",
+    "astro",
     "webhooks",
     "checkout",
     "api",
@@ -37,16 +36,20 @@
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",
-    "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@types/express": "^5.0.3",
-    "rimraf": "^5.0.0",
     "rollup": "^4.0.0",
-    "rollup-plugin-dts": "^6.1.0"
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "rimraf": "^5.0.0"
+  },
+  "peerDependencies": {
+    "next": "^15.3.4",
+    "zod": "^3.25.73"
   },
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "llm-prompt.txt"
   ]
 }
