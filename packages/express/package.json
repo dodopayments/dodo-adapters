@@ -1,6 +1,6 @@
 {
     "name": "@dodopayments/express",
-    "version": "0.1.7",
+    "version": "0.1.1",
     "publishConfig": {
         "access": "public"
     },
