@@ -6,7 +6,7 @@
     "lib": ["es6"],
     "plugins": [
       {
-        "name": "astro"
+        "name": "remix"
       }
     ]
   },
