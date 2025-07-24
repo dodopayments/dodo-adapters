@@ -1,0 +1,55 @@
+{
+  "name": "@dodopayments/sveltekit",
+  "version": "0.1.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "dependencies": {
+    "@dodopayments/core": "^0.1.7"
+  },
+  "keywords": [
+    "payments",
+    "sveltekit",
+    "webhooks",
+    "checkout",
+    "api",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dodo Payments",
+    "email": "support@dodopayments.com",
+    "url": "https://dodopayments.com"
+  },
+  "devDependencies": {
+    "@dodo/typescript-config": "*",
+    "rollup": "^4.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "rimraf": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": "^2.20.3",
+    "zod": "^3.25.73"
+  },
+  "type": "module",
+  "files": [
+    "dist",
+    "llm-prompt.txt"
+  ]
+}
