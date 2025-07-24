@@ -1,37 +1,39 @@
-# `@dodopayments/nextjs`
+# `@dodopayments/sveltekit`
 
-A typescript library that exports Handlers for Checkout, Customer Portal, and Webhook routes for easy integration with your Next.js app.
+A typescript library that exports Handlers for Checkout, Customer Portal, and Webhook routes for easy integration with your SvelteKit app.
 
 > **AI Agent Integration Guide:** See the AI Agent Prompt section below for detailed instructions and guidance for AI assistants.
 
 ## Documentation
 
-Detailed documentation can be found at [Dodo Payments NextJS adaptor](https://docs.dodopayments.com/developer-resources/nextjs-adaptor)
+Detailed documentation can be found at [Dodo Payments SvelteKit adaptor](https://docs.dodopayments.com/developer-resources/sveltekit-adaptor)
 
 ## Installation
 
 You can install this package via npm or any other package manager of your choice:
 
 ```bash
-npm install @dodopayments/nextjs
+npm install @dodopayments/sveltekit
 ```
 
 ## Quick Start
 
-All the examples below assume you're using Next.js App Router.
+All the examples below assume you're using SvelteKit App Router.
 
 ### 1. Checkout
 
 ```typescript
-// app/checkout/route.ts
-import { Checkout } from "@dodopayments/nextjs";
+// src/routes/api/checkout/+server.ts
+import { Checkout } from "@dodopayments/sveltekit";
+import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL, DODO_PAYMENTS_ENVIRONMENT } from '$env/static/private';
 
-export const GET = Checkout({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  returnUrl: process.env.RETURN_URL!,
-  environment: "test_mode",
-  type: "static", // explicitly specify type (optional, defaults to 'static')
+const checkoutGetHandler = Checkout({
+    bearerToken: DODO_PAYMENTS_API_KEY,
+    returnUrl: DODO_PAYMENTS_RETURN_URL,
+    environment: environment,
+    type: "static", // optional, defaults to 'static'
 });
+export const GET = checkoutGetHandler.GET;
 ```
 
 ---
@@ -39,13 +41,17 @@ export const GET = Checkout({
 ### 2. Customer Portal Route Handler
 
 ```typescript
-// app/customer-portal/route.ts
-import { CustomerPortal } from "@dodopayments/nextjs";
+//
+// src/routes/api/checkout/+server.ts
+import { CustomerPortal } from "@dodopayments/sveltekit";
+import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL, DODO_PAYMENTS_ENVIRONMENT } from '$env/static/private';
 
-export const GET = CustomerPortal({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  environment: "test_mode",
+const customerPortalHandler = CustomerPortal({
+    bearerToken: DODO_PAYMENTS_API_KEY,
+    environment: environment,
 });
+
+export const GET = customerPortalHandler.GET;
 ```
 
 #### Query Parameters
@@ -60,16 +66,19 @@ Returns 400 if `customer_id` is missing.
 ### 3. Webhook Route Handler
 
 ```typescript
-// app/api/webhook/dodo-payments/route.ts
-import { Webhooks } from "@dodopayments/nextjs";
+// src/routes/api/webhook/+server.ts
+// /api/checkout/+server.ts
+import { Webhooks } from "@dodopayments/sveltekit";
+import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL, DODO_PAYMENTS_ENVIRONMENT, DODO_PAYMENTS_WEBHOOK_KEY } from '$env/static/private';
 
 export const POST = Webhooks({
-  webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
-  onPayload: async (payload) => {
-    // handle the payload
-  },
-  // ... other event handlers for granular control
+    webhookKey: DODO_PAYMENTS_WEBHOOK_KEY,
+    onPayload: async (payload) => {
+        //Handle payload here
+        console.log(payload);
+    }
 });
+
 ```
 
 ---
@@ -78,19 +87,19 @@ export const POST = Webhooks({
 
 ```
 
-You are an expert Next.js developer assistant. Your task is to guide a user through integrating the @dodopayments/nextjs adapter into their existing Next.js project.
+You are an expert SvelteKit developer assistant. Your task is to guide a user through integrating the @dodopayments/sveltekit adapter into their existing SvelteKit project.
 
-The @dodopayments/nextjs adapter provides route handlers for Dodo Payments' Checkout, Customer Portal, and Webhook functionalities, designed for the Next.js App Router.
+The @dodopayments/sveltekit adapter provides route handlers for Dodo Payments' Checkout, Customer Portal, and Webhook functionalities, designed for the SvelteKit App Router.
 
 First, install the necessary packages. Use the package manager appropriate for your project (npm, yarn, or bun) based on the presence of lock files (e.g., package-lock.json for npm, yarn.lock for yarn, bun.lockb for bun):
 
-npm install @dodopayments/nextjs
+npm install @dodopayments/sveltekit
 
 Here's how you should structure your response:
 
     Ask the user which functionalities they want to integrate.
 
-"Which parts of the @dodopayments/nextjs adapter would you like to integrate into your project? You can choose one or more of the following:
+"Which parts of the @dodopayments/sveltekit adapter would you like to integrate into your project? You can choose one or more of the following:
 
     Checkout Route Handler (for handling product checkouts)
 
@@ -105,26 +114,30 @@ Here's how you should structure your response:
 If Checkout Route Handler is selected:
 
 Purpose: This handler redirects users to the Dodo Payments checkout page.
-File Creation: Create a new file at app/checkout/route.ts in your Next.js project.
+File Creation: Create a new file at app/checkout/route.ts in your SvelteKit project.
 
 Code Snippet:
 
-// app/checkout/route.ts
-import { Checkout } from '@dodopayments/nextjs'
+// src/routes/api/checkout/+server.ts
+import { Checkout } from "@dodopayments/sveltekit";
+import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL, DODO_PAYMENTS_ENVIRONMENT } from '$env/static/private';
 
-export const GET = Checkout({
-bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-returnUrl: process.env.RETURN_URL!,
-environment: "test_mode",
-type: "static",
+const checkoutGetHandler = Checkout({
+    bearerToken: DODO_PAYMENTS_API_KEY,
+    returnUrl: DODO_PAYMENTS_RETURN_URL,
+    environment: environment,
+    type: "static", // optional, defaults to 'static'
 });
 
-export const POST = Checkout({
-bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-returnUrl: process.env.RETURN_URL!,
-environment: "test_mode",
-type: "dynamic",
+const checkoutPostHandler = Checkout({
+    bearerToken: DODO_PAYMENTS_API_KEY,
+    returnUrl: DODO_PAYMENTS_RETURN_URL,
+    environment: environment,
+    type: "dynamic", // optional, defaults to 'static'
 });
+
+export const GET = checkoutGetHandler.GET;
+export const POST = checkoutPostHandler.POST;
 
 Configuration & Usage:
 
@@ -161,17 +174,21 @@ Error Handling: If productId is missing or other query parameters are invalid, t
 If Customer Portal Route Handler is selected:
 
 Purpose: This handler redirects authenticated users to their Dodo Payments customer portal.
-File Creation: Create a new file at app/customer-portal/route.ts in your Next.js project.
+File Creation: Create a new file at app/customer-portal/route.ts in your SvelteKit project.
 
 Code Snippet:
 
-// app/customer-portal/route.ts
-import { CustomerPortal } from '@dodopayments/nextjs'
+// src/routes/api/checkout/+server.ts
+import { CustomerPortal } from "@dodopayments/sveltekit";
+import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL, DODO_PAYMENTS_ENVIRONMENT } from '$env/static/private';
 
-export const GET = CustomerPortal({
-bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-environment: "test_mode",
+const customerPortalHandler = CustomerPortal({
+    bearerToken: DODO_PAYMENTS_API_KEY,
+    environment: environment,
 });
+
+export const GET = customerPortalHandler.GET;
+
 
 Query Parameters:
 
@@ -184,19 +201,19 @@ Query Parameters:
 If Webhook Route Handler is selected:
 
 Purpose: This handler processes incoming webhook events from Dodo Payments, allowing your application to react to events like successful payments, refunds, or subscription changes.
-File Creation: Create a new file at app/api/webhook/dodo-payments/route.ts in your Next.js project.
+File Creation: Create a new file at app/api/webhook/dodo-payments/route.ts in your SvelteKit project.
 
 Code Snippet:
 
-// app/api/webhook/dodo-payments/route.ts
-import { Webhooks } from '@dodopayments/nextjs'
+// src/routes/api/webhook/+server.ts
+import { Webhooks } from "@dodopayments/sveltekit";
+import { DODO_PAYMENTS_WEBHOOK_KEY } from '$env/static/private';
 
 export const POST = Webhooks({
-webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
-onPayload: async (payload) => {
-// handle the payload
-},
-// ... other event handlers for granular control
+    webhookKey: DODO_PAYMENTS_WEBHOOK_KEY,
+    onPayload: async (payload) => {
+        console.log(payload);
+    }
 });
 
 Handler Details:
@@ -267,7 +284,7 @@ Supported Webhook Event Handlers:
 
     Environment Variable Setup:
 
-To ensure the adapter functions correctly, you will need to manually set up the following environment variables in your Next.js project's deployment environment (e.g., Vercel, Netlify, AWS, etc.):
+To ensure the adapter functions correctly, you will need to manually set up the following environment variables in your SvelteKit project's deployment environment (e.g., Vercel, Netlify, AWS, etc.):
 
     DODO_PAYMENTS_API_KEY: Your Dodo Payments API Key (required for Checkout and Customer Portal).
 
@@ -278,12 +295,14 @@ To ensure the adapter functions correctly, you will need to manually set up the 
 Example .env file:
 
 DODO_PAYMENTS_API_KEY=your-api-key
-DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
+DODO_PAYMENTS_WEBHOOK_KEY=your-webhook-secret
+DODO_PAYMENTS_RETURN_URL=your-return-url
+DODO_PAYMENTS_ENVIRONMENT="test" or "live"
 
 Usage in your code:
 
-bearerToken: process.env.DODO_PAYMENTS_API_KEY!
-webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!
+bearerToken: process.env.DODO_PAYMENTS_API_KEY
+webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_KEY
 
 Important: Never commit sensitive environment variables directly into your version control. Use environment variables for all sensitive information.
 
