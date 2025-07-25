@@ -8,7 +8,10 @@ import {
 } from "@dodopayments/core/webhook";
 import { WebhookPayloadSchema } from "@dodopayments/core/schemas";
 
-export const Webhooks = ({ webhookKey, ...eventHandlers }: WebhookHandlerConfig) => {
+export const Webhooks = ({
+  webhookKey,
+  ...eventHandlers
+}: WebhookHandlerConfig) => {
   const standardWebhook = new StandardWebhook(webhookKey);
 
   return async (request: Request) => {

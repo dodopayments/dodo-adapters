@@ -129,7 +129,8 @@ window.location.href = checkout.url;
 
 ```typescript
 // Redirect to customer portal (requires authentication)
-const { data: customerPortal, error } = await authClient.dodopayments.customer.portal();
+const { data: customerPortal, error } =
+  await authClient.dodopayments.customer.portal();
 if (customerPortal && customerPortal.redirect) {
   window.location.href = customerPortal.url;
 }
@@ -149,13 +150,14 @@ const { data: subscriptions, error } =
   });
 
 // Get customer's payment history
-const { data: payments, error } = await authClient.dodopayments.customer.payments.list({
-  query: {
-    limit: 10,
-    page: 1,
-    status: "succeeded", // Filter by payment status
-  },
-});
+const { data: payments, error } =
+  await authClient.dodopayments.customer.payments.list({
+    query: {
+      limit: 10,
+      page: 1,
+      status: "succeeded", // Filter by payment status
+    },
+  });
 ```
 
 ## Webhooks
