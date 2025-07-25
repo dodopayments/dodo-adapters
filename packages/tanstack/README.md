@@ -225,7 +225,6 @@ File Creation: Create a new file at app/api/webhook/dodo-payments/route.ts in yo
 Code Snippet:
 
 // src/routes/api/webhook.ts
-// routes/api/checkout.ts
 import { Webhooks } from "@dodopayments/tanstack";
 import { createServerFileRoute } from "@tanstack/react-start/server";
 
