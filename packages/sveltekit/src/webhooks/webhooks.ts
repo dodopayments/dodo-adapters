@@ -48,9 +48,12 @@ export const Webhooks = ({
 
     if (!success) {
       console.error("Error parsing webhook payload", error.issues);
-      return new Response(`Error parsing webhook payload: ${error.message}`, {
-        status: 400,
-      });
+      return new Response(
+        `Error parsing webhook payload: ${error.message}`,
+        {
+          status: 400,
+        },
+      );
     }
 
     // do not catch errors here, let them bubble up to the user

@@ -24,7 +24,7 @@ export function CustomerPortal({
     if (sendEmail) {
       params.send_email = sendEmail;
     }
-
+    
     if (!customerId) {
       return new Response("Missing customerId in query parameters", {
         status: 400,

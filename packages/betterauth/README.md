@@ -25,7 +25,7 @@ Add the required environment variables to your `.env` file:
 ```env
 # Get this from your Dodo Payments Dashboard > Developer > API Keys
 DODO_PAYMENTS_API_KEY=your_api_key_here
-# use the webhook endpoint `/api/auth/dodopayments/webhooks` to generate a webhook secret
+# use the webhook endpoint `/api/auth/webhooks/dodopayments` to generate a webhook secret
 # from Dodo Payments Dashboard > Developer > Webhooks
 DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here # Use
 BETTER_AUTH_URL=http://localhost:3000
@@ -104,7 +104,7 @@ export const authClient = createAuthClient({
 
 ```typescript
 // Create checkout with customer details
-const { data: checkout, error } = await authClient.dodopayments.checkout({
+const { data: checkout, error } = await authClient.checkout({
   slug: "premium-plan", // The slug you provided in the checkout configuration
   // product_id: "pdt_xxxxxxxxxxxxxxxxxxxxx", // Alternatively, use the product ID
   customer: {
@@ -129,8 +129,7 @@ window.location.href = checkout.url;
 
 ```typescript
 // Redirect to customer portal (requires authentication)
-const { data: customerPortal, error } =
-  await authClient.dodopayments.customer.portal();
+const { data: customerPortal, error } = await authClient.customer.portal();
 if (customerPortal && customerPortal.redirect) {
   window.location.href = customerPortal.url;
 }
@@ -141,7 +140,7 @@ if (customerPortal && customerPortal.redirect) {
 ```typescript
 // Get customer's subscriptions
 const { data: subscriptions, error } =
-  await authClient.dodopayments.customer.subscriptions.list({
+  await authClient.customer.subscriptions.list({
     query: {
       limit: 10,
       page: 1,
@@ -150,19 +149,18 @@ const { data: subscriptions, error } =
   });
 
 // Get customer's payment history
-const { data: payments, error } =
-  await authClient.dodopayments.customer.payments.list({
-    query: {
-      limit: 10,
-      page: 1,
-      status: "succeeded", // Filter by payment status
-    },
-  });
+const { data: payments, error } = await authClient.customer.payments.list({
+  query: {
+    limit: 10,
+    page: 1,
+    status: "succeeded", // Filter by payment status
+  },
+});
 ```
 
 ## Webhooks
 
-The webhooks plugin handles real-time payment events from Dodo Payments with secure signature verification. If you followed the default better-auth setup, the webhook endpoint will be `/api/auth/dodopayments/webhooks`. Generate a webhook secret for the URL `https://<your-domain>/api/auth/dodopayments/webhooks` and set it in your ENV as follows and use it in the `webhooks` plugin setup.
+The webhooks plugin handles real-time payment events from Dodo Payments with secure signature verification. If you followed the default better-auth setup, the webhook endpoint will be `/api/auth/webhooks/dodopayments`. Generate a webhook secret for the URL `https://<your-domain>/api/auth/webhooks/dodopayments` and set it in your ENV as follows and use it in the `webhooks` plugin setup.
 
 ```env
 DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here
@@ -324,7 +322,7 @@ use: [
 ],
 
 Usage Example:
-const { data: checkout, error } = await authClient.dodopayments.checkout({
+const { data: checkout, error } = await authClient.checkout({
   slug: "premium-plan", // Use the slug from your configuration
   customer: {
     email: "customer@example.com",
@@ -364,13 +362,13 @@ use: [
 
 Usage Examples:
 // Access customer portal
-const { data: customerPortal, error } = await authClient.dodopayments.customer.portal();
+const { data: customerPortal, error } = await authClient.customer.portal();
 if (customerPortal && customerPortal.redirect) {
   window.location.href = customerPortal.url;
 }
 
 // List customer subscriptions
-const { data: subscriptions, error } = await authClient.dodopayments.customer.subscriptions.list({
+const { data: subscriptions, error } = await authClient.customer.subscriptions.list({
   query: {
     limit: 10,
     page: 1,
@@ -379,7 +377,7 @@ const { data: subscriptions, error } = await authClient.dodopayments.customer.su
 });
 
 // List customer payments
-const { data: payments, error } = await authClient.dodopayments.customer.payments.list({
+const { data: payments, error } = await authClient.customer.payments.list({
   query: {
     limit: 10,
     page: 1,
@@ -403,7 +401,7 @@ Ask the user: What is your domain name? Please provide:
 - For development: use "localhost:3000" (or your local port)
 
 STEP 2: After receiving the user's domain name, you will:
-- Generate their webhook URL: https://[USER-DOMAIN]/api/auth/dodopayments/webhooks
+- Generate their webhook URL: https://[USER-DOMAIN]/api/auth/webhooks/dodopayments
 - Provide them with a TODO list for webhook setup in Dodo Payments dashboard
 - Give them the exact environment variable setup instructions
 
@@ -411,7 +409,7 @@ WEBHOOK SETUP TODO LIST (provide this after domain input):
 1. Configure webhook in Dodo Payments Dashboard:
    - Go to Dodo Payments Dashboard > Developer > Webhooks
    - Click "Add Webhook" or "Create Webhook"
-   - Enter webhook URL: https://[USER-DOMAIN]/api/auth/dodopayments/webhooks
+   - Enter webhook URL: https://[USER-DOMAIN]/api/auth/webhooks/dodopayments
    - Select events you want to receive (or select all)
    - Copy the generated webhook secret
 
@@ -577,7 +575,7 @@ IMPORTANT NOTES:
    - Product creation in Dodo Payments dashboard (for checkout plugin)
    - Webhook setup in Dodo Payments dashboard (for webhooks plugin)
    - Domain name collection for webhook URL generation
-5. For webhook plugin: Ask for the user's domain name and generate the exact webhook URL: https://[user-domain]/api/auth/dodopayments/webhooks
+5. For webhook plugin: Ask for the user's domain name and generate the exact webhook URL: https://[user-domain]/api/auth/webhooks/dodopayments
 6. All client methods return { data, error } objects for proper error handling
 7. Use test_mode for development and live_mode for production
 8. The webhook endpoint is automatically created and secured with signature verification (if webhooks plugin is selected)

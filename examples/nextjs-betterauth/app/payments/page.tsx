@@ -41,7 +41,7 @@ export default function PaymentsPage() {
     setError(null);
 
     try {
-      const result = await authClient.dodopayments.customer.payments.list({
+      const result = await authClient.customer.payments.list({
         query: {
           page,
           limit: 10,
