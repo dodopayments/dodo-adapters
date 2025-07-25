@@ -19,8 +19,7 @@ export function Checkout(config: CheckoutHandlerConfig) {
       } catch (e) {
         return new Response("Invalid JSON body", { status: 400 });
       }
-      const { success, data, error } =
-        dynamicCheckoutBodySchema.safeParse(body);
+      const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
       if (!success) {
         return new Response(`Invalid request body.\n ${error.message}`, {
           status: 400,
@@ -42,8 +41,7 @@ export function Checkout(config: CheckoutHandlerConfig) {
           status: 400,
         });
       }
-      const { success, data, error } =
-        checkoutQuerySchema.safeParse(queryParams);
+      const { success, data, error } = checkoutQuerySchema.safeParse(queryParams);
       if (!success) {
         if (error.errors.some((e: any) => e.path.toString() === "productId")) {
           return new Response("Please provide productId query parameter", {

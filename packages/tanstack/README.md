@@ -27,16 +27,18 @@ All the examples below assume you're using Tanstack App Router.
 import { Checkout } from "@dodopayments/tanstack";
 import { createServerFileRoute } from "@tanstack/react-start/server";
 
-export const ServerRoute = createServerFileRoute("/api/checkout").methods({
-  GET: async ({ request }) => {
-    return Checkout({
-      bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-      returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-      environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-      type: "static", // optional, defaults to 'static'
-    })(request);
-  },
-});
+export const ServerRoute = createServerFileRoute("/api/checkout")
+  .methods({
+    GET: async ({ request }) => {
+      return Checkout({
+        bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+        returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+        environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+        type: "static", // optional, defaults to 'static'
+      })(request)
+    }
+  })
+
 ```
 
 ---
@@ -49,16 +51,16 @@ export const ServerRoute = createServerFileRoute("/api/checkout").methods({
 import { CustomerPortal } from "@dodopayments/tanstack";
 import { createServerFileRoute } from "@tanstack/react-start/server";
 
-export const ServerRoute = createServerFileRoute(
-  "/api/customer-portal",
-).methods({
-  GET: async ({ request }) => {
-    return CustomerPortal({
-      bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-      environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-    })(request);
-  },
-});
+export const ServerRoute = createServerFileRoute('/api/customer-portal')
+  .methods({
+    GET: async ({ request }) => {
+      return CustomerPortal({
+        bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+        environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+      })(request)
+    }
+  })
+
 ```
 
 #### Query Parameters
@@ -77,17 +79,19 @@ Returns 400 if `customer_id` is missing.
 import { Webhooks } from "@dodopayments/tanstack";
 import { createServerFileRoute } from "@tanstack/react-start/server";
 
-export const ServerRoute = createServerFileRoute("/api/webhook").methods({
-  POST: async ({ request }) => {
-    return Webhooks({
-      webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_KEY,
-      onPayload: async (payload) => {
-        // Handle Payload here
-        console.log(payload);
-      },
-    })(request);
-  },
-});
+export const ServerRoute = createServerFileRoute('/api/webhook')
+  .methods({
+    POST: async ({ request }) => {
+      return Webhooks({
+        webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_KEY,
+        onPayload: async (payload) => {
+            // Handle Payload here
+            console.log(payload)
+        }
+      })(request)
+    }
+  })
+
 ```
 
 ---

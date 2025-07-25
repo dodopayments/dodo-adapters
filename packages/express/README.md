@@ -18,30 +18,25 @@ npm install @dodopayments/express
 
 ## Quick Start
 
+
 ### 1. Checkout
 
 ```typescript
-import { checkoutHandler } from "@dodopayments/express";
+import { checkoutHandler } from '@dodopayments/express';
 
-app.get(
-  "/api/checkout",
-  checkoutHandler({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-    returnUrl: process.env.RETURN_URL!,
-    environment: "test_mode",
-    type: "static",
-  }),
-);
+app.get('/api/checkout', checkoutHandler({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+  returnUrl: process.env.RETURN_URL!,
+  environment: "test_mode",
+  type: "static"
+}))
 
-app.post(
-  "/api/checkout",
-  checkoutHandler({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-    returnUrl: process.env.RETURN_URL!,
-    environment: "test_mode",
-    type: "dynamic",
-  }),
-);
+app.post('/api/checkout', checkoutHandler({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+  returnUrl: process.env.RETURN_URL!,
+  environment: "test_mode",
+  type: "dynamic"
+}))
 ```
 
 ---
@@ -51,13 +46,11 @@ app.post(
 ```typescript
 import { CustomerPortal } from "@dodopayments/express";
 
-app.get(
-  "/api/customer-portal",
-  CustomerPortal({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-    environment: "test_mode",
-  }),
-);
+app.get('/api/customer-portal', CustomerPortal({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+  environment: "test_mode",
+}))
+
 ```
 
 #### Query Parameters
@@ -75,16 +68,14 @@ Returns 400 if `customer_id` is missing.
 // app/api/webhook/dodo-payments/route.ts
 import { Webhooks } from "@dodopayments/express";
 
-app.post(
-  "/api/webhook",
+app.post('/api/webhook',
   Webhooks({
-    webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
-    onPayload: async (payload) => {
-      // handle the payload
-    },
-    // ... other event handlers for granular control
-  }),
-);
+  webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
+  onPayload: async (payload) => {
+    // handle the payload
+  },
+  // ... other event handlers for granular control
+}))
 ```
 
 ---
@@ -250,4 +241,3 @@ process.env.DODO_PAYMENTS_API_KEY!
 process.env.DODO_PAYMENTS_WEBHOOK_SECRET!
 
 Security Note: Do NOT commit secrets to version control. Use .env files locally and secrets managers in deployment environments (e.g., AWS, Vercel, Heroku, etc.).
-```

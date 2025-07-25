@@ -104,7 +104,7 @@ export default function CheckoutPage() {
       setError(null);
 
       // Use the real product ID from DodoPayments with billing info
-      const result = await authClient.dodopayments.checkout({
+      const result = await authClient.checkout({
         product_id: productId,
         quantity: 1,
         customer: {
