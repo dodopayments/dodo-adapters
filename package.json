@@ -17,7 +17,8 @@
     "rollup-plugin-dts": "^6.2.1",
     "tsup": "^8.5.0",
     "turbo": "^2.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@sindresorhus/tsconfig": "^7.0.0"
   },
   "packageManager": "npm@10.5.0",
   "scripts": {
