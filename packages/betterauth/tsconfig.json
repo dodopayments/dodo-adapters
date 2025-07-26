@@ -1,15 +1,11 @@
 {
-  "extends": "@dodo/typescript-config/base.json",
+  "extends": "@sindresorhus/tsconfig",
   "compilerOptions": {
     "outDir": "dist",
-    "target": "ES2020",
-    "lib": ["es6"],
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "skipLibCheck": true,
+    "declaration": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"]
 }
