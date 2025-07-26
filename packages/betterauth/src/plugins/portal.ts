@@ -29,7 +29,16 @@ export const portal = () => (dodopayments: DodoPayments) => {
           const customers = await dodopayments.customers.list({
             email: ctx.context.session?.user.email,
           });
-          const customer = customers.items[0];
+          let customer = customers.items[0];
+
+          if (!customer) {
+            // upsert the customer, if they don't exist in DodoPayments
+            customer = await createCustomer(
+              dodopayments,
+              ctx.context.session.user.email,
+              ctx.context.session.user.name,
+            );
+          }
 
           const customerSession =
             await dodopayments.customers.customerPortal.create(
@@ -93,7 +102,16 @@ export const portal = () => (dodopayments: DodoPayments) => {
           const customers = await dodopayments.customers.list({
             email: ctx.context.session?.user.email,
           });
-          const customer = customers.items[0];
+          let customer = customers.items[0];
+
+          if (!customer) {
+            // upsert the customer, if they don't exist in DodoPayments
+            customer = await createCustomer(
+              dodopayments,
+              ctx.context.session.user.email,
+              ctx.context.session.user.name,
+            );
+          }
 
           const subscriptions = await dodopayments.subscriptions.list({
             customer_id: customer.customer_id,
@@ -161,7 +179,16 @@ export const portal = () => (dodopayments: DodoPayments) => {
           const customers = await dodopayments.customers.list({
             email: ctx.context.session?.user.email,
           });
-          const customer = customers.items[0];
+          let customer = customers.items[0];
+
+          if (!customer) {
+            // upsert the customer, if they don't exist in DodoPayments
+            customer = await createCustomer(
+              dodopayments,
+              ctx.context.session.user.email,
+              ctx.context.session.user.name,
+            );
+          }
 
           const payments = await dodopayments.payments.list({
             customer_id: customer.customer_id,
@@ -187,3 +214,16 @@ export const portal = () => (dodopayments: DodoPayments) => {
     ),
   };
 };
+
+async function createCustomer(
+  dodopayments: DodoPayments,
+  email: string,
+  name: string,
+) {
+  const customer = await dodopayments.customers.create({
+    email,
+    name,
+  });
+
+  return customer;
+}
