@@ -29,7 +29,7 @@ export default function CustomerPortalPage() {
     setError(null);
 
     try {
-      const result = await authClient.customer.portal();
+      const result = await authClient.dodopayments.customer.portal();
 
       if (result.data && result.data.redirect && result.data.url) {
         window.location.href = result.data.url;

@@ -7,7 +7,7 @@ import { z } from "zod";
 export const portal = () => (dodopayments: DodoPayments) => {
   return {
     portal: createAuthEndpoint(
-      "/customer/portal",
+      "/dodopayments/customer/portal",
       {
         method: "GET",
         use: [sessionMiddleware],
@@ -54,7 +54,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
       },
     ),
     subscriptions: createAuthEndpoint(
-      "/customer/subscriptions/list",
+      "/dodopayments/customer/subscriptions/list",
       {
         method: "GET",
         query: z
@@ -118,7 +118,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
       },
     ),
     payments: createAuthEndpoint(
-      "/customer/payments/list",
+      "/dodopayments/customer/payments/list",
       {
         method: "GET",
         query: z

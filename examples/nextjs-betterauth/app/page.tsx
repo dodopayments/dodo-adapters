@@ -40,11 +40,11 @@ export default function Home() {
           <h3>🛒 Checkout (Dodo Payments)</h3>
           <p>
             <strong>Dynamic Checkout (POST):</strong>{" "}
-            <code>/api/auth/checkout</code>
+            <code>/api/auth/dodopayments/checkout</code>
           </p>
           <p>
             <strong>Static Checkout (GET):</strong>{" "}
-            <code>/api/auth/checkout/static</code>
+            <code>/api/auth/dodopayments/checkout/static</code>
           </p>
           <p>
             These endpoints redirect authenticated users to the Dodo Payments
@@ -55,7 +55,8 @@ export default function Home() {
         <div style={{ marginBottom: "1.5rem" }}>
           <h3>👤 Customer Portal (Dodo Payments)</h3>
           <p>
-            <strong>URL:</strong> <code>/api/auth/customer/portal</code>
+            <strong>URL:</strong>{" "}
+            <code>/api/auth/dodopayments/customer/portal</code>
           </p>
           <p>
             The customer portal endpoint redirects authenticated users to their
@@ -67,11 +68,11 @@ export default function Home() {
           <h3>📊 Customer Data</h3>
           <p>
             <strong>Subscriptions:</strong>{" "}
-            <code>/api/auth/customer/subscriptions/list</code>
+            <code>/api/auth/dodopayments/customer/subscriptions/list</code>
           </p>
           <p>
             <strong>Payments:</strong>{" "}
-            <code>/api/auth/customer/payments/list</code>
+            <code>/api/auth/dodopayments/customer/payments/list</code>
           </p>
           <p>
             These endpoints return the customer's subscription and payment
@@ -82,7 +83,7 @@ export default function Home() {
         <div style={{ marginBottom: "1.5rem" }}>
           <h3>🔗 Webhook</h3>
           <p>
-            <strong>URL:</strong> <code>/api/auth/webhooks/dodopayments</code>
+            <strong>URL:</strong> <code>/api/auth/dodopayments/webhooks</code>
           </p>
           <p>
             This endpoint processes incoming webhook events from Dodo Payments.

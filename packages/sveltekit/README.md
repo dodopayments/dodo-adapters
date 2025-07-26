@@ -25,13 +25,17 @@ All the examples below assume you're using SvelteKit App Router.
 ```typescript
 // src/routes/api/checkout/+server.ts
 import { Checkout } from "@dodopayments/sveltekit";
-import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL, DODO_PAYMENTS_ENVIRONMENT } from '$env/static/private';
+import {
+  DODO_PAYMENTS_API_KEY,
+  DODO_PAYMENTS_RETURN_URL,
+  DODO_PAYMENTS_ENVIRONMENT,
+} from "$env/static/private";
 
 const checkoutGetHandler = Checkout({
-    bearerToken: DODO_PAYMENTS_API_KEY,
-    returnUrl: DODO_PAYMENTS_RETURN_URL,
-    environment: environment,
-    type: "static", // optional, defaults to 'static'
+  bearerToken: DODO_PAYMENTS_API_KEY,
+  returnUrl: DODO_PAYMENTS_RETURN_URL,
+  environment: environment,
+  type: "static", // optional, defaults to 'static'
 });
 export const GET = checkoutGetHandler.GET;
 ```
@@ -44,11 +48,15 @@ export const GET = checkoutGetHandler.GET;
 //
 // src/routes/api/checkout/+server.ts
 import { CustomerPortal } from "@dodopayments/sveltekit";
-import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL, DODO_PAYMENTS_ENVIRONMENT } from '$env/static/private';
+import {
+  DODO_PAYMENTS_API_KEY,
+  DODO_PAYMENTS_RETURN_URL,
+  DODO_PAYMENTS_ENVIRONMENT,
+} from "$env/static/private";
 
 const customerPortalHandler = CustomerPortal({
-    bearerToken: DODO_PAYMENTS_API_KEY,
-    environment: environment,
+  bearerToken: DODO_PAYMENTS_API_KEY,
+  environment: environment,
 });
 
 export const GET = customerPortalHandler.GET;
@@ -69,16 +77,20 @@ Returns 400 if `customer_id` is missing.
 // src/routes/api/webhook/+server.ts
 // /api/checkout/+server.ts
 import { Webhooks } from "@dodopayments/sveltekit";
-import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL, DODO_PAYMENTS_ENVIRONMENT, DODO_PAYMENTS_WEBHOOK_KEY } from '$env/static/private';
+import {
+  DODO_PAYMENTS_API_KEY,
+  DODO_PAYMENTS_RETURN_URL,
+  DODO_PAYMENTS_ENVIRONMENT,
+  DODO_PAYMENTS_WEBHOOK_KEY,
+} from "$env/static/private";
 
 export const POST = Webhooks({
-    webhookKey: DODO_PAYMENTS_WEBHOOK_KEY,
-    onPayload: async (payload) => {
-        //Handle payload here
-        console.log(payload);
-    }
+  webhookKey: DODO_PAYMENTS_WEBHOOK_KEY,
+  onPayload: async (payload) => {
+    //Handle payload here
+    console.log(payload);
+  },
 });
-
 ```
 
 ---

@@ -11,7 +11,7 @@ export const webhooks =
   (options: WebhookHandlerConfig) => (_dodopayments: DodoPayments) => {
     return {
       dodopaymentsWebhooks: createAuthEndpoint(
-        "/webhooks/dodopayments",
+        "/dodopayments/webhooks",
         {
           method: "POST",
           metadata: {

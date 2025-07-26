@@ -43,7 +43,7 @@ export default function SubscriptionsPage() {
     setError(null);
 
     try {
-      const result = await authClient.customer.subscriptions.list({
+      const result = await authClient.dodopayments.customer.subscriptions.list({
         query: {
           page,
           limit: 10,

@@ -34,7 +34,8 @@ const checkoutGetHandler = Checkout({
   type: "static", // optional, defaults to 'static'
 });
 
-export const loader = ({ request }: LoaderFunctionArgs) => checkoutGetHandler(request);
+export const loader = ({ request }: LoaderFunctionArgs) =>
+  checkoutGetHandler(request);
 ```
 
 ---
@@ -46,13 +47,13 @@ export const loader = ({ request }: LoaderFunctionArgs) => checkoutGetHandler(re
 import { CustomerPortal } from "@dodopayments/remix";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 
-
 const customerPortalHandler = CustomerPortal({
   bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-  environment: process.env.DODO_PAYMENTS_ENVIRONMENT
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
 });
 
-export const loader = ({ request }: LoaderFunctionArgs) => customerPortalHandler(request);
+export const loader = ({ request }: LoaderFunctionArgs) =>
+  customerPortalHandler(request);
 ```
 
 #### Query Parameters
@@ -71,17 +72,16 @@ Returns 400 if `customer_id` is missing.
 import { Webhooks } from "@dodopayments/remix";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 
-
 const webhookHandler = Webhooks({
   webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET,
   onPayload: async (payload) => {
     //Handle Payload Here
-    console.log(payload)
-  }
+    console.log(payload);
+  },
 });
 
-
-export const action = ({ request }: LoaderFunctionArgs) => webhookHandler(request);
+export const action = ({ request }: LoaderFunctionArgs) =>
+  webhookHandler(request);
 ```
 
 ---

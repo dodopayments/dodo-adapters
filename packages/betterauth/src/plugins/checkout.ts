@@ -28,7 +28,7 @@ export const checkout =
   (dodopayments: DodoPayments) => {
     return {
       checkout: createAuthEndpoint(
-        "/checkout",
+        "/dodopayments/checkout",
         {
           method: "POST",
           body: dynamicCheckoutBodySchema.extend({
