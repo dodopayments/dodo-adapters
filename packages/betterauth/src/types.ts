@@ -1,6 +1,6 @@
 import type { DodoPayments } from "dodopayments";
 
-import type { UnionToIntersection, User } from "better-auth";
+import type { UnionToIntersection } from "better-auth";
 import type { checkout } from "./plugins/checkout";
 import type { portal } from "./plugins/portal";
 import type { webhooks } from "./plugins/webhooks";
