@@ -73,6 +73,7 @@ export const checkout =
             const checkoutUrl = await buildCheckoutUrl({
               body: {
                 ...ctx.body,
+                product_id: dodoPaymentsProductId,
                 customer: {
                   email: session?.user.email,
                   name: session?.user.name,
