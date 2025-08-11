@@ -36,7 +36,7 @@ export const checkoutQuerySchema = z.object({
   showDiscounts: z.string().optional(),
   // Metadata (allow any key starting with metadata_)
   // We'll handle metadata separately in the handler
-});
+}).catchall(z.unknown());
 
 // Add Zod schema for dynamic checkout body
 export const dynamicCheckoutBodySchema = z
