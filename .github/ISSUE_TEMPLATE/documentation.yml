@@ -1,0 +1,186 @@
+name: 📚 Documentation Issue
+description: Report an issue with documentation or request documentation improvements
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve our documentation! Please provide details about the documentation issue or improvement you'd like to suggest.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you have completed these steps
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Documentation Issue Type
+      description: What type of documentation issue are you reporting?
+      options:
+        - "Missing Documentation"
+        - "Incorrect/Outdated Information"
+        - "Unclear Instructions"
+        - "Broken Links"
+        - "Typos/Grammar"
+        - "Code Examples Don't Work"
+        - "Missing Code Examples"
+        - "Formatting Issues"
+        - "Accessibility Issues"
+        - "Translation Request"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation issue located?
+      options:
+        - "README.md"
+        - "Getting Started Guide"
+        - "API Reference"
+        - "Framework-Specific Docs"
+        - "Examples"
+        - "Contributing Guide"
+        - "Package README"
+        - "Code Comments"
+        - "Website/Blog"
+        - "Other"
+    validations:
+      required: true
+
+  - type: input
+    id: specific_location
+    attributes:
+      label: Specific Location
+      description: Specific file path or URL where the issue is located
+      placeholder: "e.g., docs/api-reference/webhooks.md, packages/nextjs/README.md"
+    validations:
+      required: false
+
+  - type: textarea
+    id: current_content
+    attributes:
+      label: Current Content
+      description: What does the current documentation say? (copy/paste the problematic section)
+      placeholder: |
+        Current documentation content that needs to be fixed:
+        ```
+        Paste current content here
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: issue_description
+    attributes:
+      label: Issue Description
+      description: Detailed description of the documentation issue
+      placeholder: |
+        Describe the documentation issue:
+        - What's wrong or missing?
+        - Why is it confusing or incorrect?
+        - What difficulties did you encounter?
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested_improvement
+    attributes:
+      label: Suggested Improvement
+      description: How should the documentation be improved?
+      placeholder: |
+        Suggested improvements:
+        - What should be added, changed, or removed?
+        - How should it be restructured?
+        - What examples would be helpful?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_content
+    attributes:
+      label: Proposed Content
+      description: If you have specific content suggestions, please provide them
+      placeholder: |
+        Proposed new or updated content:
+        ```markdown
+        Your suggested content here
+        ```
+    validations:
+      required: false
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Target Audience
+      description: Who is the primary audience for this documentation?
+      options:
+        - "Beginners/New Users"
+        - "Intermediate Developers"
+        - "Advanced/Expert Users"
+        - "Framework Maintainers"
+        - "Contributors"
+        - "All Users"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this documentation fix?
+      options:
+        - "Critical - Completely blocks usage"
+        - "High - Causes significant confusion"
+        - "Medium - Minor confusion or improvement"
+        - "Low - Nice to have enhancement"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any additional context that would help us understand the issue
+      placeholder: |
+        Additional context:
+        - Your experience level with the framework
+        - What you were trying to accomplish
+        - Screenshots (if applicable)
+        - Related issues or discussions
+    validations:
+      required: false
+
+  - type: textarea
+    id: examples_needed
+    attributes:
+      label: Examples Needed
+      description: What specific examples would be helpful?
+      placeholder: |
+        Examples that would help:
+        - Code examples for specific scenarios
+        - Integration examples with other tools
+        - Common use case examples
+        - Error handling examples
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contributing
+      description: Would you be willing to help improve this documentation?
+      options:
+        - label: I would be willing to submit a PR to fix this documentation
+        - label: I can provide content review and feedback
+        - label: I can help with proofreading
+        - label: I can provide additional examples

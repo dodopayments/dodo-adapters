@@ -1,0 +1,165 @@
+name: 🐛 Bug Report
+description: Report a bug or issue with Dodo Adapters
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the information below to help us reproduce and fix the issue.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you have completed these steps
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have read the documentation
+          required: true
+        - label: I am using the latest version of the affected package
+          required: true
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Affected Package
+      description: Which package is experiencing the issue?
+      options:
+        - "@dodopayments/core"
+        - "@dodopayments/nextjs"
+        - "@dodopayments/express"
+        - "@dodopayments/fastify"
+        - "@dodopayments/hono"
+        - "@dodopayments/remix"
+        - "@dodopayments/sveltekit"
+        - "@dodopayments/astro"
+        - "@dodopayments/tanstack"
+        - "@dodopayments/nuxt"
+        - "@dodopayments/betterauth"
+        - "Multiple packages"
+        - "Documentation"
+        - "Examples"
+    validations:
+      required: true
+
+  - type: input
+    id: package_version
+    attributes:
+      label: Package Version
+      description: What version of the package are you using?
+      placeholder: "e.g., 0.1.8"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Bug Severity
+      description: How severe is this issue?
+      options:
+        - "Critical - Blocks core functionality"
+        - "High - Significant impact on functionality"
+        - "Medium - Some functionality affected"
+        - "Low - Minor issue or cosmetic"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe what happened and what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+      placeholder: Describe the expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+      placeholder: Describe what actually happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Sample
+      description: Minimal code sample that reproduces the issue
+      placeholder: |
+        ```typescript
+        // Your code here
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: Any relevant error messages or logs
+      placeholder: |
+        ```
+        Paste error logs here
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Information
+      description: Information about your development environment
+      placeholder: |
+        - OS: [e.g., Windows 10, macOS 13, Ubuntu 20.04]
+        - Node.js version: [e.g., 18.17.0]
+        - npm version: [e.g., 9.6.7]
+        - Framework version: [e.g., Next.js 14.0.0]
+        - Browser: [e.g., Chrome 119, Safari 17] (if applicable)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: Screenshots, related issues, etc.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contributing
+      description: Are you willing to help fix this issue?
+      options:
+        - label: I would be willing to submit a PR to fix this issue
+          required: false

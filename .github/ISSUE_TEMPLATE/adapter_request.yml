@@ -1,0 +1,240 @@
+name: 🚀 New Framework Adapter Request
+description: Request support for a new web framework
+title: "[Adapter]: Add support for [Framework Name]"
+labels: ["enhancement", "new-adapter", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for requesting a new framework adapter! Please provide detailed information about the framework to help us evaluate and prioritize this request.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you have completed these steps
+      options:
+        - label: I have searched existing issues to ensure this framework isn't already requested
+          required: true
+        - label: I have checked that this framework isn't already supported
+          required: true
+
+  - type: input
+    id: framework_name
+    attributes:
+      label: Framework Name
+      description: What's the name of the framework?
+      placeholder: "e.g., Solid.js, Qwik, Fresh"
+    validations:
+      required: true
+
+  - type: input
+    id: framework_url
+    attributes:
+      label: Framework URL
+      description: Link to the framework's official website or repository
+      placeholder: "https://github.com/framework/framework"
+    validations:
+      required: true
+
+  - type: input
+    id: framework_version
+    attributes:
+      label: Framework Version
+      description: What version of the framework should we target?
+      placeholder: "e.g., v1.0.0, latest stable"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: framework_requirements
+    attributes:
+      label: Framework Requirements
+      description: Please confirm the framework meets our requirements
+      options:
+        - label: Framework is actively maintained (commits within last 3 months)
+          required: true
+        - label: Framework has TypeScript support or types available
+          required: true
+        - label: Framework has significant adoption (>1k GitHub stars or notable production usage)
+          required: true
+        - label: Framework supports HTTP request/response handling
+          required: true
+
+  - type: textarea
+    id: framework_description
+    attributes:
+      label: Framework Description
+      description: Brief description of the framework and its key features
+      placeholder: |
+        What is this framework?
+        - Key features and benefits
+        - Target use cases
+        - How it differs from existing supported frameworks
+    validations:
+      required: true
+
+  - type: textarea
+    id: request_response_pattern
+    attributes:
+      label: Request/Response Pattern
+      description: How does this framework handle HTTP requests and responses?
+      placeholder: |
+        ```typescript
+        // Example of how the framework handles requests/responses
+        app.post('/api/endpoint', (request, response) => {
+          // Framework-specific request/response handling
+        });
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: routing_pattern
+    attributes:
+      label: Routing Pattern
+      description: How does routing work in this framework?
+      placeholder: |
+        Examples of routing patterns:
+        - File-based routing
+        - Programmatic routing
+        - Middleware patterns
+        - Handler functions
+    validations:
+      required: true
+
+  - type: textarea
+    id: middleware_pattern
+    attributes:
+      label: Middleware/Plugin Pattern
+      description: How does the framework handle middleware or plugins?
+      placeholder: |
+        ```typescript
+        // Example middleware/plugin registration
+        app.use(middleware);
+        // or
+        app.register(plugin, options);
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: typescript_support
+    attributes:
+      label: TypeScript Support
+      description: How well does the framework support TypeScript?
+      placeholder: |
+        TypeScript support details:
+        - Built-in TypeScript support or @types package
+        - Type safety for request/response objects
+        - Generic type support
+        - Any TypeScript-specific patterns
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority_justification
+    attributes:
+      label: Priority Justification
+      description: Why should we prioritize this framework?
+      options:
+        - "High adoption in the community"
+        - "Unique capabilities not covered by existing adapters"
+        - "Significant user demand"
+        - "Strategic partnership or integration"
+        - "Personal/team project need"
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Your Use Case
+      description: How would you use this adapter?
+      placeholder: |
+        Describe your specific use case:
+        - What are you building?
+        - Why did you choose this framework?
+        - What Dodo Payments features do you need?
+    validations:
+      required: true
+
+  - type: textarea
+    id: adapter_api
+    attributes:
+      label: Proposed Adapter API
+      description: How do you envision the adapter API should look for this framework?
+      placeholder: |
+        ```typescript
+        // Proposed API design for this framework
+        import { Checkout, Webhooks, CustomerPortal } from '@dodopayments/framework-name';
+        
+        // Example usage
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: existing_examples
+    attributes:
+      label: Existing Framework Examples
+      description: Links to existing projects or examples using this framework
+      placeholder: |
+        Examples of the framework in use:
+        - Official examples
+        - Popular projects
+        - Documentation examples
+        - Starter templates
+    validations:
+      required: false
+
+  - type: textarea
+    id: community_size
+    attributes:
+      label: Community & Ecosystem
+      description: Information about the framework's community and ecosystem
+      placeholder: |
+        Community information:
+        - GitHub stars, contributors
+        - NPM downloads (if applicable)
+        - Community size (Discord, forums, etc.)
+        - Corporate backing or sponsorship
+        - Notable adopters
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contributing
+      description: Would you be willing to help implement this adapter?
+      options:
+        - label: I would be willing to implement this adapter myself
+        - label: I can provide framework expertise and guidance
+        - label: I can help with testing the adapter
+        - label: I can provide example implementations
+        - label: I can help with documentation
+
+  - type: textarea
+    id: timeline
+    attributes:
+      label: Timeline
+      description: When do you need this adapter?
+      placeholder: |
+        Timeline information:
+        - Is this blocking your project?
+        - When do you plan to go to production?
+        - Any specific deadlines?
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Any other information that would help us evaluate this request
+      placeholder: Add any other context, comparisons to existing frameworks, or additional information
+    validations:
+      required: false

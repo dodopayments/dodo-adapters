@@ -1,0 +1,197 @@
+name: ❓ Question
+description: Ask a question about using Dodo Adapters
+title: "[Question]: "
+labels: ["question", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your question! Please provide as much context as possible to help us give you the best answer.
+        
+        **Note**: For complex implementation questions, consider joining our [Discord community](https://discord.gg/dodopayments) for faster interactive help.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you have completed these steps
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: I have read the relevant documentation
+          required: true
+        - label: I have tried to solve this myself first
+          required: true
+
+  - type: dropdown
+    id: question_type
+    attributes:
+      label: Question Type
+      description: What type of question is this?
+      options:
+        - "Setup/Installation"
+        - "Implementation Help"
+        - "Framework Integration"
+        - "API Usage"
+        - "Error Troubleshooting"
+        - "Best Practices"
+        - "Performance"
+        - "Security"
+        - "Testing"
+        - "Deployment"
+        - "General Usage"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      description: Which framework are you using?
+      options:
+        - "Next.js"
+        - "Express"
+        - "Fastify"
+        - "Hono"
+        - "Remix"
+        - "SvelteKit"
+        - "Astro"
+        - "TanStack Start"
+        - "Nuxt"
+        - "BetterAuth"
+        - "Multiple frameworks"
+        - "Not framework-specific"
+        - "Other/Custom"
+    validations:
+      required: true
+
+  - type: input
+    id: package_version
+    attributes:
+      label: Package Version
+      description: What version of the Dodo Adapters package are you using?
+      placeholder: "e.g., @dodopayments/nextjs@0.1.8"
+    validations:
+      required: false
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: |
+        Please describe your question in detail:
+        - What are you trying to achieve?
+        - What specific issue are you facing?
+        - What have you tried so far?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide context about your project and use case
+      placeholder: |
+        Project context:
+        - What type of application are you building?
+        - What payment functionality do you need?
+        - Any specific requirements or constraints?
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_code
+    attributes:
+      label: Current Code
+      description: Share your current implementation (remove sensitive information)
+      placeholder: |
+        ```typescript
+        // Your current code here (remove API keys and sensitive data)
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe what you expected to happen
+    validations:
+      required: false
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happened
+    validations:
+      required: false
+
+  - type: textarea
+    id: error_messages
+    attributes:
+      label: Error Messages
+      description: Any error messages or logs you're seeing
+      placeholder: |
+        ```
+        Paste error messages here (remove sensitive information)
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Your development environment details
+      placeholder: |
+        Environment details:
+        - OS: [e.g., Windows 10, macOS 13, Ubuntu 20.04]
+        - Node.js version: [e.g., 18.17.0]
+        - Package manager: [e.g., npm 9.6.7, pnpm 8.6.0]
+        - Framework version: [e.g., Next.js 14.0.0]
+        - Environment: [development/production]
+    validations:
+      required: false
+
+  - type: textarea
+    id: what_tried
+    attributes:
+      label: What Have You Tried?
+      description: What solutions have you already attempted?
+      placeholder: |
+        Solutions I've tried:
+        - Searched documentation for X
+        - Tried approach Y
+        - Looked at example Z
+        - Checked similar issues
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this question for you?
+      options:
+        - "Critical - Blocking my project"
+        - "High - Slowing down development"
+        - "Medium - Would like to resolve soon"
+        - "Low - General curiosity"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: help_improve
+    attributes:
+      label: Help Improve Documentation
+      description: Would you be willing to help improve the documentation based on the answer?
+      options:
+        - label: I would be willing to submit a documentation PR based on the answer
+        - label: I can help review documentation improvements
+        - label: I can suggest where this information should be documented

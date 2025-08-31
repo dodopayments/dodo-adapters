@@ -1,135 +1,177 @@
-# Turborepo starter
+# Dodo Payments Adapters
 
-This Turborepo starter is maintained by the Turborepo core team.
+<p align="left">
+  <a href="https://discord.gg/bYqAp4ayYh">
+    <img src="https://img.shields.io/badge/chat-on%20discord-7289DA.svg" alt="Chat on Discord" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-GPLv3-blue.svg" alt="License: GPLv3" />
+  </a>
+</p>
 
-## Using this example
 
-Run the following command:
+Framework-specific adapters for seamless [Dodo Payments](https://dodopayments.com) integration across web frameworks.
 
-```sh
-npx create-turbo@latest
+## 🚀 Quick Start
+
+```bash
+# Choose your framework
+npm install @dodopayments/nextjs     # Next.js
+npm install @dodopayments/express    # Express
+npm install @dodopayments/fastify    # Fastify
+npm install @dodopayments/hono       # Hono
 ```
 
-## What's inside?
+### Basic Setup
 
-This Turborepo includes the following packages/apps:
+```typescript
+// Next.js example - app/api/checkout/route.ts
+import { Checkout, Webhooks } from '@dodopayments/nextjs';
 
-### Apps and Packages
+export const POST = Checkout({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+  returnUrl: "https://yourapp.com/success",
+});
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+export const POST = Webhooks({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+  webhookSecret: process.env.DODO_WEBHOOKS_SECRET!,
+  onPaymentCompleted: async (payload) => {
+    // Handle payment success
+  },
+});
+```
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## 📦 Available Adapters
 
-### Utilities
+| Framework | Package | Status |
+|-----------|---------|--------|
+| Next.js | `@dodopayments/nextjs` | ✅ |
+| Express | `@dodopayments/express` | ✅ |
+| Fastify | `@dodopayments/fastify` | ✅ |
+| Hono | `@dodopayments/hono` | ✅ |
+| Remix | `@dodopayments/remix` | ✅ |
+| SvelteKit | `@dodopayments/sveltekit` | ✅ |
+| Astro | `@dodopayments/astro` | ✅ |
+| TanStack | `@dodopayments/tanstack` | ✅ |
+| Nuxt | `@dodopayments/nuxt` | ✅ |
+| BetterAuth | `@dodopayments/betterauth` | ✅ |
 
-This Turborepo has some additional tools already setup for you:
+## 🔧 Features
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- **🎯 Framework Agnostic**: Unified API across all frameworks
+- **🔒 Type-Safe**: Full TypeScript support with strict typing
+- **⚡ Easy Integration**: Minimal setup, maximum functionality
+- **🔐 Secure**: Built-in webhook verification and validation
+- **📊 Complete**: Checkout, webhooks, and customer portal
 
-### Build
+## 📚 Documentation
 
-To build all apps and packages, run the following command:
+- **[Getting Started](./docs/getting-started.md)** - Installation and setup
+- **[Core Concepts](./docs/core-concepts.md)** - Architecture overview
+- **[API Reference](./docs/api-reference/)** - Complete API documentation
+- **[Examples](./docs/examples/)** - Working code examples
+- **[Framework Guides](./docs/adapters/)** - Framework-specific documentation
+
+## 🏗️ Project Structure
 
 ```
-cd my-turborepo
+packages/
+├── core/                   # Shared functionality and types
+├── nextjs/                # Next.js adapter (App & Pages Router)
+├── express/               # Express middleware
+├── fastify/               # Fastify plugin
+├── hono/                  # Hono adapter
+├── remix/                 # Remix action/loader support
+├── sveltekit/             # SvelteKit hooks
+├── astro/                 # Astro endpoints
+├── tanstack/              # TanStack Start adapter
+├── nuxt/                  # Nuxt 3 server routes
+└── betterauth/            # BetterAuth plugin
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+examples/
+├── nextjs-basic/          # Basic Next.js implementation
+└── nextjs-betterauth/     # Next.js + BetterAuth integration
+```
+
+## 🛠️ Development
+
+### Setup
+
+```bash
+# Clone repository
+git clone https://github.com/dodopayments/dodo-adapters.git
+cd dodo-adapters
+
+# Install dependencies
+npm install
+
+# Build all packages
+npm run build
+
+# Run tests
+npm test
+
+# Start development
+npm run dev
+```
+
+### Commands
+
+```bash
+# Build all packages
 turbo build
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+# Build specific package
+turbo build --filter=@dodopayments/nextjs
+
+# Run tests
+turbo test
+
+# Type checking
+turbo typecheck
+
+# Linting
+turbo lint
+
+# Format code
+turbo format
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## 🧪 Testing
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+Each adapter includes comprehensive test coverage:
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+- **Unit Tests**: Core functionality and validation
+- **Integration Tests**: Framework-specific implementations
+- **E2E Tests**: Complete checkout flows (examples)
 
-### Develop
+```bash
+# Run all tests
+npm test
 
-To develop all apps and packages, run the following command:
+# Run specific package tests
+npm test --filter=@dodopayments/nextjs
 
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+# E2E tests (examples)
+npm run test:e2e
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## 🤝 Contributing
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass (`npm test`)
+6. Commit changes (`git commit -m 'Add amazing feature'`)
+7. Push to branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+See [Contributing Guide](./CONTRIBUTING.md) for detailed instructions on adding new framework adapters.
 
-### Remote Caching
+## 📄 License
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+GPL v3 License - see [LICENSE](./LICENSE) for details.
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+This project is licensed under the GNU General Public License v3.0. You may copy, distribute and modify the software as long as you track changes/dates in source files. Any modifications to or software including (via compiler) GPL-licensed code must also be made available under the GPL along with build & install instructions.

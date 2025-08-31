@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discord Community
+    url: https://discord.gg/dodopayments
+    about: Join our Discord community for quick help and discussions
+  - name: 📖 Documentation
+    url: https://github.com/dodopayments/dodo-adapters/tree/main/docs
+    about: Check our comprehensive documentation
+  - name: 🌐 Dodo Payments API Documentation
+    url: https://docs.dodopayments.com
+    about: Official Dodo Payments API documentation
+  - name: 💼 Commercial Support
+    url: mailto:support@dodopayments.com
+    about: Contact us for commercial support and partnerships
