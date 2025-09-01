@@ -4,9 +4,9 @@ import type { DodoPaymentsEndpoints, DodoPaymentsOptions } from "./types";
 
 export { dodopaymentsClient } from "./client";
 
-export * from "./plugins/portal";
-export * from "./plugins/checkout";
-export * from "./plugins/webhooks";
+export { portal } from "./plugins/portal";
+export { checkout, CheckoutOptions } from "./plugins/checkout";
+export { webhooks } from "./plugins/webhooks";
 
 export const dodopayments = (options: DodoPaymentsOptions) => {
   const plugins = options.use
