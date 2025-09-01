@@ -2,12 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.0] - 2023-05-25
+## [1.1.1] - 2025-07-27
 
 ### Fixed
 
-- BREAKING CHANGE: Added `dodopayments` prefix to all endpoints and actions to prevent conflicts with other payments related plugins.
+- Specify missing `product_id` parameter for subscription checkouts.
 
-## [0.1.1] - 2023-05-23
+## [1.1.0] - 2025-07-27
 
-- Initial release
+### Chore
+
+- Explicitly specify `@dodopayments/core` version.
+
+## [1.0.2] - 2025-07-27
+
+### Fixed
+
+- Build using `tsc` and disable CJS compilation.
+
+## [1.0.0] - 2025-07-26
+
+### Breaking
+
+- Add `dodopayments` prefix to all endpoints and routes to avoid conflicts with other payment-related plugins.
+
+## [0.1.1] - 2025-07-18
+
+### Docs
+
+- Improve README and documentation.
+
+## [0.1.0] - 2025-07-18
+
+### Added
+
+- Initial release of the BetterAuth adapter.
