@@ -50,7 +50,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
 
     let url = "";
     try {
-      url = await buildCheckoutUrl({ body: data, ...config});
+      url = await buildCheckoutUrl({ body: data, ...config });
     } catch (error: any) {
       return c.text(error.message, 400);
     }

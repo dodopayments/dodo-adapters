@@ -6,37 +6,39 @@ export type CheckoutHandlerConfig = Pick<
   "bearerToken" | "environment"
 > & { returnUrl?: string; type?: "dynamic" | "static" };
 
-export const checkoutQuerySchema = z.object({
-  productId: z.string(),
-  quantity: z.string().optional(),
-  // Customer fields
-  fullName: z.string().optional(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  email: z.string().optional(),
-  country: z.string().optional(),
-  addressLine: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zipCode: z.string().optional(),
-  // Disable flags
-  disableFullName: z.string().optional(),
-  disableFirstName: z.string().optional(),
-  disableLastName: z.string().optional(),
-  disableEmail: z.string().optional(),
-  disableCountry: z.string().optional(),
-  disableAddressLine: z.string().optional(),
-  disableCity: z.string().optional(),
-  disableState: z.string().optional(),
-  disableZipCode: z.string().optional(),
-  // Advanced controls
-  paymentCurrency: z.string().optional(),
-  showCurrencySelector: z.string().optional(),
-  paymentAmount: z.string().optional(),
-  showDiscounts: z.string().optional(),
-  // Metadata (allow any key starting with metadata_)
-  // We'll handle metadata separately in the handler
-}).catchall(z.unknown());
+export const checkoutQuerySchema = z
+  .object({
+    productId: z.string(),
+    quantity: z.string().optional(),
+    // Customer fields
+    fullName: z.string().optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    email: z.string().optional(),
+    country: z.string().optional(),
+    addressLine: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zipCode: z.string().optional(),
+    // Disable flags
+    disableFullName: z.string().optional(),
+    disableFirstName: z.string().optional(),
+    disableLastName: z.string().optional(),
+    disableEmail: z.string().optional(),
+    disableCountry: z.string().optional(),
+    disableAddressLine: z.string().optional(),
+    disableCity: z.string().optional(),
+    disableState: z.string().optional(),
+    disableZipCode: z.string().optional(),
+    // Advanced controls
+    paymentCurrency: z.string().optional(),
+    showCurrencySelector: z.string().optional(),
+    paymentAmount: z.string().optional(),
+    showDiscounts: z.string().optional(),
+    // Metadata (allow any key starting with metadata_)
+    // We'll handle metadata separately in the handler
+  })
+  .catchall(z.unknown());
 
 // Add Zod schema for dynamic checkout body
 export const dynamicCheckoutBodySchema = z

@@ -14,15 +14,15 @@ export const CustomerPortal = ({
     // Extract customerId from query parameters
     const customerId = c.req.query("customer_id");
     const sendEmail = c.req.query("send_email");
-    
+
     const params = {
       send_email: false,
     };
-    
+
     if (sendEmail === "true") {
       params.send_email = true;
     }
-    
+
     if (!customerId) {
       return c.text("Missing customerId in query parameters", 400);
     }
