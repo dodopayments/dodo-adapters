@@ -18,21 +18,20 @@ npm install @dodopayments/fastify
 
 ## Quick Start
 
-
 ### 1. Checkout
 
 ```typescript
-import { Checkout } from '@dodopayments/fastify';
+import { Checkout } from "@dodopayments/fastify";
 
-const fastify = Fastify({})
+const fastify = Fastify({});
 const checkoutGet = Checkout({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'static'
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  type: "static",
 });
 
-fastify.get('/api/checkout', checkoutGet.getHandler);
+fastify.get("/api/checkout", checkoutGet.getHandler);
 ```
 
 ---
@@ -42,13 +41,12 @@ fastify.get('/api/checkout', checkoutGet.getHandler);
 ```typescript
 import { CustomerPortal } from "@dodopayments/fastify";
 
-const fastify = Fastify({})
+const fastify = Fastify({});
 const customerPortalHandler = CustomerPortal({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-    environment: process.env.DODO_PAYMENTS_ENVIRONMENT
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
 });
-fastify.get('/api/customer-portal', customerPortalHandler);
-
+fastify.get("/api/customer-portal", customerPortalHandler);
 ```
 
 #### Query Parameters
@@ -63,22 +61,27 @@ Returns 400 if `customer_id` is missing.
 ### 3. Webhook Route Handler
 
 ```typescript
+import Fastify from "fastify";
+import { Webhooks } from "@dodopayments/fastify";
 
-import Fastify from 'fastify'
-import { Webhooks } from '@dodopayments/fastify'
-
-const fastify = Fastify({})
-fastify.addContentTypeParser('application/json', { parseAs: 'string' }, function (req, body, done) {
-    done(null, body)
-})
-fastify.post('/api/webhooks', Webhooks({
-  webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_KEY,
-  onPayload: async (payload) => {
-    // Handle Payload Here
-    console.log(payload)
-  }
-}));
-
+const fastify = Fastify({});
+fastify.addContentTypeParser(
+  "application/json",
+  { parseAs: "string" },
+  function (req, body, done) {
+    done(null, body);
+  },
+);
+fastify.post(
+  "/api/webhooks",
+  Webhooks({
+    webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_KEY,
+    onPayload: async (payload) => {
+      // Handle Payload Here
+      console.log(payload);
+    },
+  }),
+);
 ```
 
 ---
@@ -260,3 +263,4 @@ process.env.DODO_PAYMENTS_API_KEY
 process.env.DODO_PAYMENTS_WEBHOOK_KEY
 
 Security Note: Do NOT commit secrets to version control. Use .env files locally and secrets managers in deployment environments (e.g., AWS, Vercel, Heroku, etc.).
+```

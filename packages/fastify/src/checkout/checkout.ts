@@ -19,9 +19,13 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
 
     if (!success) {
       if (error.errors.some((e: any) => e.path.toString() === "productId")) {
-        return reply.status(400).send("Please provide productId query parameter");
+        return reply
+          .status(400)
+          .send("Please provide productId query parameter");
       }
-      return reply.status(400).send(`Invalid query parameters.\n ${error.message}`);
+      return reply
+        .status(400)
+        .send(`Invalid query parameters.\n ${error.message}`);
     }
 
     let url = "";
@@ -51,7 +55,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
     } catch (error: any) {
       return reply.status(400).send(error.message);
     }
-    
+
     return reply.redirect(url);
   };
 

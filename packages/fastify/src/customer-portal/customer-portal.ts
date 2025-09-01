@@ -12,7 +12,10 @@ export const CustomerPortal = ({
 }: CustomerPortalConfig) => {
   const getHandler = async (request: FastifyRequest, reply: FastifyReply) => {
     // Extract customerId from query parameters
-    const { customer_id: customerId, send_email } = request.query as Record<string, string>;
+    const { customer_id: customerId, send_email } = request.query as Record<
+      string,
+      string
+    >;
 
     const params = {
       send_email: false,

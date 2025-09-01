@@ -18,22 +18,21 @@ npm install @dodopayments/hono
 
 ## Quick Start
 
-
 ### 1. Checkout
 
 ```typescript
-import { Checkout } from '@dodopayments/hono';
-import { Hono } from 'hono'
+import { Checkout } from "@dodopayments/hono";
+import { Hono } from "hono";
 
-const app = new Hono()
+const app = new Hono();
 app.get(
   "/api/checkout",
   Checkout({
     bearerToken: process.env.DODO_PAYMENTS_API_KEY,
     environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
     returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'static'
-  })
+    type: "static",
+  }),
 );
 ```
 
@@ -43,18 +42,16 @@ app.get(
 
 ```typescript
 import { CustomerPortal } from "@dodopayments/hono";
-import { Hono } from 'hono'
+import { Hono } from "hono";
 
-const app = new Hono()
+const app = new Hono();
 app.get(
   "/api/customer-portal",
   CustomerPortal({
     bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-    environment: process.env.DODO_PAYMENTS_ENVIRONMENT
-  })
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  }),
 );
-
-
 ```
 
 #### Query Parameters
@@ -69,23 +66,20 @@ Returns 400 if `customer_id` is missing.
 ### 3. Webhook Route Handler
 
 ```typescript
+import { Hono } from "hono";
+import { Webhooks } from "@dodopayments/hono";
 
-import { Hono } from 'hono'
-import { Webhooks } from '@dodopayments/hono'
-
-const app = new Hono()
+const app = new Hono();
 app.post(
   "/api/webhooks",
   Webhooks({
     webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_KEY,
     onPayload: async (payload) => {
       // Handle Payload Here
-      console.log(payload)
-    }
-  })
+      console.log(payload);
+    },
+  }),
 );
-
-
 ```
 
 ---
@@ -272,3 +266,4 @@ process.env.DODO_PAYMENTS_API_KEY
 process.env.DODO_PAYMENTS_WEBHOOK_KEY
 
 Security Note: Do NOT commit secrets to version control. Use .env files locally and secrets managers in deployment environments (e.g., AWS, Vercel, Heroku, etc.).
+```

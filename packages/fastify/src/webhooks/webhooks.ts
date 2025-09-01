@@ -21,15 +21,15 @@ export const Webhooks = ({
     }
 
     const headers = {
-      "webhook-id": Array.isArray(req.headers["webhook-id"]) 
-        ? req.headers["webhook-id"][0] ?? "" 
-        : req.headers["webhook-id"] ?? "",
-      "webhook-timestamp": Array.isArray(req.headers["webhook-timestamp"]) 
-        ? req.headers["webhook-timestamp"][0] ?? "" 
-        : req.headers["webhook-timestamp"] ?? "",
-      "webhook-signature": Array.isArray(req.headers["webhook-signature"]) 
-        ? req.headers["webhook-signature"][0] ?? "" 
-        : req.headers["webhook-signature"] ?? "",
+      "webhook-id": Array.isArray(req.headers["webhook-id"])
+        ? (req.headers["webhook-id"][0] ?? "")
+        : (req.headers["webhook-id"] ?? ""),
+      "webhook-timestamp": Array.isArray(req.headers["webhook-timestamp"])
+        ? (req.headers["webhook-timestamp"][0] ?? "")
+        : (req.headers["webhook-timestamp"] ?? ""),
+      "webhook-signature": Array.isArray(req.headers["webhook-signature"])
+        ? (req.headers["webhook-signature"][0] ?? "")
+        : (req.headers["webhook-signature"] ?? ""),
     };
 
     const rawBody = req.body as string;
@@ -52,9 +52,9 @@ export const Webhooks = ({
 
     if (!success) {
       console.error("Error parsing webhook payload", error.issues);
-      return reply.status(400).send(
-        `Error parsing webhook payload: ${error.message}`
-      );
+      return reply
+        .status(400)
+        .send(`Error parsing webhook payload: ${error.message}`);
     }
 
     // do not catch errors here, let them bubble up to the user
