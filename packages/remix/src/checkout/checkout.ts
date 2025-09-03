@@ -3,6 +3,7 @@ import {
   CheckoutHandlerConfig,
   checkoutQuerySchema,
   dynamicCheckoutBodySchema,
+  checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
 
 /**
@@ -12,27 +13,49 @@ import {
 export function Checkout(config: CheckoutHandlerConfig) {
   return async function (request: Request) {
     if (request.method === "POST") {
-      // Handle dynamic checkout (POST)
+      // Handle dynamic checkout and checkout sessions (POST)
       let body: any;
       try {
         body = await request.json();
       } catch (e) {
         return new Response("Invalid JSON body", { status: 400 });
       }
-      const { success, data, error } =
-        dynamicCheckoutBodySchema.safeParse(body);
-      if (!success) {
-        return new Response(`Invalid request body.\n ${error.message}`, {
-          status: 400,
-        });
+
+      if (config.type === "dynamic") {
+        // Handle dynamic checkout
+        const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
+        if (!success) {
+          return new Response(`Invalid request body.\n ${error.message}`, {
+            status: 400,
+          });
+        }
+        let url = "";
+        try {
+          url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+        } catch (error: any) {
+          return new Response(error.message, { status: 400 });
+        }
+        return Response.json({ checkout_url: url });
+      } else {
+        // Handle checkout session
+        const { success, data, error } = checkoutSessionPayloadSchema.safeParse(body);
+        if (!success) {
+          return new Response(`Invalid checkout session payload.\n ${error.message}`, {
+            status: 400,
+          });
+        }
+        let url = "";
+        try {
+          url = await buildCheckoutUrl({
+            sessionPayload: data,
+            ...config,
+            type: "session"
+          });
+        } catch (error: any) {
+          return new Response(error.message, { status: 400 });
+        }
+        return Response.json({ checkout_url: url });
       }
-      let url = "";
-      try {
-        url = await buildCheckoutUrl({ body: data, ...config });
-      } catch (error: any) {
-        return new Response(error.message, { status: 400 });
-      }
-      return Response.redirect(url, 307);
     } else {
       // Handle static checkout (GET)
       const { searchParams } = new URL(request.url);
@@ -60,7 +83,7 @@ export function Checkout(config: CheckoutHandlerConfig) {
       } catch (error: any) {
         return new Response(error.message, { status: 400 });
       }
-      return Response.redirect(url, 307);
+      return Response.json({ checkout_url: url });
     }
   };
 }

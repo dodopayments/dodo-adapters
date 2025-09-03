@@ -4,6 +4,7 @@ import {
   CheckoutHandlerConfig,
   checkoutQuerySchema,
   dynamicCheckoutBodySchema,
+  checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
 
 export const Checkout = (config: CheckoutHandlerConfig): APIRoute => {
@@ -38,7 +39,7 @@ export const Checkout = (config: CheckoutHandlerConfig): APIRoute => {
       return new Response(error.message, { status: 400 });
     }
 
-    return Response.redirect(url, 307);
+    return Response.json({ checkout_url: url });
   };
 
   const postHandler = async ({ request }: APIContext) => {
@@ -49,21 +50,45 @@ export const Checkout = (config: CheckoutHandlerConfig): APIRoute => {
       return new Response("Invalid JSON body", { status: 400 });
     }
 
-    const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
+    if (config.type === "dynamic") {
+      // Handle dynamic checkout
+      const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
 
-    if (!success) {
-      return new Response(`Invalid request body.\n ${error.message}`, {
-        status: 400,
-      });
-    }
+      if (!success) {
+        return new Response(`Invalid request body.\n ${error.message}`, {
+          status: 400,
+        });
+      }
 
-    let url = "";
-    try {
-      url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
-    } catch (error: any) {
-      return new Response(error.message, { status: 400 });
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+      } catch (error: any) {
+        return new Response(error.message, { status: 400 });
+      }
+      return Response.json({ checkout_url: url });
+    } else {
+      // Handle checkout session
+      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(body);
+
+      if (!success) {
+        return new Response(`Invalid checkout session payload.\n ${error.message}`, {
+          status: 400,
+        });
+      }
+
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({
+          sessionPayload: data,
+          ...config,
+          type: "session"
+        });
+      } catch (error: any) {
+        return new Response(error.message, { status: 400 });
+      }
+      return Response.json({ checkout_url: url });
     }
-    return Response.redirect(url, 307);
   };
 
   return (context: APIContext) => {

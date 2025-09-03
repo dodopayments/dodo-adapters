@@ -40,7 +40,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       return new NextResponse(error.message, { status: 400 });
     }
 
-    return NextResponse.redirect(url);
+    return NextResponse.json({ checkout_url: url });
   };
 
   const postHandler = async (req: NextRequest) => {
@@ -66,7 +66,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       } catch (error: any) {
         return new NextResponse(error.message, { status: 400 });
       }
-      return NextResponse.redirect(url);
+      return NextResponse.json({ checkout_url: url });
     } else {
       // Handle checkout session
       const { success, data, error } = checkoutSessionPayloadSchema.safeParse(body);
@@ -87,7 +87,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       } catch (error: any) {
         return new NextResponse(error.message, { status: 400 });
       }
-      return NextResponse.redirect(url);
+      return NextResponse.json({ checkout_url: url });
     }
   };
 

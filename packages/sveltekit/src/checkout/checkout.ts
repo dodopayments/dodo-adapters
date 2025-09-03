@@ -5,6 +5,7 @@ import {
   type CheckoutHandlerConfig,
   checkoutQuerySchema,
   dynamicCheckoutBodySchema,
+  checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
 
 export const Checkout = (config: CheckoutHandlerConfig) => {
@@ -36,10 +37,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       throw error(400, err.message);
     }
 
-    return new Response(null, {
-      status: 302,
-      headers: { Location: urlStr },
-    });
+    return Response.json({ checkout_url: urlStr });
   };
 
   const postHandler: RequestHandler = async (event: RequestEvent) => {
@@ -50,27 +48,51 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       throw error(400, "Invalid JSON body");
     }
 
-    const {
-      success,
-      data,
-      error: zodError,
-    } = dynamicCheckoutBodySchema.safeParse(body);
+    if (config.type === "dynamic") {
+      // Handle dynamic checkout
+      const {
+        success,
+        data,
+        error: zodError,
+      } = dynamicCheckoutBodySchema.safeParse(body);
 
-    if (!success) {
-      throw error(400, `Invalid request body.\n ${zodError.message}`);
+      if (!success) {
+        throw error(400, `Invalid request body.\n ${zodError.message}`);
+      }
+
+      let urlStr = "";
+      try {
+        urlStr = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+      } catch (err: any) {
+        throw error(400, err.message);
+      }
+
+      return Response.json({ checkout_url: urlStr });
+    } else {
+      // Handle checkout session
+      const {
+        success,
+        data,
+        error: zodError,
+      } = checkoutSessionPayloadSchema.safeParse(body);
+
+      if (!success) {
+        throw error(400, `Invalid checkout session payload.\n ${zodError.message}`);
+      }
+
+      let urlStr = "";
+      try {
+        urlStr = await buildCheckoutUrl({
+          sessionPayload: data,
+          ...config,
+          type: "session"
+        });
+      } catch (err: any) {
+        throw error(400, err.message);
+      }
+
+      return Response.json({ checkout_url: urlStr });
     }
-
-    let urlStr = "";
-    try {
-      urlStr = await buildCheckoutUrl({ body: data, ...config });
-    } catch (err: any) {
-      throw error(400, err.message);
-    }
-
-    return new Response(null, {
-      status: 302,
-      headers: { Location: urlStr },
-    });
   };
 
   // SvelteKit expects named exports for HTTP verbs
