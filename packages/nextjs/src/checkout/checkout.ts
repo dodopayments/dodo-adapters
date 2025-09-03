@@ -4,7 +4,9 @@ import {
   CheckoutHandlerConfig,
   checkoutQuerySchema,
   dynamicCheckoutBodySchema,
+  checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
+
 
 export const Checkout = (config: CheckoutHandlerConfig) => {
   const getHandler = async (req: NextRequest) => {
@@ -49,21 +51,44 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       return new NextResponse("Invalid JSON body", { status: 400 });
     }
 
-    const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
+    if (config.type === "dynamic") {
+      // Handle dynamic checkout
+      const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
+      if (!success) {
+        return new NextResponse(`Invalid request body.\n ${error.message}`, {
+          status: 400,
+        });
+      }
 
-    if (!success) {
-      return new NextResponse(`Invalid request body.\n ${error.message}`, {
-        status: 400,
-      });
-    }
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+      } catch (error: any) {
+        return new NextResponse(error.message, { status: 400 });
+      }
+      return NextResponse.redirect(url);
+    } else {
+      // Handle checkout session
+      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(body);
 
-    let url = "";
-    try {
-      url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
-    } catch (error: any) {
-      return new NextResponse(error.message, { status: 400 });
+      if (!success) {
+        return new NextResponse(`Invalid checkout session payload.\n ${error.message}`, {
+          status: 400,
+        });
+      }
+
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({
+          sessionPayload: data,
+          ...config,
+          type: "session"
+        });
+      } catch (error: any) {
+        return new NextResponse(error.message, { status: 400 });
+      }
+      return NextResponse.redirect(url);
     }
-    return NextResponse.redirect(url);
   };
 
   return (req: NextRequest) => {

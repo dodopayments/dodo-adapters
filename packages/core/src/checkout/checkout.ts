@@ -4,7 +4,7 @@ import DodoPayments, { ClientOptions } from "dodopayments";
 export type CheckoutHandlerConfig = Pick<
   ClientOptions,
   "bearerToken" | "environment"
-> & { returnUrl?: string; type?: "dynamic" | "static" };
+> & { returnUrl?: string; type?: "dynamic" | "static" | "session" };
 
 export const checkoutQuerySchema = z
   .object({
@@ -85,9 +85,207 @@ export const dynamicCheckoutBodySchema = z
   })
   .catchall(z.unknown());
 
+// ========================================
+// CHECKOUT SESSIONS SCHEMAS & TYPES
+// ========================================
+
+// Product cart item schema for checkout sessions
+export const checkoutSessionProductCartItemSchema = z.object({
+  product_id: z.string().min(1, "Product ID is required"),
+  quantity: z.number().int().positive("Quantity must be a positive integer"),
+});
+
+// Customer information schema for checkout sessions
+export const checkoutSessionCustomerSchema = z.object({
+  email: z.string().email().optional(),
+  name: z.string().min(1).optional(),
+  phone_number: z.string().optional(),
+}).optional();
+
+// Billing address schema for checkout sessions
+export const checkoutSessionBillingAddressSchema = z.object({
+  street: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().length(2, "Country must be a 2-letter ISO code"),
+  zipcode: z.string().optional(),
+}).optional();
+
+// Payment method types enum based on Dodo Payments documentation
+export const paymentMethodTypeSchema = z.enum([
+  "credit",
+  "debit", 
+  "upi_collect",
+  "upi_intent",
+  "apple_pay",
+  "google_pay",
+  "amazon_pay",
+  "klarna",
+  "affirm",
+  "afterpay_clearpay",
+  "sepa",
+  "ach"
+]);
+
+// Customization options schema
+export const checkoutSessionCustomizationSchema = z.object({
+  theme: z.enum(["light", "dark", "system"]).optional(),
+  show_order_details: z.boolean().optional(),
+  show_on_demand_tag: z.boolean().optional(),
+}).optional();
+
+// Feature flags schema
+export const checkoutSessionFeatureFlagsSchema = z.object({
+  allow_currency_selection: z.boolean().optional(),
+  allow_discount_code: z.boolean().optional(),
+  allow_phone_number_collection: z.boolean().optional(),
+  allow_tax_id: z.boolean().optional(),
+  always_create_new_customer: z.boolean().optional(),
+}).optional();
+
+// Subscription data schema
+export const checkoutSessionSubscriptionDataSchema = z.object({
+  trial_period_days: z.number().int().nonnegative().optional(),
+}).optional();
+
+// Main checkout session payload schema
+export const checkoutSessionPayloadSchema = z.object({
+  // Required fields
+  product_cart: z.array(checkoutSessionProductCartItemSchema).min(1, "At least one product is required"),
+  
+  // Optional fields
+  customer: checkoutSessionCustomerSchema,
+  billing_address: checkoutSessionBillingAddressSchema,
+  return_url: z.string().url().optional(),
+  allowed_payment_method_types: z.array(paymentMethodTypeSchema).optional(),
+  billing_currency: z.string().length(3, "Currency must be a 3-letter ISO code").optional(),
+  show_saved_payment_methods: z.boolean().optional(),
+  confirm: z.boolean().optional(),
+  discount_code: z.string().optional(),
+  metadata: z.record(z.string(), z.string()).optional(),
+  customization: checkoutSessionCustomizationSchema,
+  feature_flags: checkoutSessionFeatureFlagsSchema,
+  subscription_data: checkoutSessionSubscriptionDataSchema,
+});
+
+// Checkout session response schema
+export const checkoutSessionResponseSchema = z.object({
+  session_id: z.string().min(1, "Session ID is required"),
+  checkout_url: z.string().url("Invalid checkout URL"),
+});
+
+// Type exports for external use
+export type CheckoutSessionPayload = z.infer<typeof checkoutSessionPayloadSchema>;
+export type CheckoutSessionResponse = z.infer<typeof checkoutSessionResponseSchema>;
+export type CheckoutSessionProductCartItem = z.infer<typeof checkoutSessionProductCartItemSchema>;
+export type CheckoutSessionCustomer = z.infer<typeof checkoutSessionCustomerSchema>;
+export type CheckoutSessionBillingAddress = z.infer<typeof checkoutSessionBillingAddressSchema>;
+export type CheckoutSessionCustomization = z.infer<typeof checkoutSessionCustomizationSchema>;
+export type CheckoutSessionFeatureFlags = z.infer<typeof checkoutSessionFeatureFlagsSchema>;
+export type CheckoutSessionSubscriptionData = z.infer<typeof checkoutSessionSubscriptionDataSchema>;
+export type PaymentMethodType = z.infer<typeof paymentMethodTypeSchema>;
+
+// Configuration type for checkout session handler
+export type CheckoutSessionHandlerConfig = Pick<
+  ClientOptions,
+  "bearerToken" | "environment"
+>;
+
+/**
+ * Creates a new Dodo Payments Checkout Session using the modern /checkouts endpoint.
+ * This function provides a clean, type-safe interface to the Checkout Sessions API.
+ * 
+ * @param payload - The checkout session data, validated against CheckoutSessionPayloadSchema
+ * @param config - Dodo Payments client configuration (bearerToken, environment)
+ * @returns Promise<CheckoutSessionResponse> - The checkout session with session_id and checkout_url
+ * 
+ * @throws {Error} When payload validation fails or API request fails
+ * 
+ * @example
+ * ```typescript
+ * const session = await createCheckoutSession({
+ *   product_cart: [{ product_id: 'prod_123', quantity: 1 }],
+ *   customer: { email: 'customer@example.com' },
+ *   return_url: 'https://yoursite.com/success'
+ * }, {
+ *   bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+ *   environment: 'test_mode'
+ * });
+ * 
+ * ```
+ */
+export const createCheckoutSession = async (
+  payload: CheckoutSessionPayload,
+  config: CheckoutSessionHandlerConfig
+): Promise<CheckoutSessionResponse> => {
+  // Validate the payload against the schema
+  const validation = checkoutSessionPayloadSchema.safeParse(payload);
+  if (!validation.success) {
+    throw new Error(
+      `Invalid checkout session payload: ${validation.error.issues
+        .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+        .join(', ')}`
+    );
+  }
+
+  // Initialize the DodoPayments client
+  const dodopayments = new DodoPayments({
+    bearerToken: config.bearerToken,
+    environment: config.environment,
+  });
+
+  try {
+    // Use the official SDK for creating checkout sessions
+    const sdkPayload = {
+      ...validation.data,
+      ...(validation.data.billing_address && {
+        billing_address: {
+          ...validation.data.billing_address,
+          country: validation.data.billing_address.country as any,
+        },
+      }),
+    };
+    
+    const session = await dodopayments.checkoutSessions.create(sdkPayload as any);
+
+    // Validate and return the response
+    const responseValidation = checkoutSessionResponseSchema.safeParse(session);
+    if (!responseValidation.success) {
+      throw new Error(
+        `Invalid checkout session response from API: ${responseValidation.error.issues
+          .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+          .join(', ')}`
+      );
+    }
+
+    return responseValidation.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Dodo Payments Checkout Session API Error:", {
+        message: error.message,
+        payload: validation.data,
+        config: { 
+          environment: config.environment,
+          hasBearerToken: !!config.bearerToken 
+        }
+      });
+      
+      // Re-throw with a more user-friendly message
+      throw new Error(
+        `Failed to create checkout session: ${error.message}`
+      );
+    }
+    
+    // Handle non-Error objects
+    console.error("Unknown error creating checkout session:", error);
+    throw new Error("Failed to create checkout session due to an unknown error");
+  }
+};
+
 export const buildCheckoutUrl = async ({
   queryParams,
   body,
+  sessionPayload,
   returnUrl,
   bearerToken,
   environment,
@@ -95,7 +293,21 @@ export const buildCheckoutUrl = async ({
 }: CheckoutHandlerConfig & {
   queryParams?: z.infer<typeof checkoutQuerySchema>;
   body?: z.infer<typeof dynamicCheckoutBodySchema>;
+  sessionPayload?: CheckoutSessionPayload;
 }) => {
+  if (type === "session") {
+    if (!sessionPayload) {
+      throw new Error("sessionPayload is required when type is 'session'");
+    }
+    
+    const session = await createCheckoutSession(sessionPayload, {
+      bearerToken,
+      environment,
+    });
+    
+    return session.checkout_url;
+  }
+
   // For dynamic, use body; for static, use queryParams
   const inputData = type === "dynamic" ? body : queryParams;
   // Use the correct schema for each type

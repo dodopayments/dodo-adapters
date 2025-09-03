@@ -31,7 +31,7 @@
     }
   },
   "dependencies": {
-    "dodopayments": "^1.37.2",
+    "dodopayments": "^1.51.2",
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
