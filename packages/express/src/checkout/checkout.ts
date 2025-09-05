@@ -49,17 +49,25 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
 
       let url = "";
       try {
-        url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+        url = await buildCheckoutUrl({
+          body: data,
+          ...config,
+          type: "dynamic",
+        });
       } catch (error: any) {
         return res.status(400).send(error.message);
       }
       return res.json({ checkout_url: url });
     } else {
       // Handle checkout session
-      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(req.body);
+      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(
+        req.body,
+      );
 
       if (!success) {
-        return res.status(400).send(`Invalid checkout session payload.\n ${error.message}`);
+        return res
+          .status(400)
+          .send(`Invalid checkout session payload.\n ${error.message}`);
       }
 
       let url = "";
@@ -67,7 +75,7 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
         url = await buildCheckoutUrl({
           sessionPayload: data,
           ...config,
-          type: "session"
+          type: "session",
         });
       } catch (error: any) {
         return res.status(400).send(error.message);

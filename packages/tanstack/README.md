@@ -27,25 +27,24 @@ All the examples below assume you're using Tanstack App Router.
 import { Checkout } from "@dodopayments/tanstack";
 import { createServerFileRoute } from "@tanstack/react-start/server";
 
-export const ServerRoute = createServerFileRoute("/api/checkout")
-.methods({
-    GET: async ({ request }) => {
+export const ServerRoute = createServerFileRoute("/api/checkout").methods({
+  GET: async ({ request }) => {
     return Checkout({
-        bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-        returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-        environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-        type: "static", // optional, defaults to 'static'
-    })(request)
-    },
-    POST: async ({ request }) => {
+      bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+      returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+      environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+      type: "static", // optional, defaults to 'static'
+    })(request);
+  },
+  POST: async ({ request }) => {
     return Checkout({
-        bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-        returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-        environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-        type: "session", // or "dynamic" for dynamic link
-    })(request)
-    }
-})
+      bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+      returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+      environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+      type: "session", // or "dynamic" for dynamic link
+    })(request);
+  },
+});
 ```
 
 ---
@@ -197,7 +196,7 @@ Checkout Sessions (POST) - (Recommended) A more customizable checkout experience
 
     Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
 
-    Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions    
+    Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
 
   Required fields for checkout sessions:
       product_cart (array): Array of products with product_id and quantity

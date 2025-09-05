@@ -26,23 +26,23 @@ All the examples below assume you're using SvelteKit App Router.
 // src/routes/api/checkout/+server.ts
 import { Checkout } from "@dodopayments/sveltekit";
 import {
-    DODO_PAYMENTS_API_KEY, 
-    DODO_PAYMENTS_RETURN_URL, 
-    DODO_PAYMENTS_ENVIRONMENT 
-} from '$env/static/private';
+  DODO_PAYMENTS_API_KEY,
+  DODO_PAYMENTS_RETURN_URL,
+  DODO_PAYMENTS_ENVIRONMENT,
+} from "$env/static/private";
 
 const checkoutGetHandler = Checkout({
-    bearerToken: DODO_PAYMENTS_API_KEY,
-    returnUrl: DODO_PAYMENTS_RETURN_URL,
-    environment: DODO_PAYMENTS_ENVIRONMENT,
-    type: "static",
+  bearerToken: DODO_PAYMENTS_API_KEY,
+  returnUrl: DODO_PAYMENTS_RETURN_URL,
+  environment: DODO_PAYMENTS_ENVIRONMENT,
+  type: "static",
 });
 
 const checkoutPostHandler = Checkout({
-    bearerToken: DODO_PAYMENTS_API_KEY,
-    returnUrl: DODO_PAYMENTS_RETURN_URL,
-    environment: DODO_PAYMENTS_ENVIRONMENT,
-    type: "session", // or "dynamic" for dynamic link
+  bearerToken: DODO_PAYMENTS_API_KEY,
+  returnUrl: DODO_PAYMENTS_RETURN_URL,
+  environment: DODO_PAYMENTS_ENVIRONMENT,
+  type: "session", // or "dynamic" for dynamic link
 });
 
 export const GET = checkoutGetHandler.GET;
@@ -183,7 +183,7 @@ Static Checkout (GET) Query Parameters:
     Advanced Controls (optional): paymentCurrency, showCurrencySelector, paymentAmount, showDiscounts
 
     Metadata (optional): Any query parameter starting with metadata_ (e.g., ?metadata_userId=abc123)
-    
+
     Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}
 
 Dynamic Checkout (POST) - Returns JSON with checkout_url: Parameters are sent as a JSON body. Supports both one-time and recurring payments. Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}. For a complete list of supported POST body fields, refer to:
@@ -196,7 +196,7 @@ Checkout Sessions (POST) - (Recommended) A more customizable checkout experience
 
     Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
 
-    Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions    
+    Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
 
   Required fields for checkout sessions:
       product_cart (array): Array of products with product_id and quantity

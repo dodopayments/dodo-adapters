@@ -22,8 +22,8 @@ npm install @dodopayments/hono
 
 ```typescript
 // route.ts
-import { Checkout } from '@dodopayments/hono';
-import Hono from 'hono'
+import { Checkout } from "@dodopayments/hono";
+import Hono from "hono";
 
 const app = new Hono();
 
@@ -33,28 +33,28 @@ app.get(
     bearerToken: process.env.DODO_PAYMENTS_API_KEY,
     environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
     returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'static'
-})
+    type: "static",
+  }),
 );
 
 app.post(
-"/api/checkout",
-Checkout({
+  "/api/checkout",
+  Checkout({
     bearerToken: process.env.DODO_PAYMENTS_API_KEY,
     environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
     returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'dynamic'
-})
+    type: "dynamic",
+  }),
 );
-  
+
 app.post(
-"/api/checkout",
-Checkout({
+  "/api/checkout",
+  Checkout({
     bearerToken: process.env.DODO_PAYMENTS_API_KEY,
     environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
     returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'session'
-})
+    type: "session",
+  }),
 );
 ```
 

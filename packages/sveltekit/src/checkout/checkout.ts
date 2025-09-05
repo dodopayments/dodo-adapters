@@ -62,7 +62,11 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
 
       let urlStr = "";
       try {
-        urlStr = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+        urlStr = await buildCheckoutUrl({
+          body: data,
+          ...config,
+          type: "dynamic",
+        });
       } catch (err: any) {
         throw error(400, err.message);
       }
@@ -77,7 +81,10 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       } = checkoutSessionPayloadSchema.safeParse(body);
 
       if (!success) {
-        throw error(400, `Invalid checkout session payload.\n ${zodError.message}`);
+        throw error(
+          400,
+          `Invalid checkout session payload.\n ${zodError.message}`,
+        );
       }
 
       let urlStr = "";
@@ -85,7 +92,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
         urlStr = await buildCheckoutUrl({
           sessionPayload: data,
           ...config,
-          type: "session"
+          type: "session",
         });
       } catch (err: any) {
         throw error(400, err.message);
