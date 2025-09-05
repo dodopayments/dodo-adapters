@@ -76,6 +76,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
                 "cancelled",
                 "on_hold",
                 "pending",
+                "paused",
                 "failed",
                 "expired",
               ])

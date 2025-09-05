@@ -27,10 +27,24 @@ All the examples below assume you're using Next.js App Router.
 import { Checkout } from "@dodopayments/nextjs";
 
 export const GET = Checkout({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  returnUrl: process.env.RETURN_URL!,
-  environment: "test_mode",
-  type: "static", // explicitly specify type (optional, defaults to 'static')
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  type: "static", // optional, defaults to 'static'
+});
+
+export const POST = Checkout({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  type: "dynamic", // for dynamic checkout
+});
+
+export const POST = Checkout({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  type: "session", // for checkout sessions
 });
 ```
 
@@ -104,7 +118,7 @@ Here's how you should structure your response:
 
 If Checkout Route Handler is selected:
 
-Purpose: This handler redirects users to the Dodo Payments checkout page.
+Purpose: This handler manages different types of checkout flows. All checkout types (static, dynamic, and sessions) return JSON responses with checkout URLs for programmatic handling.
 File Creation: Create a new file at app/checkout/route.ts in your Next.js project.
 
 Code Snippet:
@@ -114,16 +128,16 @@ import { Checkout } from '@dodopayments/nextjs'
 
 export const GET = Checkout({
 bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-returnUrl: process.env.RETURN_URL!,
-environment: "test_mode",
+returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
 type: "static",
 });
 
 export const POST = Checkout({
 bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-returnUrl: process.env.RETURN_URL!,
-environment: "test_mode",
-type: "dynamic",
+returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+type: "session", // or "dynamic" for dynamic link
 });
 
 Configuration & Usage:
@@ -134,7 +148,7 @@ Configuration & Usage:
 
     environment: (Optional) Set to "test_mode" for testing, or omit/set to "live_mode" for production.
 
-    type: (Optional) Set to "static" for GET/static checkout, "dynamic" for POST/dynamic checkout. Defaults to "static".
+    type: (Optional) Set to "static" for GET/static checkout, "dynamic" for POST/dynamic checkout, or "session" for POST/checkout sessions.
 
 Static Checkout (GET) Query Parameters:
 
@@ -150,13 +164,24 @@ Static Checkout (GET) Query Parameters:
 
     Metadata (optional): Any query parameter starting with metadata_ (e.g., ?metadata_userId=abc123)
 
-Dynamic Checkout (POST): Parameters are sent as a JSON body. Supports both one-time and recurring payments. For a complete list of supported POST body fields, refer to:
+    Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}
+
+Dynamic Checkout (POST) - Returns JSON with checkout_url: Parameters are sent as a JSON body. Supports both one-time and recurring payments. Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}. For a complete list of supported POST body fields, refer to:
 
     Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
 
     Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
 
-Error Handling: If productId is missing or other query parameters are invalid, the handler will return a 400 response.
+Checkout Sessions (POST) - (Recommended) A more customizable checkout experience. Returns JSON with checkout_url: Parameters are sent as a JSON body. Supports both one-time and recurring payments. Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}. For a complete list of supported POST body fields, refer to:
+
+    Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
+
+    Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions    
+
+  Required fields for checkout sessions:
+      product_cart (array): Array of products with product_id and quantity
+
+Error Handling: If productId is missing or other parameters are invalid, the handler will return a 400 response.
 
 If Customer Portal Route Handler is selected:
 
@@ -192,7 +217,7 @@ Code Snippet:
 import { Webhooks } from '@dodopayments/nextjs'
 
 export const POST = Webhooks({
-webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
+webhookKey: process.env.DODO_WEBHOOK_SECRET!,
 onPayload: async (payload) => {
 // handle the payload
 },
@@ -273,17 +298,19 @@ To ensure the adapter functions correctly, you will need to manually set up the 
 
     RETURN_URL: (Optional) The URL to redirect to after a successful checkout (for Checkout handler).
 
-    DODO_PAYMENTS_WEBHOOK_SECRET: Your Dodo Payments Webhook Secret (required for Webhook handler).
+    DODO_WEBHOOK_SECRET: Your Dodo Payments Webhook Secret (required for Webhook handler).
 
 Example .env file:
 
 DODO_PAYMENTS_API_KEY=your-api-key
-DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
+DODO_PAYMENTS_WEBHOOK_KEY=your-webhook-secret
+DODO_PAYMENTS_ENVIRONMENT="test_mode" or "live_mode"
+DODO_PAYMENTS_RETURN_URL=your-return-url
 
 Usage in your code:
 
 bearerToken: process.env.DODO_PAYMENTS_API_KEY!
-webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!
+webhookKey: process.env.DODO_WEBHOOK_SECRET!
 
 Important: Never commit sensitive environment variables directly into your version control. Use environment variables for all sensitive information.
 

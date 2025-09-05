@@ -23,25 +23,26 @@ npm install @dodopayments/express
 ```typescript
 import { checkoutHandler } from "@dodopayments/express";
 
-app.get(
-  "/api/checkout",
-  checkoutHandler({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-    returnUrl: process.env.RETURN_URL!,
-    environment: "test_mode",
-    type: "static",
-  }),
-);
+app.get('/api/checkout', checkoutHandler({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  type: "static"
+}));
 
-app.post(
-  "/api/checkout",
-  checkoutHandler({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-    returnUrl: process.env.RETURN_URL!,
-    environment: "test_mode",
-    type: "dynamic",
-  }),
-);
+app.post('/api/checkout', checkoutHandler({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  type: "dynamic"
+}));
+
+app.post('/api/checkout', checkoutHandler({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  type: "session"
+}));
 ```
 
 ---
@@ -121,26 +122,34 @@ Here's how you should structure your response:
 
 **If Checkout Route Handler is selected:**
 
-**Purpose**: This handler redirects users to the Dodo Payments checkout page.
+**Purpose**: This handler manages different types of checkout flows. All checkout types (static, dynamic, and sessions) return JSON responses with checkout URLs for programmatic handling.
 
 **Integration**:
-Create two routes in your Express app — one for static (GET) and one for dynamic (POST) checkout.
+Create routes in your Express app for static (GET), dynamic (POST), and checkout sessions (POST).
 
 
 import { checkoutHandler } from '@dodopayments/express';
 
 app.get('/api/checkout', checkoutHandler({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  returnUrl: process.env.RETURN_URL!,
-  environment: "test_mode",
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
   type: "static"
 }));
 
 app.post('/api/checkout', checkoutHandler({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  returnUrl: process.env.RETURN_URL!,
-  environment: "test_mode",
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
   type: "dynamic"
+}));
+
+// For checkout sessions
+app.post('/api/checkout', checkoutHandler({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  type: "session"
 }));
 
 Config Options:
@@ -151,7 +160,7 @@ Config Options:
 
     environment: "test_mode" or "live_mode"
 
-    type: "static" (GET) or "dynamic" (POST)
+    type: "static" (GET), "dynamic" (POST), or "session" (POST)
 
 GET (static checkout) expects query parameters:
 
@@ -159,11 +168,28 @@ GET (static checkout) expects query parameters:
 
     quantity, customer fields (fullName, email, etc.), and metadata (metadata_*) are optional.
 
+    Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}
+
 POST (dynamic checkout) expects a JSON body with payment details (one-time or subscription). Reference the docs for the full POST schema:
 
     One-time payments: https://docs.dodopayments.com/api-reference/payments/post-payments
 
     Subscriptions: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+
+    Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}
+
+POST (checkout sessions) - (Recommended) A more customizable checkout experience:
+
+    Expects a JSON body with product_cart array and customer details.
+
+    One-time payments: https://docs.dodopayments.com/api-reference/payments/post-payments
+
+    Subscriptions: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+
+    Required fields for checkout sessions:
+        product_cart (array): Array of products with product_id and quantity
+
+    Returns: {"checkout_url": "https://checkout.dodopayments.com/session/..."}
 
 If Customer Portal Route Handler is selected:
 
@@ -174,8 +200,8 @@ Integration:
 import { CustomerPortal } from "@dodopayments/express";
 
 app.get('/api/customer-portal', CustomerPortal({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  environment: "test_mode",
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
 }));
 
 Query Parameters:
@@ -195,7 +221,7 @@ Integration:
 import { Webhooks } from "@dodopayments/express";
 
 app.post('/api/webhook', Webhooks({
-  webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
+  webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_KEY,
   onPayload: async (payload) => {
     // Handle generic payload
   },
@@ -232,7 +258,7 @@ You may pass in any of the following handlers:
 
     onDisputeOpened, onDisputeExpired, onDisputeAccepted, onDisputeCancelled, onDisputeChallenged, onDisputeWon, onDisputeLost
 
-    onSubscriptionActive, onSubscriptionOnHold, onSubscriptionRenewed, onSubscriptionPaused, onSubscriptionPlanChanged, onSubscriptionCancelled, onSubscriptionFailed, onSubscriptionExpired
+    onSubscriptionActive, onSubscriptionOnHold, onSubscriptionRenewed, onSubscriptionPlanChanged, onSubscriptionCancelled, onSubscriptionFailed, onSubscriptionExpired
 
     onLicenseKeyCreated
 
@@ -241,13 +267,14 @@ Environment Variable Setup:
 Make sure to define these environment variables in your project:
 
 DODO_PAYMENTS_API_KEY=your-api-key
-RETURN_URL=https://yourapp.com/success
-DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
+DODO_PAYMENTS_WEBHOOK_KEY=your-webhook-secret
+DODO_PAYMENTS_ENVIRONMENT="test_mode" or "live_mode"
+DODO_PAYMENTS_RETURN_URL=your-return-url
 
 Use these inside your code as:
 
-process.env.DODO_PAYMENTS_API_KEY!
-process.env.DODO_PAYMENTS_WEBHOOK_SECRET!
+process.env.DODO_PAYMENTS_API_KEY
+process.env.DODO_PAYMENTS_WEBHOOK_SECRET
 
 Security Note: Do NOT commit secrets to version control. Use .env files locally and secrets managers in deployment environments (e.g., AWS, Vercel, Heroku, etc.).
 ```

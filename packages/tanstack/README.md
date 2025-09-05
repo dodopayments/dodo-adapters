@@ -27,16 +27,25 @@ All the examples below assume you're using Tanstack App Router.
 import { Checkout } from "@dodopayments/tanstack";
 import { createServerFileRoute } from "@tanstack/react-start/server";
 
-export const ServerRoute = createServerFileRoute("/api/checkout").methods({
-  GET: async ({ request }) => {
+export const ServerRoute = createServerFileRoute("/api/checkout")
+.methods({
+    GET: async ({ request }) => {
     return Checkout({
-      bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-      returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-      environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-      type: "static", // optional, defaults to 'static'
-    })(request);
-  },
-});
+        bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+        returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+        environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+        type: "static", // optional, defaults to 'static'
+    })(request)
+    },
+    POST: async ({ request }) => {
+    return Checkout({
+        bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+        returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+        environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+        type: "session", // or "dynamic" for dynamic link
+    })(request)
+    }
+})
 ```
 
 ---
@@ -146,7 +155,7 @@ export const ServerRoute = createServerFileRoute("/api/checkout")
         bearerToken: process.env.DODO_PAYMENTS_API_KEY,
         returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
         environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-        type: "dynamic", // for dynamic checkout
+        type: "session", // or "dynamic" for dynamic link
       })(request)
     }
   })
@@ -160,7 +169,7 @@ Configuration & Usage:
 
     environment: (Optional) Set to "test_mode" for testing, or omit/set to "live_mode" for production.
 
-    type: (Optional) Set to "static" for GET/static checkout, "dynamic" for POST/dynamic checkout. Defaults to "static".
+    type: (Optional) Set to "static" for GET/static checkout, "dynamic" for POST/dynamic checkout, or "session" for POST/checkout sessions.
 
 Static Checkout (GET) Query Parameters:
 
@@ -176,11 +185,22 @@ Static Checkout (GET) Query Parameters:
 
     Metadata (optional): Any query parameter starting with metadata_ (e.g., ?metadata_userId=abc123)
 
-Dynamic Checkout (POST): Parameters are sent as a JSON body. Supports both one-time and recurring payments. For a complete list of supported POST body fields, refer to:
+    Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}
+
+Dynamic Checkout (POST) - Returns JSON with checkout_url: Parameters are sent as a JSON body. Supports both one-time and recurring payments. Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}. For a complete list of supported POST body fields, refer to:
 
     Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
 
     Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+
+Checkout Sessions (POST) - (Recommended) A more customizable checkout experience. Returns JSON with checkout_url: Parameters are sent as a JSON body. Supports both one-time and recurring payments. Returns: {"checkout_url": "https://checkout.dodopayments.com/session/..."}. For a complete list of supported POST body fields, refer to:
+
+    Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
+
+    Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions    
+
+  Required fields for checkout sessions:
+      product_cart (array): Array of products with product_id and quantity
 
 Error Handling: If productId is missing or other query parameters are invalid, the handler will return a 400 response.
 
@@ -317,7 +337,7 @@ Example .env file:
 DODO_PAYMENTS_API_KEY=your-api-key
 DODO_PAYMENTS_WEBHOOK_KEY=your-webhook-secret
 DODO_PAYMENTS_RETURN_URL=your-return-url
-DODO_PAYMENTS_ENVIRONMENT="test" or "live"
+DODO_PAYMENTS_ENVIRONMENT="test_mode" or "live_mode"
 
 Usage in your code:
 

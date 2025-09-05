@@ -28,14 +28,32 @@ import { Checkout } from "@dodopayments/remix";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 
 const checkoutGetHandler = Checkout({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-  type: "static", // optional, defaults to 'static'
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    type: "static"
 });
 
-export const loader = ({ request }: LoaderFunctionArgs) =>
-  checkoutGetHandler(request);
+const checkoutPostHandler = Checkout({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    type: "dynamic", // for dynamic checkout
+});
+
+const checkoutSessionHandler = Checkout({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    type: "session", // for checkout sessions
+});
+
+export const loader = ({ request }: LoaderFunctionArgs) => checkoutGetHandler(request);
+export const action = ({ request }: LoaderFunctionArgs) => {
+    // You can conditionally route to different handlers based on your needs
+    // For checkout sessions, use checkoutSessionHandler(request)
+    return checkoutPostHandler(request);
+};
 ```
 
 ---
@@ -129,19 +147,30 @@ const checkoutGetHandler = Checkout({
   bearerToken: process.env.DODO_PAYMENTS_API_KEY,
   returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
   environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-  type: "static", // optional, defaults to 'static'
+  type: "static",
 });
 
 const checkoutPostHandler = Checkout({
   bearerToken: process.env.DODO_PAYMENTS_API_KEY,
   returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
   environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-  type: "dynamic", // optional, defaults to 'static'
+  type: "dynamic", // for dynamic checkout
+});
+
+const checkoutSessionHandler = Checkout({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  type: "session", // for checkout sessions
 });
 
 export const loader = ({ request }: LoaderFunctionArgs) => checkoutGetHandler(request);
 
-export const action = ({ request }: LoaderFunctionArgs) => checkoutPostHandler(request);
+export const action = ({ request }: LoaderFunctionArgs) => {
+  // You can conditionally route to different handlers based on your needs
+  // For checkout sessions, use checkoutSessionHandler(request)
+  return checkoutPostHandler(request);
+};
 
 If Customer Portal Route Handler is selected:
 
