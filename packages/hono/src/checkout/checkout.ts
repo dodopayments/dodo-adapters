@@ -45,7 +45,8 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
 
     if (config.type === "dynamic") {
       // Handle dynamic checkout
-      const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
+      const { success, data, error } =
+        dynamicCheckoutBodySchema.safeParse(body);
 
       if (!success) {
         return c.text(`Invalid request body.\n ${error.message}`, 400);
@@ -53,17 +54,25 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
 
       let url = "";
       try {
-        url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+        url = await buildCheckoutUrl({
+          body: data,
+          ...config,
+          type: "dynamic",
+        });
       } catch (error: any) {
         return c.text(error.message, 400);
       }
       return c.json({ checkout_url: url });
     } else {
       // Handle checkout session
-      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(body);
+      const { success, data, error } =
+        checkoutSessionPayloadSchema.safeParse(body);
 
       if (!success) {
-        return c.text(`Invalid checkout session payload.\n ${error.message}`, 400);
+        return c.text(
+          `Invalid checkout session payload.\n ${error.message}`,
+          400,
+        );
       }
 
       let url = "";
@@ -71,7 +80,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
         url = await buildCheckoutUrl({
           sessionPayload: data,
           ...config,
-          type: "session"
+          type: "session",
         });
       } catch (error: any) {
         return c.text(error.message, 400);

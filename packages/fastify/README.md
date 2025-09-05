@@ -22,34 +22,34 @@ npm install @dodopayments/fastify
 
 ```typescript
 // route.ts
-import { Checkout } from '@dodopayments/fastify';
-import Fastify from 'fastify'
+import { Checkout } from "@dodopayments/fastify";
+import Fastify from "fastify";
 
 const fastify = Fastify({});
 const checkoutGet = Checkout({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'static'
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  type: "static",
 });
 
 const checkoutPost = Checkout({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'dynamic'
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  type: "dynamic",
 });
 
 const checkoutSession = Checkout({
-    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'session'
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+  type: "session",
 });
 
-fastify.get('/api/checkout', checkoutGet.getHandler);
-fastify.post('/api/checkout', checkoutPost.postHandler);
-fastify.post('/api/checkout-session', checkoutSession.postHandler);
+fastify.get("/api/checkout", checkoutGet.getHandler);
+fastify.post("/api/checkout", checkoutPost.postHandler);
+fastify.post("/api/checkout-session", checkoutSession.postHandler);
 ```
 
 ---

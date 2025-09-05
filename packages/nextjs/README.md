@@ -176,7 +176,7 @@ Checkout Sessions (POST) - (Recommended) A more customizable checkout experience
 
     Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
 
-    Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions    
+    Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
 
   Required fields for checkout sessions:
       product_cart (array): Array of products with product_id and quantity

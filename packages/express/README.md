@@ -23,26 +23,35 @@ npm install @dodopayments/express
 ```typescript
 import { checkoutHandler } from "@dodopayments/express";
 
-app.get('/api/checkout', checkoutHandler({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-  type: "static"
-}));
+app.get(
+  "/api/checkout",
+  checkoutHandler({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    type: "static",
+  }),
+);
 
-app.post('/api/checkout', checkoutHandler({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-  type: "dynamic"
-}));
+app.post(
+  "/api/checkout",
+  checkoutHandler({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    type: "dynamic",
+  }),
+);
 
-app.post('/api/checkout', checkoutHandler({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-  type: "session"
-}));
+app.post(
+  "/api/checkout",
+  checkoutHandler({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    type: "session",
+  }),
+);
 ```
 
 ---

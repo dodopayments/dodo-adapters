@@ -7,7 +7,6 @@ import {
   checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
 
-
 export const Checkout = (config: CheckoutHandlerConfig) => {
   const getHandler = async (req: NextRequest) => {
     const { searchParams } = new URL(req.url);
@@ -53,7 +52,8 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
 
     if (config.type === "dynamic") {
       // Handle dynamic checkout
-      const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
+      const { success, data, error } =
+        dynamicCheckoutBodySchema.safeParse(body);
       if (!success) {
         return new NextResponse(`Invalid request body.\n ${error.message}`, {
           status: 400,
@@ -62,19 +62,27 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
 
       let url = "";
       try {
-        url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+        url = await buildCheckoutUrl({
+          body: data,
+          ...config,
+          type: "dynamic",
+        });
       } catch (error: any) {
         return new NextResponse(error.message, { status: 400 });
       }
       return NextResponse.json({ checkout_url: url });
     } else {
       // Handle checkout session
-      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(body);
+      const { success, data, error } =
+        checkoutSessionPayloadSchema.safeParse(body);
 
       if (!success) {
-        return new NextResponse(`Invalid checkout session payload.\n ${error.message}`, {
-          status: 400,
-        });
+        return new NextResponse(
+          `Invalid checkout session payload.\n ${error.message}`,
+          {
+            status: 400,
+          },
+        );
       }
 
       let url = "";
@@ -82,7 +90,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
         url = await buildCheckoutUrl({
           sessionPayload: data,
           ...config,
-          type: "session"
+          type: "session",
         });
       } catch (error: any) {
         return new NextResponse(error.message, { status: 400 });
