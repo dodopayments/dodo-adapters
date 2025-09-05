@@ -4,6 +4,7 @@ import {
   CheckoutHandlerConfig,
   checkoutQuerySchema,
   dynamicCheckoutBodySchema,
+  checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
 
 export const Checkout = (config: CheckoutHandlerConfig) => {
@@ -36,27 +37,50 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       return reply.status(400).send(error.message);
     }
 
-    return reply.redirect(url);
+    return reply.send({ checkout_url: url });
   };
 
-  // POST handler for dynamic checkout
+  // POST handler for dynamic checkout and checkout sessions
   const postHandler = async (request: FastifyRequest, reply: FastifyReply) => {
     const body = request.body as any;
 
-    const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
+    if (config.type === "dynamic") {
+      // Handle dynamic checkout
+      const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
 
-    if (!success) {
-      return reply.status(400).send(`Invalid request body.\n ${error.message}`);
+      if (!success) {
+        return reply.status(400).send(`Invalid request body.\n ${error.message}`);
+      }
+
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+      } catch (error: any) {
+        return reply.status(400).send(error.message);
+      }
+
+      return reply.send({ checkout_url: url });
+    } else {
+      // Handle checkout session
+      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(body);
+
+      if (!success) {
+        return reply.status(400).send(`Invalid checkout session payload.\n ${error.message}`);
+      }
+
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({
+          sessionPayload: data,
+          ...config,
+          type: "session"
+        });
+      } catch (error: any) {
+        return reply.status(400).send(error.message);
+      }
+
+      return reply.send({ checkout_url: url });
     }
-
-    let url = "";
-    try {
-      url = await buildCheckoutUrl({ body: data, ...config });
-    } catch (error: any) {
-      return reply.status(400).send(error.message);
-    }
-
-    return reply.redirect(url);
   };
 
   return {

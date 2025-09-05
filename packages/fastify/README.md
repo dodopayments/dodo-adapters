@@ -21,17 +21,35 @@ npm install @dodopayments/fastify
 ### 1. Checkout
 
 ```typescript
-import { Checkout } from "@dodopayments/fastify";
+// route.ts
+import { Checkout } from '@dodopayments/fastify';
+import Fastify from 'fastify'
 
 const fastify = Fastify({});
 const checkoutGet = Checkout({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
-  returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-  type: "static",
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    type: 'static'
 });
 
-fastify.get("/api/checkout", checkoutGet.getHandler);
+const checkoutPost = Checkout({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    type: 'dynamic'
+});
+
+const checkoutSession = Checkout({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    type: 'session'
+});
+
+fastify.get('/api/checkout', checkoutGet.getHandler);
+fastify.post('/api/checkout', checkoutPost.postHandler);
+fastify.post('/api/checkout-session', checkoutSession.postHandler);
 ```
 
 ---
@@ -142,8 +160,16 @@ const checkoutPost = Checkout({
     type: 'dynamic'
 });
 
+const checkoutSession = Checkout({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    type: 'session'
+});
+
 fastify.get('/api/checkout', checkoutGet.getHandler);
-fastify.post('/api/checkout', checkoutGet.postHandler);
+fastify.post('/api/checkout', checkoutPost.postHandler);
+fastify.post('/api/checkout-session', checkoutSession.postHandler);
 
 
 Config Options:
@@ -154,7 +180,7 @@ Config Options:
 
     environment: "test_mode" or "live_mode"
 
-    type: "static" (GET) or "dynamic" (POST)
+    type: "static" (GET), "dynamic" (POST), or "session" (POST)
 
 GET (static checkout) expects query parameters:
 
@@ -162,11 +188,22 @@ GET (static checkout) expects query parameters:
 
     quantity, customer fields (fullName, email, etc.), and metadata (metadata_*) are optional.
 
-POST (dynamic checkout) expects a JSON body with payment details (one-time or subscription). Reference the docs for the full POST schema:
+    Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}
+
+POST (dynamic checkout) expects a JSON body with payment details (one-time or subscription). Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}. Reference the docs for the full POST schema:
 
     One-time payments: https://docs.dodopayments.com/api-reference/payments/post-payments
 
     Subscriptions: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+
+POST (checkout sessions) - (Recommended) A more customizable checkout experience. Returns JSON with checkout_url: Parameters are sent as a JSON body. Supports both one-time and recurring payments. Returns: {"checkout_url": "https://checkout.dodopayments.com/session/..."}. For a complete list of supported POST body fields, refer to:
+
+    One-time payments: https://docs.dodopayments.com/api-reference/payments/post-payments
+
+    Subscriptions: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+
+  Required fields for checkout sessions:
+      product_cart (array): Array of products with product_id and quantity
 
 If Customer Portal Route Handler is selected:
 
@@ -255,7 +292,7 @@ Make sure to define these environment variables in your project:
 DODO_PAYMENTS_API_KEY=your-api-key
 DODO_PAYMENTS_RETURN_URL=https://yourapp.com/success
 DODO_PAYMENTS_WEBHOOK_KEY=your-webhook-secret
-DODO_PAYMENTS_ENVIRONMENT="test"or"live"
+DODO_PAYMENTS_ENVIRONMENT="test_mode" or "live_mode""
 
 Use these inside your code as:
 

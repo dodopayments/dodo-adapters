@@ -21,18 +21,40 @@ npm install @dodopayments/hono
 ### 1. Checkout
 
 ```typescript
-import { Checkout } from "@dodopayments/hono";
-import { Hono } from "hono";
+// route.ts
+import { Checkout } from '@dodopayments/hono';
+import Hono from 'hono'
 
 const app = new Hono();
+
 app.get(
   "/api/checkout",
   Checkout({
     bearerToken: process.env.DODO_PAYMENTS_API_KEY,
     environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
     returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: "static",
-  }),
+    type: 'static'
+})
+);
+
+app.post(
+"/api/checkout",
+Checkout({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    type: 'dynamic'
+})
+);
+  
+app.post(
+"/api/checkout",
+Checkout({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+    environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
+    returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
+    type: 'session'
+})
 );
 ```
 
@@ -143,7 +165,7 @@ app.post(
     bearerToken: process.env.DODO_PAYMENTS_API_KEY,
     environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
     returnUrl: process.env.DODO_PAYMENTS_RETURN_URL,
-    type: 'dynamic'
+    type: 'session' // or 'dynamic' for dynamic link
   })
 );
 
@@ -156,7 +178,7 @@ Config Options:
 
     environment: "test_mode" or "live_mode"
 
-    type: "static" (GET) or "dynamic" (POST)
+    type: "static" (GET) or "dynamic" (POST) or "session" (POST)
 
 GET (static checkout) expects query parameters:
 
@@ -169,6 +191,20 @@ POST (dynamic checkout) expects a JSON body with payment details (one-time or su
     One-time payments: https://docs.dodopayments.com/api-reference/payments/post-payments
 
     Subscriptions: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+
+POST (checkout sessions) - (Recommended) A more customizable checkout experience:
+
+    Expects a JSON body with product_cart array and customer details.
+
+    One-time payments: https://docs.dodopayments.com/api-reference/payments/post-payments
+
+    Subscriptions: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+
+    Required fields for checkout sessions:
+        product_cart (array): Array of products with product_id and quantity
+
+    Returns: {"checkout_url": "https://checkout.dodopayments.com/session/..."}
+
 
 If Customer Portal Route Handler is selected:
 
@@ -258,7 +294,7 @@ Make sure to define these environment variables in your project:
 DODO_PAYMENTS_API_KEY=your-api-key
 DODO_PAYMENTS_RETURN_URL=https://yourapp.com/success
 DODO_PAYMENTS_WEBHOOK_KEY=your-webhook-secret
-DODO_PAYMENTS_ENVIRONMENT="test"or"live"
+DODO_PAYMENTS_ENVIRONMENT="test_mode" or "live_mode""
 
 Use these inside your code as:
 

@@ -4,6 +4,7 @@ import {
   dynamicCheckoutBodySchema,
   CheckoutHandlerConfig,
   checkoutQuerySchema,
+  checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
 
 export function checkoutHandler(config: CheckoutHandlerConfig) {
@@ -33,24 +34,46 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
       return res.status(400).send(error.message);
     }
 
-    return res.redirect(302, url);
+    return res.json({ checkout_url: url });
   };
   const postHandler = async (req: Request, res: Response) => {
-    const { success, data, error } = dynamicCheckoutBodySchema.safeParse(
-      req.body,
-    );
+    if (config.type === "dynamic") {
+      // Handle dynamic checkout
+      const { success, data, error } = dynamicCheckoutBodySchema.safeParse(
+        req.body,
+      );
 
-    if (!success) {
-      return res.status(400).send(`Invalid request body.\n ${error.message}`);
-    }
+      if (!success) {
+        return res.status(400).send(`Invalid request body.\n ${error.message}`);
+      }
 
-    let url = "";
-    try {
-      url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
-    } catch (error: any) {
-      return res.status(400).send(error.message);
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+      } catch (error: any) {
+        return res.status(400).send(error.message);
+      }
+      return res.json({ checkout_url: url });
+    } else {
+      // Handle checkout session
+      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(req.body);
+
+      if (!success) {
+        return res.status(400).send(`Invalid checkout session payload.\n ${error.message}`);
+      }
+
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({
+          sessionPayload: data,
+          ...config,
+          type: "session"
+        });
+      } catch (error: any) {
+        return res.status(400).send(error.message);
+      }
+      return res.json({ checkout_url: url });
     }
-    return res.redirect(302, url);
   };
 
   return (req: Request, res: Response) => {

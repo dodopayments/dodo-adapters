@@ -4,6 +4,7 @@ import {
   CheckoutHandlerConfig,
   checkoutQuerySchema,
   dynamicCheckoutBodySchema,
+  checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
 
 export const Checkout = (config: CheckoutHandlerConfig) => {
@@ -31,7 +32,7 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       return c.text(error.message, 400);
     }
 
-    return c.redirect(url);
+    return c.json({ checkout_url: url });
   };
 
   const postHandler = async (c: Context) => {
@@ -42,19 +43,41 @@ export const Checkout = (config: CheckoutHandlerConfig) => {
       return c.text("Invalid JSON body", 400);
     }
 
-    const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
+    if (config.type === "dynamic") {
+      // Handle dynamic checkout
+      const { success, data, error } = dynamicCheckoutBodySchema.safeParse(body);
 
-    if (!success) {
-      return c.text(`Invalid request body.\n ${error.message}`, 400);
-    }
+      if (!success) {
+        return c.text(`Invalid request body.\n ${error.message}`, 400);
+      }
 
-    let url = "";
-    try {
-      url = await buildCheckoutUrl({ body: data, ...config });
-    } catch (error: any) {
-      return c.text(error.message, 400);
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({ body: data, ...config, type: "dynamic" });
+      } catch (error: any) {
+        return c.text(error.message, 400);
+      }
+      return c.json({ checkout_url: url });
+    } else {
+      // Handle checkout session
+      const { success, data, error } = checkoutSessionPayloadSchema.safeParse(body);
+
+      if (!success) {
+        return c.text(`Invalid checkout session payload.\n ${error.message}`, 400);
+      }
+
+      let url = "";
+      try {
+        url = await buildCheckoutUrl({
+          sessionPayload: data,
+          ...config,
+          type: "session"
+        });
+      } catch (error: any) {
+        return c.text(error.message, 400);
+      }
+      return c.json({ checkout_url: url });
     }
-    return c.redirect(url);
   };
 
   return (c: Context) => {

@@ -209,6 +209,15 @@ Dynamic Checkout (POST): Parameters are sent as a JSON body. Supports both one-t
 - Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
 - Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
 
+Checkout Sessions (POST) - (Recommended) A more customizable checkout experience:
+- Parameters are sent as a JSON body. Supports both one-time and recurring payments. 
+- Returns: {"checkout_url": "https://checkout.dodopayments.com/session/..."}
+- For a complete list of supported POST body fields, refer to:
+  - Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
+  - Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+- Required fields for checkout sessions:
+  - product_cart (array): Array of products with product_id and quantity
+
 Error Handling: If productId is missing or other query parameters are invalid, the handler will return a 400 response.
 
 If Customer Portal API Route is selected:
@@ -291,7 +300,6 @@ Event Routing: Calls the appropriate event handler based on the payload type. Su
 - onSubscriptionActive?: (payload: WebhookPayload) => Promise<void>
 - onSubscriptionOnHold?: (payload: WebhookPayload) => Promise<void>
 - onSubscriptionRenewed?: (payload: WebhookPayload) => Promise<void>
-- onSubscriptionPaused?: (payload: WebhookPayload) => Promise<void>
 - onSubscriptionPlanChanged?: (payload: WebhookPayload) => Promise<void>
 - onSubscriptionCancelled?: (payload: WebhookPayload) => Promise<void>
 - onSubscriptionFailed?: (payload: WebhookPayload) => Promise<void>
