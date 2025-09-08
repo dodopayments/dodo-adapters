@@ -11,7 +11,6 @@ Thank you for your interest in contributing to Dodo Adapters! This document prov
 - [Pull Request Process](#pull-request-process)
 - [Adding New Framework Adapters](#adding-new-framework-adapters)
 - [Coding Standards](#coding-standards)
-- [Testing Guidelines](#testing-guidelines)
 - [Documentation Guidelines](#documentation-guidelines)
 
 ## Code of Conduct
@@ -45,12 +44,7 @@ This project adheres to a code of conduct that we expect all contributors to fol
    npm run build
    ```
 
-4. **Run Tests**
-   ```bash
-   npm test
-   ```
-
-5. **Start Development**
+4. **Start Development**
    ```bash
    npm run dev
    ```
@@ -59,7 +53,7 @@ This project adheres to a code of conduct that we expect all contributors to fol
 
 ```
 packages/
-├── core/                   # Shared functionality
+├── core/                  # Shared functionality
 ├── [framework]/           # Framework-specific adapters
 examples/
 ├── [framework]-basic/     # Basic implementations
@@ -76,8 +70,7 @@ We welcome several types of contributions:
 2. **✨ New Features** - Add functionality to existing adapters
 3. **🚀 New Adapters** - Add support for new frameworks
 4. **📚 Documentation** - Improve or add documentation
-5. **🧪 Tests** - Add or improve test coverage
-6. **🎨 Examples** - Create new example implementations
+5. **🎨 Examples** - Create new example implementations
 
 ### Before You Start
 
@@ -101,9 +94,7 @@ git checkout -b adapter/framework-name
 ### 2. Make Your Changes
 
 - Follow the [coding standards](#coding-standards)
-- Add tests for new functionality
 - Update documentation as needed
-- Ensure all tests pass
 
 ### 3. Commit Your Changes
 
@@ -121,9 +112,6 @@ git commit -m "fix(core): validation error for empty metadata"
 # Documentation
 git commit -m "docs(readme): update installation instructions"
 git commit -m "docs: add troubleshooting guide"
-
-# Tests
-git commit -m "test(express): add integration tests"
 
 # Chores
 git commit -m "chore: update dependencies"
@@ -165,10 +153,6 @@ packages/framework-name/
 │   ├── webhooks.ts        # Webhook handling
 │   ├── customer-portal.ts # Customer portal
 │   └── index.ts          # Main exports
-├── tests/
-│   ├── checkout.test.ts
-│   ├── webhooks.test.ts
-│   └── integration.test.ts
 ├── package.json
 ├── tsconfig.json
 └── README.md
@@ -191,14 +175,14 @@ export function Checkout(config: CheckoutConfig) {
 }
 ```
 
-### 4. Required Tests
+<!-- ### 4. Required Tests
 
 - Unit tests for all exported functions
 - Integration tests with mock server
 - Type safety tests
-- Error handling tests
+- Error handling tests -->
 
-### 5. Documentation Requirements
+### 4. Documentation Requirements
 
 - Package README with usage examples
 - Framework-specific documentation in `docs/adapters/`
@@ -261,7 +245,7 @@ export function Checkout(config: CheckoutConfig) {
 }
 ```
 
-## Testing Guidelines
+<!-- ## Testing Guidelines
 
 ### Test Structure
 
@@ -287,15 +271,15 @@ describe('Checkout', () => {
     });
   });
 });
-```
+``` -->
 
-### Test Requirements
+<!-- ### Test Requirements
 
 - **Unit Tests**: Test all public functions
 - **Integration Tests**: Test with mock Dodo API
 - **Error Cases**: Test all error conditions
 - **Type Safety**: Verify TypeScript compilation
-- **Coverage**: Aim for >90% test coverage
+- **Coverage**: Aim for >90% test coverage -->
 
 ### Mock Guidelines
 
@@ -332,16 +316,6 @@ Each adapter package needs:
 - Include practical examples
 - Explain framework-specific behavior
 - Document error conditions
-
-### Documentation Testing
-
-```bash
-# Check documentation links
-npm run docs:check
-
-# Test code examples
-npm run docs:test
-```
 
 ## Release Process
 
