@@ -55,7 +55,6 @@ Please describe the tests you've added or modified:
 ## 📚 Documentation
 
 - [ ] I have updated the README.md (if applicable)
-- [ ] I have updated relevant documentation in `/docs`
 - [ ] I have added/updated code comments for complex logic
 - [ ] I have updated the CHANGELOG.md (if applicable)
 
