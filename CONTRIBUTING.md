@@ -44,10 +44,16 @@ This project adheres to a code of conduct that we expect all contributors to fol
    npm run build
    ```
 
-4. **Start Development**
-   ```bash
-   npm run dev
-   ```
+ 4. **Local Testing**
+    ```bash
+    # Build and link the adapter you want to test
+    cd packages/nextjs  # or any other adapter
+    npm run build
+    npm link
+
+    # In your test project
+    npm link @dodopayments/nextjs
+    ```
 
 ### Project Structure
 
@@ -243,60 +249,6 @@ try {
 export function Checkout(config: CheckoutConfig) {
   // Implementation
 }
-```
-
-<!-- ## Testing Guidelines
-
-### Test Structure
-
-```typescript
-// tests/checkout.test.ts
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { Checkout } from '../src/checkout';
-
-describe('Checkout', () => {
-  describe('static checkout', () => {
-    it('creates valid checkout URL for valid product', async () => {
-      // Test implementation
-    });
-    
-    it('returns 400 for missing product_id', async () => {
-      // Test error handling
-    });
-  });
-  
-  describe('dynamic checkout', () => {
-    it('handles customer data correctly', async () => {
-      // Test complex scenarios
-    });
-  });
-});
-``` -->
-
-<!-- ### Test Requirements
-
-- **Unit Tests**: Test all public functions
-- **Integration Tests**: Test with mock Dodo API
-- **Error Cases**: Test all error conditions
-- **Type Safety**: Verify TypeScript compilation
-- **Coverage**: Aim for >90% test coverage -->
-
-### Mock Guidelines
-
-```typescript
-// Use consistent mocks across adapters
-import { vi } from 'vitest';
-
-const mockDodoApi = {
-  createCheckoutSession: vi.fn(),
-  verifyWebhook: vi.fn(),
-  createPortalSession: vi.fn(),
-};
-
-vi.mock('@dodopayments/core', () => ({
-  ...vi.importActual('@dodopayments/core'),
-  DodoApiClient: vi.fn(() => mockDodoApi),
-}));
 ```
 
 ## Documentation Guidelines

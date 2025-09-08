@@ -106,9 +106,20 @@ npm install
 
 # Build all packages
 npm run build
+```
 
-# Start development
-npm run dev
+### Local Testing
+
+```bash
+# Build and link the adapter you want to test
+cd packages/nextjs  # or any other adapter
+npm run build
+npm link
+
+# In your test project
+npm link @dodopayments/nextjs
+```
+
 ```
 
 ### Commands
