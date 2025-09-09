@@ -13,7 +13,6 @@ Please check the type of change your PR introduces:
 - [ ] 💥 **Breaking change** (fix or feature that would cause existing functionality to not work as expected)
 - [ ] 🚀 **New adapter** (adds support for a new framework)
 - [ ] 📚 **Documentation** (changes to documentation only)
-- [ ] 🧪 **Tests** (adding missing tests or correcting existing tests)
 - [ ] 🎨 **Code style** (formatting, missing semicolons, etc; no production code change)
 - [ ] ♻️ **Refactoring** (code change that neither fixes a bug nor adds a feature)
 - [ ] ⚡ **Performance** (code change that improves performance)
@@ -36,7 +35,7 @@ Which packages are affected by this change:
 - [ ] Examples
 - [ ] Documentation
 
-## 🧪 Testing
+<!-- ## 🧪 Testing
 
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] New and existing unit tests pass locally with my changes
@@ -51,12 +50,11 @@ Please describe the tests you've added or modified:
 - [ ] Integration tests with framework
 - [ ] Error handling tests
 - [ ] Type safety tests
-- [ ] E2E tests (if applicable)
+- [ ] E2E tests (if applicable) -->
 
 ## 📚 Documentation
 
 - [ ] I have updated the README.md (if applicable)
-- [ ] I have updated relevant documentation in `/docs`
 - [ ] I have added/updated code comments for complex logic
 - [ ] I have updated the CHANGELOG.md (if applicable)
 
@@ -73,7 +71,6 @@ If you're adding a new framework adapter, please ensure:
 
 - [ ] Follows the standard adapter pattern
 - [ ] Implements all three core functions (Checkout, Webhooks, CustomerPortal)
-- [ ] Includes comprehensive tests
 - [ ] Has framework-specific documentation
 - [ ] Includes working example implementation
 - [ ] Follows framework conventions and best practices
@@ -132,7 +129,6 @@ Specific areas to focus on during review:
 - [ ] All CI checks are passing
 - [ ] Code has been reviewed and approved
 - [ ] Documentation is complete and accurate
-- [ ] Tests are comprehensive and passing
 - [ ] Breaking changes are properly documented
 - [ ] CHANGELOG.md is updated (if applicable)
 

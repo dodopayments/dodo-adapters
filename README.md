@@ -20,6 +20,12 @@ npm install @dodopayments/nextjs     # Next.js
 npm install @dodopayments/express    # Express
 npm install @dodopayments/fastify    # Fastify
 npm install @dodopayments/hono       # Hono
+npm install @dodopayments/remix      # Remix
+npm install @dodopayments/sveltekit  # SvelteKit
+npm install @dodopayments/astro      # Astro
+npm install @dodopayments/tanstack   # TanStack
+npm install @dodopayments/nuxt       # Nuxt
+npm install @dodopayments/better-auth # BetterAuth
 ```
 
 ### Basic Setup
@@ -65,19 +71,11 @@ export const POST = Webhooks({
 - **🔐 Secure**: Built-in webhook verification and validation
 - **📊 Complete**: Checkout, webhooks, and customer portal
 
-## 📚 Documentation
-
-- **[Getting Started](./docs/getting-started.md)** - Installation and setup
-- **[Core Concepts](./docs/core-concepts.md)** - Architecture overview
-- **[API Reference](./docs/api-reference/)** - Complete API documentation
-- **[Examples](./docs/examples/)** - Working code examples
-- **[Framework Guides](./docs/adapters/)** - Framework-specific documentation
-
 ## 🏗️ Project Structure
 
 ```
 packages/
-├── core/                   # Shared functionality and types
+├── core/                  # Shared functionality and types
 ├── nextjs/                # Next.js adapter (App & Pages Router)
 ├── express/               # Express middleware
 ├── fastify/               # Fastify plugin
@@ -108,53 +106,39 @@ npm install
 
 # Build all packages
 npm run build
+```
 
-# Run tests
-npm test
+### Local Testing
 
-# Start development
-npm run dev
+```bash
+# Build and link the adapter you want to test
+cd packages/nextjs  # or any other adapter
+npm run build
+npm link
+
+# In your test project
+npm link @dodopayments/nextjs
+```
+
 ```
 
 ### Commands
 
 ```bash
 # Build all packages
-turbo build
+npm run build
 
 # Build specific package
-turbo build --filter=@dodopayments/nextjs
-
-# Run tests
-turbo test
+npm run build --filter=@dodopayments/nextjs
 
 # Type checking
-turbo typecheck
+npm run check-types
 
 # Linting
-turbo lint
+npm run lint
 
 # Format code
-turbo format
-```
-
-## 🧪 Testing
-
-Each adapter includes comprehensive test coverage:
-
-- **Unit Tests**: Core functionality and validation
-- **Integration Tests**: Framework-specific implementations
-- **E2E Tests**: Complete checkout flows (examples)
-
-```bash
-# Run all tests
-npm test
-
-# Run specific package tests
-npm test --filter=@dodopayments/nextjs
-
-# E2E tests (examples)
-npm run test:e2e
+npm run format
 ```
 
 ## 🤝 Contributing
@@ -162,11 +146,9 @@ npm run test:e2e
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass (`npm test`)
-6. Commit changes (`git commit -m 'Add amazing feature'`)
-7. Push to branch (`git push origin feature/amazing-feature`)
-8. Open a Pull Request
+4. Commit changes (`git commit -m 'Add amazing feature'`)
+5. Push to branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 See [Contributing Guide](./CONTRIBUTING.md) for detailed instructions on adding new framework adapters.
 
