@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { 
   createMockPayment, 
   createMockSubscription, 
@@ -9,42 +10,6 @@ import {
 } from "./webhook";
 import { Webhook as StandardWebhook } from "standardwebhooks";
 import { WebhookPayloadSchema } from "../schemas/webhook";
-
-// Mock testing functions since we're not in a test environment
-const describe = (name: string, fn: () => void) => {
-  console.log(`Running test suite: ${name}`);
-  fn();
-};
-
-const it = (name: string, fn: () => void) => {
-  console.log(`  Running test: ${name}`);
-  try {
-    fn();
-    console.log("    ✓ Test passed");
-  } catch (error) {
-    console.log(`    ✗ Test failed: ${error}`);
-  }
-};
-
-const expect = (value: any) => {
-  return {
-    toBe: (expected: any) => {
-      if (value !== expected) {
-        throw new Error(`Expected ${expected} but got ${value}`);
-      }
-    },
-    toBeInstanceOf: (expected: any) => {
-      if (!(value instanceof expected)) {
-        throw new Error(`Expected instance of ${expected.name} but got ${value.constructor.name}`);
-      }
-    },
-    toBeDefined: () => {
-      if (value === undefined) {
-        throw new Error("Expected value to be defined");
-      }
-    }
-  };
-};
 
 describe("Webhook Testing Utilities", () => {
   const SECRET = "whsec_testsecret123";
@@ -58,7 +23,9 @@ describe("Webhook Testing Utilities", () => {
     expect(mockPayment.payload_type).toBe("Payment");
     expect(mockPayment.total_amount).toBe(2000);
     expect(mockPayment.currency).toBe("EUR");
-    expect(mockPayment.created_at).toBeInstanceOf(Date);
+    // The created_at field is a string that can be parsed as a date
+    expect(typeof mockPayment.created_at).toBe("string");
+    expect(new Date(mockPayment.created_at)).toBeInstanceOf(Date);
 
     // Validate against the actual schema
     const result = WebhookPayloadSchema.safeParse({
@@ -79,7 +46,9 @@ describe("Webhook Testing Utilities", () => {
     expect(mockSubscription.payload_type).toBe("Subscription");
     expect(mockSubscription.status).toBe("active");
     expect(mockSubscription.payment_frequency_interval).toBe("Year");
-    expect(mockSubscription.created_at).toBeInstanceOf(Date);
+    // The created_at field is a string that can be parsed as a date
+    expect(typeof mockSubscription.created_at).toBe("string");
+    expect(new Date(mockSubscription.created_at)).toBeInstanceOf(Date);
 
     // Validate against the actual schema
     const result = WebhookPayloadSchema.safeParse({
@@ -100,7 +69,9 @@ describe("Webhook Testing Utilities", () => {
     expect(mockRefund.payload_type).toBe("Refund");
     expect(mockRefund.amount).toBe(500);
     expect(mockRefund.is_partial).toBe(true);
-    expect(mockRefund.created_at).toBeInstanceOf(Date);
+    // The created_at field is a string that can be parsed as a date
+    expect(typeof mockRefund.created_at).toBe("string");
+    expect(new Date(mockRefund.created_at)).toBeInstanceOf(Date);
 
     // Validate against the actual schema
     const result = WebhookPayloadSchema.safeParse({
@@ -121,7 +92,9 @@ describe("Webhook Testing Utilities", () => {
     expect(mockDispute.payload_type).toBe("Dispute");
     expect(mockDispute.dispute_status).toBe("dispute_won");
     expect(mockDispute.dispute_stage).toBe("dispute_won");
-    expect(mockDispute.created_at).toBeInstanceOf(Date);
+    // The created_at field is a string that can be parsed as a date
+    expect(typeof mockDispute.created_at).toBe("string");
+    expect(new Date(mockDispute.created_at)).toBeInstanceOf(Date);
 
     // Validate against the actual schema
     const result = WebhookPayloadSchema.safeParse({
@@ -142,7 +115,9 @@ describe("Webhook Testing Utilities", () => {
     expect(mockLicenseKey.payload_type).toBe("LicenseKey");
     expect(mockLicenseKey.status).toBe("expired");
     expect(mockLicenseKey.key).toBe("TEST-KEY-123");
-    expect(mockLicenseKey.created_at).toBeInstanceOf(Date);
+    // The created_at field is a string that can be parsed as a date
+    expect(typeof mockLicenseKey.created_at).toBe("string");
+    expect(new Date(mockLicenseKey.created_at)).toBeInstanceOf(Date);
 
     // Validate against the actual schema
     const result = WebhookPayloadSchema.safeParse({
@@ -193,17 +168,12 @@ describe("Webhook Testing Utilities", () => {
     // Verify the signature using the standardwebhooks library
     const standardWebhook = new StandardWebhook(SECRET);
     
-    let errorOccurred = false;
-    try {
+    expect(() => {
       standardWebhook.verify(body, {
         "webhook-id": headers["webhook-id"],
         "webhook-timestamp": headers["webhook-timestamp"],
         "webhook-signature": headers["webhook-signature"],
       });
-    } catch (error) {
-      errorOccurred = true;
-    }
-    
-    expect(errorOccurred).toBe(false);
+    }).not.toThrow();
   });
 });

@@ -8,7 +8,7 @@ import {
 } from "../schemas/webhook";
 
 // Helper function to generate mock timestamps
-const mockTimestamp = (): Date => new Date();
+const mockTimestamp = (): string => new Date().toISOString();
 
 // Helper function to generate random IDs
 const mockId = (prefix: string): string => `${prefix}_${Math.random().toString(36).substr(2, 9)}`;
@@ -58,7 +58,7 @@ export const createMockPayment = (overrides?: Partial<Payment>): Payment => {
     total_amount: 1000,
     updated_at: null,
     ...overrides
-  };
+  } as Payment;
 };
 
 export const createMockSubscription = (overrides?: Partial<Subscription>): Subscription => {
@@ -98,7 +98,7 @@ export const createMockSubscription = (overrides?: Partial<Subscription>): Subsc
     tax_inclusive: true,
     trial_period_days: 0,
     ...overrides
-  };
+  } as Subscription;
 };
 
 export const createMockRefund = (overrides?: Partial<Refund>): Refund => {
@@ -114,7 +114,7 @@ export const createMockRefund = (overrides?: Partial<Refund>): Refund => {
     refund_id: mockId("ref"),
     status: "succeeded",
     ...overrides
-  };
+  } as Refund;
 };
 
 export const createMockDispute = (overrides?: Partial<Dispute>): Dispute => {
@@ -130,7 +130,7 @@ export const createMockDispute = (overrides?: Partial<Dispute>): Dispute => {
     payment_id: mockId("pay"),
     remarks: null,
     ...overrides
-  };
+  } as Dispute;
 };
 
 export const createMockLicenseKey = (overrides?: Partial<LicenseKey>): LicenseKey => {
@@ -149,7 +149,7 @@ export const createMockLicenseKey = (overrides?: Partial<LicenseKey>): LicenseKe
     status: "active",
     subscription_id: null,
     ...overrides
-  };
+  } as LicenseKey;
 };
 
 // Helper function to create mock webhook headers
