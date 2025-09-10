@@ -2,7 +2,7 @@
 
 <p align="left">
   <a href="https://discord.gg/bYqAp4ayYh">
-    <img src="https://img.shields.io/badge/chat-on%20discord-7289DA.svg" alt="Chat on Discord" />
+    <img src="https://img.shields.io/discord/1305511580854779984?label=Join%20Discord&logo=discord" alt="Join Discord" />
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-GPLv3-blue.svg" alt="License: GPLv3" />
