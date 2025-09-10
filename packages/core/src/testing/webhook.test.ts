@@ -6,7 +6,15 @@ import {
   createMockDispute, 
   createMockLicenseKey,
   createMockWebhookHeaders,
-  createMockWebhookRequest
+  createMockWebhookRequest,
+  createMockPaymentWebhookEvent,
+  createMockSubscriptionWebhookEvent,
+  createMockRefundWebhookEvent,
+  createMockDisputeWebhookEvent,
+  createMockLicenseKeyWebhookEvent,
+  verifyWebhookSignature,
+  createMockWebhookErrorScenario,
+  createMockWebhookBatch
 } from "./webhook";
 import { Webhook as StandardWebhook } from "standardwebhooks";
 import { WebhookPayloadSchema } from "../schemas/webhook";
@@ -175,5 +183,150 @@ describe("Webhook Testing Utilities", () => {
         "webhook-signature": headers["webhook-signature"],
       });
     }).not.toThrow();
+  });
+
+  // New tests for complete webhook events
+  it("should create a valid payment webhook event", () => {
+    const webhookEvent = createMockPaymentWebhookEvent({
+      type: "payment.failed"
+    });
+
+    expect(webhookEvent.type).toBe("payment.failed");
+    expect(webhookEvent.data.payload_type).toBe("Payment");
+    expect(webhookEvent.timestamp).toBeDefined();
+    expect(webhookEvent.business_id).toBeDefined();
+
+    // Validate against the actual schema
+    const result = WebhookPayloadSchema.safeParse(webhookEvent);
+    expect(result.success).toBe(true);
+  });
+
+  it("should create a valid subscription webhook event", () => {
+    const webhookEvent = createMockSubscriptionWebhookEvent({
+      type: "subscription.cancelled"
+    });
+
+    expect(webhookEvent.type).toBe("subscription.cancelled");
+    expect(webhookEvent.data.payload_type).toBe("Subscription");
+    expect(webhookEvent.timestamp).toBeDefined();
+    expect(webhookEvent.business_id).toBeDefined();
+
+    // Validate against the actual schema
+    const result = WebhookPayloadSchema.safeParse(webhookEvent);
+    expect(result.success).toBe(true);
+  });
+
+  it("should create a valid refund webhook event", () => {
+    const webhookEvent = createMockRefundWebhookEvent({
+      type: "refund.failed"
+    });
+
+    expect(webhookEvent.type).toBe("refund.failed");
+    expect(webhookEvent.data.payload_type).toBe("Refund");
+    expect(webhookEvent.timestamp).toBeDefined();
+    expect(webhookEvent.business_id).toBeDefined();
+
+    // Validate against the actual schema
+    const result = WebhookPayloadSchema.safeParse(webhookEvent);
+    expect(result.success).toBe(true);
+  });
+
+  it("should create a valid dispute webhook event", () => {
+    const webhookEvent = createMockDisputeWebhookEvent({
+      type: "dispute.won"
+    });
+
+    expect(webhookEvent.type).toBe("dispute.won");
+    expect(webhookEvent.data.payload_type).toBe("Dispute");
+    expect(webhookEvent.timestamp).toBeDefined();
+    expect(webhookEvent.business_id).toBeDefined();
+
+    // Validate against the actual schema
+    const result = WebhookPayloadSchema.safeParse(webhookEvent);
+    expect(result.success).toBe(true);
+  });
+
+  it("should create a valid license key webhook event", () => {
+    const webhookEvent = createMockLicenseKeyWebhookEvent({
+      type: "license_key.created"
+    });
+
+    expect(webhookEvent.type).toBe("license_key.created");
+    expect(webhookEvent.data.payload_type).toBe("LicenseKey");
+    expect(webhookEvent.timestamp).toBeDefined();
+    expect(webhookEvent.business_id).toBeDefined();
+
+    // Validate against the actual schema
+    const result = WebhookPayloadSchema.safeParse(webhookEvent);
+    expect(result.success).toBe(true);
+  });
+
+  // Test for signature verification utility
+  it("should verify webhook signatures with utility function", () => {
+    const mockPayment = createMockPayment({ total_amount: 1500 });
+    const webhookPayload = {
+      business_id: "biz_123",
+      type: "payment.succeeded" as const,
+      timestamp: new Date().toISOString(),
+      data: mockPayment
+    };
+    const { headers, body } = createMockWebhookRequest(webhookPayload, SECRET);
+    
+    // Verify the signature using our utility function
+    const isValid = verifyWebhookSignature(body, headers, SECRET);
+    expect(isValid).toBe(true);
+  });
+
+  it("should reject invalid webhook signatures", () => {
+    const mockPayment = createMockPayment({ total_amount: 1500 });
+    const webhookPayload = {
+      business_id: "biz_123",
+      type: "payment.succeeded" as const,
+      timestamp: new Date().toISOString(),
+      data: mockPayment
+    };
+    const { headers, body } = createMockWebhookRequest(webhookPayload, SECRET);
+    
+    // Test with wrong secret
+    const isValid = verifyWebhookSignature(body, headers, "whsec_wrongsecret");
+    expect(isValid).toBe(false);
+  });
+
+  // Tests for error scenario utilities
+  it("should create error scenarios for testing", () => {
+    // Test invalid signature scenario
+    const invalidSignatureScenario = createMockWebhookErrorScenario('invalid_signature', SECRET);
+    expect(invalidSignatureScenario.headers["webhook-signature"]).toBe("invalid_signature");
+    
+    // Test missing headers scenario
+    const missingHeadersScenario = createMockWebhookErrorScenario('missing_headers', SECRET);
+    expect(Object.keys(missingHeadersScenario.headers).length).toBe(0);
+    
+    // Test malformed payload scenario
+    const malformedPayloadScenario = createMockWebhookErrorScenario('malformed_payload', SECRET);
+    expect(malformedPayloadScenario.body).toBe("invalid json");
+    
+    // Test expired timestamp scenario
+    const expiredTimestampScenario = createMockWebhookErrorScenario('expired_timestamp', SECRET);
+    expect(expiredTimestampScenario.headers["webhook-timestamp"]).toBeDefined();
+  });
+
+  it("should create a batch of webhook events", () => {
+    const batch = createMockWebhookBatch(5, 'payment', SECRET);
+    
+    expect(batch.length).toBe(5);
+    expect(batch[0].headers).toBeDefined();
+    expect(batch[0].body).toBeDefined();
+    expect(batch[0].headers["webhook-id"]).toBeDefined();
+  });
+
+  it("should create batches of different event types", () => {
+    const paymentBatch = createMockWebhookBatch(3, 'payment', SECRET);
+    const subscriptionBatch = createMockWebhookBatch(3, 'subscription', SECRET);
+    const refundBatch = createMockWebhookBatch(3, 'refund', SECRET);
+    
+    expect(paymentBatch.length).toBe(3);
+    expect(subscriptionBatch.length).toBe(3);
+    expect(refundBatch.length).toBe(3);
   });
 });

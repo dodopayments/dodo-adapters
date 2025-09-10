@@ -4,7 +4,8 @@ import {
   Subscription, 
   Refund, 
   Dispute, 
-  LicenseKey
+  LicenseKey,
+  WebhookPayload
 } from "../schemas/webhook";
 
 // Helper function to generate mock timestamps
@@ -152,6 +153,57 @@ export const createMockLicenseKey = (overrides?: Partial<LicenseKey>): LicenseKe
   } as LicenseKey;
 };
 
+// Factory functions for complete webhook events
+export const createMockPaymentWebhookEvent = (overrides?: Partial<WebhookPayload>): WebhookPayload => {
+  return {
+    business_id: mockId("biz"),
+    type: "payment.succeeded",
+    timestamp: mockTimestamp(), // Changed back to string
+    data: createMockPayment(),
+    ...overrides
+  } as WebhookPayload;
+};
+
+export const createMockSubscriptionWebhookEvent = (overrides?: Partial<WebhookPayload>): WebhookPayload => {
+  return {
+    business_id: mockId("biz"),
+    type: "subscription.active",
+    timestamp: mockTimestamp(), // Changed back to string
+    data: createMockSubscription(),
+    ...overrides
+  } as WebhookPayload;
+};
+
+export const createMockRefundWebhookEvent = (overrides?: Partial<WebhookPayload>): WebhookPayload => {
+  return {
+    business_id: mockId("biz"),
+    type: "refund.succeeded",
+    timestamp: mockTimestamp(), // Changed back to string
+    data: createMockRefund(),
+    ...overrides
+  } as WebhookPayload;
+};
+
+export const createMockDisputeWebhookEvent = (overrides?: Partial<WebhookPayload>): WebhookPayload => {
+  return {
+    business_id: mockId("biz"),
+    type: "dispute.opened",
+    timestamp: mockTimestamp(), // Changed back to string
+    data: createMockDispute(),
+    ...overrides
+  } as WebhookPayload;
+};
+
+export const createMockLicenseKeyWebhookEvent = (overrides?: Partial<WebhookPayload>): WebhookPayload => {
+  return {
+    business_id: mockId("biz"),
+    type: "license_key.created",
+    timestamp: mockTimestamp(), // Changed back to string
+    data: createMockLicenseKey(),
+    ...overrides
+  } as WebhookPayload;
+};
+
 // Helper function to create mock webhook headers
 export const createMockWebhookHeaders = (payload: string, secret: string, msgId?: string): Record<string, string> => {
   const timestamp = new Date();
@@ -177,4 +229,115 @@ export const createMockWebhookRequest = <T>(
   const headers = createMockWebhookHeaders(body, secret);
   
   return { headers, body };
+};
+
+// Utility function to verify a webhook signature
+export const verifyWebhookSignature = (body: string, headers: Record<string, string>, secret: string): boolean => {
+  try {
+    const standardWebhook = new StandardWebhook(secret);
+    standardWebhook.verify(body, {
+      "webhook-id": headers["webhook-id"],
+      "webhook-timestamp": headers["webhook-timestamp"],
+      "webhook-signature": headers["webhook-signature"],
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+// Utility function to simulate common webhook error scenarios
+export const createMockWebhookErrorScenario = (
+  scenario: 'invalid_signature' | 'missing_headers' | 'malformed_payload' | 'expired_timestamp',
+  secret: string
+): { headers: Record<string, string>; body: string } => {
+  const mockPayment = createMockPayment();
+  const webhookPayload = {
+    business_id: mockId("biz"),
+    type: "payment.succeeded" as const,
+    timestamp: mockTimestamp(), // Changed back to string
+    data: mockPayment
+  };
+  
+  const body = JSON.stringify(webhookPayload);
+  
+  switch (scenario) {
+    case 'invalid_signature':
+      return {
+        headers: {
+          "webhook-id": mockId("wh"),
+          "webhook-timestamp": Math.floor(new Date().getTime() / 1000).toString(),
+          "webhook-signature": "invalid_signature"
+        },
+        body
+      };
+      
+    case 'missing_headers':
+      return {
+        headers: {},
+        body
+      };
+      
+    case 'malformed_payload':
+      return {
+        headers: createMockWebhookHeaders('invalid json', secret),
+        body: 'invalid json'
+      };
+      
+    case 'expired_timestamp':
+      // Create a timestamp from 1 hour ago (older than the 5-minute tolerance)
+      const expiredTimestamp = new Date(Date.now() - 60 * 60 * 1000);
+      const messageId = mockId("wh");
+      const standardWebhook = new StandardWebhook(secret);
+      const signature = standardWebhook.sign(messageId, expiredTimestamp, body);
+      
+      return {
+        headers: {
+          "webhook-id": messageId,
+          "webhook-timestamp": Math.floor(expiredTimestamp.getTime() / 1000).toString(),
+          "webhook-signature": signature,
+        },
+        body
+      };
+      
+    default:
+      return createMockWebhookRequest(webhookPayload, secret);
+  }
+};
+
+// Utility function to create a batch of webhook events for load testing
+export const createMockWebhookBatch = (
+  count: number,
+  eventType: 'payment' | 'subscription' | 'refund' | 'dispute' | 'license_key' = 'payment',
+  secret: string
+): Array<{ headers: Record<string, string>; body: string }> => {
+  const batch = [];
+  
+  for (let i = 0; i < count; i++) {
+    let webhookEvent;
+    
+    switch (eventType) {
+      case 'payment':
+        webhookEvent = createMockPaymentWebhookEvent();
+        break;
+      case 'subscription':
+        webhookEvent = createMockSubscriptionWebhookEvent();
+        break;
+      case 'refund':
+        webhookEvent = createMockRefundWebhookEvent();
+        break;
+      case 'dispute':
+        webhookEvent = createMockDisputeWebhookEvent();
+        break;
+      case 'license_key':
+        webhookEvent = createMockLicenseKeyWebhookEvent();
+        break;
+      default:
+        webhookEvent = createMockPaymentWebhookEvent();
+    }
+    
+    batch.push(createMockWebhookRequest(webhookEvent, secret));
+  }
+  
+  return batch;
 };
