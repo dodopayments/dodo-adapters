@@ -5,7 +5,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.cjs.json",
     "dev": "tsc --watch",
     "test": "vitest --run",
     "test:watch": "vitest --watch",
@@ -28,6 +28,11 @@
       "import": "./dist/schemas/webhook.js",
       "require": "./dist/schemas/webhook.cjs",
       "types": "./dist/schemas/webhook.d.ts"
+    },
+    "./testing": {
+      "import": "./dist/testing/index.js",
+      "require": "./dist/cjs/testing/index.js",
+      "types": "./dist/testing/index.d.ts"
     }
   },
   "dependencies": {
