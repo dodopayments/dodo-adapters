@@ -152,6 +152,14 @@ npm run format
 
 See [Contributing Guide](./CONTRIBUTING.md) for detailed instructions on adding new framework adapters.
 
+## 🤝 Contributors
+
+Thanks to all our amazing contributors for their support and code!
+
+<a href="https://github.com/dodopayments/dodo-adapters/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=dodopayments/dodo-adapters" />
+</a>
+
 ## 📄 License
 
 GPL v3 License - see [LICENSE](./LICENSE) for details.
