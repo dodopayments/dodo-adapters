@@ -62,6 +62,7 @@ export const POST = Webhooks({
 | TanStack | `@dodopayments/tanstack` | ✅ |
 | Nuxt | `@dodopayments/nuxt` | ✅ |
 | BetterAuth | `@dodopayments/betterauth` | ✅ |
+| Laravel | `@dodopayments/laravel` | ✅ |
 
 ## 🔧 Features
 
