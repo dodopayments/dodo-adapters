@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Dodopayments\Laravel\Support\Events;
 
-class DisputeChallenged
+final class DisputeChallenged
 {
     public function __construct(
-        public array $payload,
+        public readonly array $payload,
     ) {}
 }

@@ -43,4 +43,4 @@ jobs:
         run: vendor/bin/pint --test
 
       - name: Run PHPStan (static analysis)
-        run: vendor/bin/phpstan analyse --memory-limit=1G || true
+        run: vendor/bin/phpstan analyse --memory-limit=1G

@@ -76,8 +76,40 @@ class Client
 
             // Build ProductCart items from request
             $cartItems = [];
-            foreach ($params['product_cart'] as $item) {
-                $cartItems[] = ProductCart::with(productID: $item['product_id'], quantity: $item['quantity']);
+            if (! isset($params['product_cart']) || ! is_array($params['product_cart'])) {
+                \Log::warning('createCheckoutSession called without valid product_cart', [
+                    'params_keys' => array_keys($params),
+                ]);
+                return ['checkout_url' => 'https://checkout.dodopayments.com/placeholder-session'];
+            }
+
+            foreach ($params['product_cart'] as $index => $item) {
+                if (! is_array($item)) {
+                    \Log::warning('Skipping invalid cart item: not an array', ['index' => $index, 'item' => $item]);
+                    continue;
+                }
+
+                $productId = isset($item['product_id']) ? (string) $item['product_id'] : '';
+                $quantityRaw = $item['quantity'] ?? null;
+                $quantity = is_numeric($quantityRaw) ? (int) $quantityRaw : null;
+
+                if ($productId === '' || $quantity === null) {
+                    \Log::warning('Skipping invalid cart item: missing product_id or quantity', [
+                        'index' => $index,
+                        'item' => $item,
+                    ]);
+                    continue;
+                }
+
+                if ($quantity < 1) {
+                    \Log::warning('Coercing non-positive quantity to 1', [
+                        'index' => $index,
+                        'quantity' => $quantity,
+                    ]);
+                    $quantity = 1;
+                }
+
+                $cartItems[] = ProductCart::with(productID: $productId, quantity: $quantity);
             }
 
             $resp = $client->checkoutSessions->create(
@@ -103,6 +135,10 @@ class Client
                 'checkout_url' => is_string($url) ? $url : 'https://checkout.dodopayments.com/unknown-session',
             ];
         } catch (\Throwable $e) {
+            \Log::error('Failed to create checkout session', [
+                'exception' => $e,
+                'params_present' => array_keys($params),
+            ]);
             return ['checkout_url' => 'https://checkout.dodopayments.com/placeholder-session'];
         }
     }
@@ -156,6 +192,11 @@ class Client
 
             return ['portal_url' => is_string($url) ? $url : 'https://portal.dodopayments.com/unknown'];
         } catch (\Throwable $e) {
+            \Log::error('Failed to create customer portal session', [
+                'exception' => $e,
+                'customer_id' => $params['customer_id'] ?? null,
+                'send_email' => $params['send_email'] ?? null,
+            ]);
             return ['portal_url' => 'https://portal.dodopayments.com/placeholder'];
         }
     }
