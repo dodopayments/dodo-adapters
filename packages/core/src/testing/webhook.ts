@@ -284,7 +284,7 @@ export const createMockWebhookErrorScenario = (
         body: 'invalid json'
       };
       
-    case 'expired_timestamp':
+    case 'expired_timestamp': {
       // Create a timestamp from 1 hour ago (older than the 5-minute tolerance)
       const expiredTimestamp = new Date(Date.now() - 60 * 60 * 1000);
       const messageId = mockId("wh");
@@ -299,6 +299,7 @@ export const createMockWebhookErrorScenario = (
         },
         body
       };
+    }
       
     default:
       return createMockWebhookRequest(webhookPayload, secret);
