@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src
+    level: 6
+    tmpDir: build/phpstan
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        -
+            identifier: missingType.iterableValue
+        -
+            identifier: missingType.generics

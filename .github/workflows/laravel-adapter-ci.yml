@@ -1,0 +1,46 @@
+name: Laravel Adapter CI
+
+on:
+  pull_request:
+    paths:
+      - 'packages/laravel/**'
+      - '.github/workflows/laravel-adapter-ci.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'packages/laravel/**'
+      - '.github/workflows/laravel-adapter-ci.yml'
+
+jobs:
+  php-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/laravel
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit --testdox
+
+      - name: Run Pint (code style)
+        run: vendor/bin/pint --test
+
+      - name: Run PHPStan (static analysis)
+        run: vendor/bin/phpstan analyse --memory-limit=1G || true

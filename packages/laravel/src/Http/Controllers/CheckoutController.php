@@ -1,0 +1,63 @@
+<?php
+
+namespace Dodopayments\Laravel\Http\Controllers;
+
+use Dodopayments\Laravel\Http\Requests\CheckoutDynamicRequest;
+use Dodopayments\Laravel\Http\Requests\CheckoutSessionRequest;
+use Dodopayments\Laravel\Http\Requests\CheckoutStaticRequest;
+use Dodopayments\Laravel\Support\Client;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
+
+class CheckoutController extends Controller
+{
+    public function __construct(private Client $client) {}
+
+    // GET /checkout (static)
+    public function static(CheckoutStaticRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
+
+        // Call client wrapper (SDK integration to be completed inside Client)
+        $result = $this->client->createStaticCheckout($validated + ['return_url' => $returnUrl]);
+
+        return response()->json([
+            'checkout_url' => $result['checkout_url'],
+            'return_url' => $returnUrl,
+        ]);
+
+    }
+
+    // POST /checkout (dynamic)
+    public function dynamic(CheckoutDynamicRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
+
+        // Call client wrapper (SDK integration to be completed inside Client)
+        $result = $this->client->createDynamicCheckout($validated + ['return_url' => $returnUrl]);
+
+        return response()->json([
+            'checkout_url' => $result['checkout_url'],
+            'return_url' => $returnUrl,
+        ]);
+
+    }
+
+    // POST /checkout/session (recommended sessions flow)
+    public function session(CheckoutSessionRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
+
+        // Call client wrapper (uses official SDK)
+        $result = $this->client->createCheckoutSession($validated + ['return_url' => $returnUrl]);
+
+        return response()->json([
+            'checkout_url' => $result['checkout_url'],
+            'return_url' => $returnUrl,
+        ]);
+
+    }
+}
