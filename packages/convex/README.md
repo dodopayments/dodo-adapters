@@ -264,7 +264,7 @@ export function CheckoutButton() {
 
 Configuration Details:
 
-- sessionCheckout(): Simplified checkout for quick payments
+- sessionCheckout(): Modern checkout session (recommended)
 - staticCheckout(): Simple checkout with query parameters  
 - dynamicCheckout(): Complex checkout with API body support
 - All methods return: {"checkout_url": "https://checkout.dodopayments.com/..."}
