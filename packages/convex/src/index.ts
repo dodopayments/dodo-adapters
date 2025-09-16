@@ -40,13 +40,13 @@ import type { WebhookHandlerConfig } from "@dodopayments/core/webhook";
  * @returns A Convex HTTP action.
  */
 export const createDodoWebhookHandler = (handlers: Omit<WebhookHandlerConfig, 'webhookKey'>) => {
+  // Validate webhook secret at initialization time
+  const webhookSecret = process.env.DODO_PAYMENTS_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    throw new Error("DODO_PAYMENTS_WEBHOOK_SECRET environment variable is not set.");
+  }
+
   return httpAction(async (_, request) => {
-    const webhookSecret = process.env.DODO_PAYMENTS_WEBHOOK_SECRET;
-
-    if (!webhookSecret) {
-      throw new Error("DODO_PAYMENTS_WEBHOOK_SECRET environment variable is not set.");
-    }
-
     const body = await request.text();
     const headers: Record<string, string> = {};
     request.headers.forEach((value, key) => {
@@ -66,9 +66,11 @@ export const createDodoWebhookHandler = (handlers: Omit<WebhookHandlerConfig, 'w
       });
 
       return new Response(null, { status: 200 });
-    } catch (error: any) {
-      console.error("Dodo Payments Webhook Error:", error.message);
-      return new Response(error.message, { status: 400 });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error("Dodo Payments Webhook Error:", errorMessage);
+      // Don't expose internal error details to clients
+      return new Response("Invalid webhook payload", { status: 400 });
     }
   });
 };
