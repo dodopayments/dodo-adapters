@@ -1,0 +1,60 @@
+{
+  "name": "@dodopayments/convex",
+  "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./convex.config": {
+      "types": "./dist/component/convex.config.d.ts",
+      "import": "./dist/component/convex.config.js",
+      "require": "./dist/component/convex.config.cjs"
+    }
+  },
+  "dependencies": {
+    "@dodopayments/core": "^0.1.15",
+    "convex": "^1.26.0"
+  },
+  "peerDependencies": {
+    "zod": "^3.23.8"
+  },
+  "keywords": [
+    "payments",
+    "convex",
+    "webhooks",
+    "checkout",
+    "api",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dodo Payments",
+    "email": "support@dodopayments.com",
+    "url": "https://dodopayments.com"
+  },
+  "devDependencies": {
+    "@dodo/typescript-config": "*",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "rimraf": "^5.0.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "typescript": "^5.5.2"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ]
+}
