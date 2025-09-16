@@ -1,86 +1,42 @@
-// import type { ConvexReactClient } from "convex/react";
-import type { CheckoutSessionPayload } from "@dodopayments/core/checkout";
-import { buildCheckoutUrl } from "@dodopayments/core/checkout";
-import DodoPaymentsSDK from "dodopayments";
+import type {
+  CheckoutSessionPayload,
+  checkoutQuerySchema,
+  dynamicCheckoutBodySchema
+} from "@dodopayments/core/checkout";
+import type { z } from "zod";
+
+// Infer proper types from the schemas
+type StaticCheckoutArgs = z.infer<typeof checkoutQuerySchema>;
+type DynamicCheckoutArgs = z.infer<typeof dynamicCheckoutBodySchema>;
+type CustomerPortalArgs = {
+  send_email?: boolean;
+};
+
+export interface DodoPaymentsComponent {
+  lib: {
+    checkout: any;
+    sessionCheckout: any;
+    staticCheckout: any;
+    dynamicCheckout: any;
+    customerPortal: any;
+  };
+}
 
 // The config required to initialize the Dodo Payments client.
 export type DodoPaymentsClientConfig = {
   identify: (ctx: any) => Promise<{ customerId: string; customerData?: any } | null>;
+  apiKey: string;
+  environment: "test_mode" | "live_mode";
 };
 
 // This is the public-facing client that developers will use.
 export class DodoPayments {
-  private component: any;
+  public component: DodoPaymentsComponent;
   private config: DodoPaymentsClientConfig;
 
-  constructor(component: any, config: DodoPaymentsClientConfig) {
+  constructor(component: DodoPaymentsComponent, config: DodoPaymentsClientConfig) {
     this.component = component;
     this.config = config;
-  }
-
-  private async callPaymentAPI(ctx: any, functionName: string, args: any) {
-    const bearerToken = process.env.DODO_PAYMENTS_API_KEY;
-    const environment = process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode";
-
-    if (!bearerToken || !environment) {
-      throw new Error("Dodo Payments environment variables are not set in your Convex dashboard.");
-    }
-
-    switch (functionName) {
-      case "checkout":
-      case "sessionCheckout": {
-        const checkoutUrl = await buildCheckoutUrl({
-          sessionPayload: args,
-          bearerToken,
-          environment,
-          type: "session",
-        });
-        return { checkout_url: checkoutUrl };
-      }
-
-      case "staticCheckout": {
-        const checkoutUrl = await buildCheckoutUrl({
-          queryParams: args,
-          bearerToken,
-          environment,
-          type: "static",
-        });
-        return { checkout_url: checkoutUrl };
-      }
-
-      case "dynamicCheckout": {
-        const checkoutUrl = await buildCheckoutUrl({
-          body: args,
-          bearerToken,
-          environment,
-          type: "dynamic",
-        });
-        return { checkout_url: checkoutUrl };
-      }
-
-      case "customerPortal": {
-        const { customerId, send_email } = args as { 
-          customerId: string; 
-          send_email?: boolean;
-        };
-        if (!customerId) {
-          throw new Error("customerId is required for customerPortal.");
-        }
-        const dodopaymentsSDK = new DodoPaymentsSDK({
-          bearerToken,
-          environment,
-        });
-        const params = {
-          send_email: Boolean(send_email),
-        };
-        const session = await dodopaymentsSDK.customers.customerPortal.create(customerId, params);
-        return { portal_url: session.link };
-      }
-
-      default: {
-        throw new Error(`Unknown function call: ${functionName}`);
-      }
-    }
   }
 
   /**
@@ -96,8 +52,11 @@ export class DodoPayments {
         ctx: any,
         args: { payload: CheckoutSessionPayload },
       ) => {
-        // Here you could potentially merge identified customer data with the payload
-        return this.callPaymentAPI(ctx, "sessionCheckout", args.payload);
+        return await ctx.runAction(this.component.lib.checkout, {
+          ...args,
+          apiKey: this.config.apiKey,
+          environment: this.config.environment,
+        });
       },
 
       /**
@@ -108,7 +67,11 @@ export class DodoPayments {
         ctx: any,
         args: { payload: CheckoutSessionPayload },
       ) => {
-        return this.callPaymentAPI(ctx, "sessionCheckout", args.payload);
+        return await ctx.runAction(this.component.lib.sessionCheckout, {
+          ...args,
+          apiKey: this.config.apiKey,
+          environment: this.config.environment,
+        });
       },
 
       /**
@@ -117,14 +80,13 @@ export class DodoPayments {
        */
       staticCheckout: async (
         ctx: any,
-        args: { 
-          productId: string;
-          quantity?: string;
-          returnUrl?: string;
-          [key: string]: any; 
-        },
+        args: StaticCheckoutArgs,
       ) => {
-        return this.callPaymentAPI(ctx, "staticCheckout", args);
+        return await ctx.runAction(this.component.lib.staticCheckout, {
+          ...args,
+          apiKey: this.config.apiKey,
+          environment: this.config.environment,
+        });
       },
 
       /**
@@ -133,25 +95,13 @@ export class DodoPayments {
        */
       dynamicCheckout: async (
         ctx: any,
-        args: {
-          product_id?: string;
-          product_cart?: Array<{ product_id: string; quantity: number }>;
-          billing: {
-            city: string;
-            country: string;
-            state: string;
-            street: string;
-            zipcode: string;
-          };
-          customer: {
-            customer_id?: string;
-            email?: string;
-            name?: string;
-          };
-          [key: string]: any;
-        },
+        args: DynamicCheckoutArgs,
       ) => {
-        return this.callPaymentAPI(ctx, "dynamicCheckout", args);
+        return await ctx.runAction(this.component.lib.dynamicCheckout, {
+          ...args,
+          apiKey: this.config.apiKey,
+          environment: this.config.environment,
+        });
       },
 
       /**
@@ -159,17 +109,19 @@ export class DodoPayments {
        * This function is designed to be called from a public Convex query in your app.
        */
       customerPortal: async (
-        ctx: any, 
-        args?: { send_email?: boolean }
+        ctx: any,
+        args?: CustomerPortalArgs
       ) => {
         const identity = await this.config.identify(ctx);
         if (!identity) {
           throw new Error("User is not authenticated.");
         }
-        return this.callPaymentAPI(ctx, "customerPortal", { 
-            customerId: identity.customerId,
-            send_email: args?.send_email,
-          });
+        return await ctx.runAction(this.component.lib.customerPortal, {
+          customerId: identity.customerId,
+          send_email: args?.send_email,
+          apiKey: this.config.apiKey,
+          environment: this.config.environment,
+        });
       },
     };
   }

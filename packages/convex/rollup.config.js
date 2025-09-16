@@ -41,22 +41,20 @@ const config = [
     ],
     external: ["convex", "zod", "@dodopayments/core", "dodopayments"],
   },
-  // Component Config Bundles (ESM and CJS)
+  // Component Files - ESM only (Convex uses ESM)
   {
-    input: "src/component/convex.config.ts",
-    output: [
-      {
-        file: "dist/component/convex.config.js",
-        format: "esm",
-        sourcemap: true,
-      },
-      {
-        file: "dist/component/convex.config.cjs",
-        format: "cjs",
-        sourcemap: true,
-        exports: "default",
-      },
-    ],
+    input: {
+      "component/convex.config": "src/component/convex.config.ts",
+      "component/lib": "src/component/lib.ts",
+      "component/schema": "src/component/schema.ts",
+    },
+    output: {
+      dir: "dist",
+      format: "esm",
+      sourcemap: true,
+      preserveModules: true,
+      preserveModulesRoot: "src",
+    },
     plugins: [
       nodeResolve(),
       commonjs(),
@@ -67,7 +65,7 @@ const config = [
         emitDeclarationOnly: false,
       }),
     ],
-    external: ["convex/server"],
+    external: ["convex", "convex/server", "convex/values", "zod", "@dodopayments/core", "dodopayments"],
   },
   // Type Declarations
   {

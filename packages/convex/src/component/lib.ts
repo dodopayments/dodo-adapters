@@ -1,4 +1,4 @@
-import { mutation } from "../component/_generated/server";
+import { action } from "../component/_generated/server";
 import { v } from "convex/values";
 import { 
   buildCheckoutUrl, 
@@ -10,7 +10,6 @@ import {
 import DodoPayments from "dodopayments";
 import { z } from "zod";
 
-// Helper function to create Convex schema from CheckoutSessionPayload
 const checkoutSessionPayloadValidator = v.object({
   product_cart: v.array(v.object({
     product_id: v.string(),
@@ -60,7 +59,7 @@ type DynamicCheckoutArgs = z.infer<typeof dynamicCheckoutBodySchema>;
 
 // Convex validator for dynamic checkout body
 const dynamicCheckoutValidator = v.object({
-  product_id: v.optional(v.string()),
+  product_id: v.string(),
   quantity: v.optional(v.number()),
   product_cart: v.optional(v.array(v.object({
     product_id: v.string(),
@@ -96,22 +95,17 @@ const dynamicCheckoutValidator = v.object({
 });
 
 
-export const checkout = mutation({
+export const checkout = action({
   args: {
     payload: checkoutSessionPayloadValidator,
+    apiKey: v.string(),
+    environment: v.union(v.literal("test_mode"), v.literal("live_mode")),
   },
   returns: v.object({ checkout_url: v.string() }),
-  handler: async (_, { payload }): Promise<{ checkout_url: string }> => {
-    const bearerToken = process.env.DODO_PAYMENTS_API_KEY;
-    const environment = process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode";
-
-    if (!bearerToken || !environment) {
-      throw new Error("Dodo Payments environment variables are not set in your Convex dashboard.");
-    }
-
+  handler: async (_, { payload, apiKey, environment }): Promise<{ checkout_url: string }> => {
     const checkoutUrl = await buildCheckoutUrl({
       sessionPayload: payload as CheckoutSessionPayload,
-      bearerToken,
+      bearerToken: apiKey,
       environment,
       type: "session",
     });
@@ -120,22 +114,17 @@ export const checkout = mutation({
 });
 
 
-export const sessionCheckout = mutation({
+export const sessionCheckout = action({
   args: {
     payload: checkoutSessionPayloadValidator,
+    apiKey: v.string(),
+    environment: v.union(v.literal("test_mode"), v.literal("live_mode")),
   },
   returns: v.object({ checkout_url: v.string() }),
-  handler: async (_, { payload }): Promise<{ checkout_url: string }> => {
-    const bearerToken = process.env.DODO_PAYMENTS_API_KEY;
-    const environment = process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode";
-
-    if (!bearerToken || !environment) {
-      throw new Error("Dodo Payments environment variables are not set in your Convex dashboard.");
-    }
-
+  handler: async (_, { payload, apiKey, environment }): Promise<{ checkout_url: string }> => {
     const checkoutUrl = await buildCheckoutUrl({
       sessionPayload: payload as CheckoutSessionPayload,
-      bearerToken,
+      bearerToken: apiKey,
       environment,
       type: "session",
     });
@@ -143,7 +132,7 @@ export const sessionCheckout = mutation({
   },
 });
 
-export const staticCheckout = mutation({
+export const staticCheckout = action({
   args: {
     productId: v.string(),
     quantity: v.optional(v.string()),
@@ -173,19 +162,14 @@ export const staticCheckout = mutation({
     showCurrencySelector: v.optional(v.string()),
     paymentAmount: v.optional(v.string()),
     showDiscounts: v.optional(v.string()),
+    apiKey: v.string(),
+    environment: v.union(v.literal("test_mode"), v.literal("live_mode")),
   },
   returns: v.object({ checkout_url: v.string() }),
-  handler: async (_, args): Promise<{ checkout_url: string }> => {
-    const bearerToken = process.env.DODO_PAYMENTS_API_KEY;
-    const environment = process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode";
-
-    if (!bearerToken || !environment) {
-      throw new Error("Dodo Payments environment variables are not set in your Convex dashboard.");
-    }
-
+  handler: async (_, { apiKey, environment, ...args }): Promise<{ checkout_url: string }> => {
     const checkoutUrl = await buildCheckoutUrl({
       queryParams: args as StaticCheckoutArgs,
-      bearerToken,
+      bearerToken: apiKey,
       environment,
       type: "static",
     });
@@ -193,20 +177,17 @@ export const staticCheckout = mutation({
   },
 });
 
-export const dynamicCheckout = mutation({
-  args: dynamicCheckoutValidator,
+export const dynamicCheckout = action({
+  args: {
+    ...dynamicCheckoutValidator.fields,
+    apiKey: v.string(),
+    environment: v.union(v.literal("test_mode"), v.literal("live_mode")),
+  },
   returns: v.object({ checkout_url: v.string() }),
-  handler: async (_, args): Promise<{ checkout_url: string }> => {
-    const bearerToken = process.env.DODO_PAYMENTS_API_KEY;
-    const environment = process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode";
-
-    if (!bearerToken || !environment) {
-      throw new Error("Dodo Payments environment variables are not set in your Convex dashboard.");
-    }
-
+  handler: async (_, { apiKey, environment, ...args }): Promise<{ checkout_url: string }> => {
     const checkoutUrl = await buildCheckoutUrl({
       body: args as DynamicCheckoutArgs,
-      bearerToken,
+      bearerToken: apiKey,
       environment,
       type: "dynamic",
     });
@@ -215,26 +196,21 @@ export const dynamicCheckout = mutation({
 });
 
 
-export const customerPortal = mutation({
+export const customerPortal = action({
   args: {
     customerId: v.string(),
     send_email: v.optional(v.boolean()),
+    apiKey: v.string(),
+    environment: v.union(v.literal("test_mode"), v.literal("live_mode")),
   },
   returns: v.object({ portal_url: v.string() }),
-  handler: async (_, { customerId, send_email }): Promise<{ portal_url: string }> => {
-    const bearerToken = process.env.DODO_PAYMENTS_API_KEY;
-    const environment = process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode";
-
-    if (!bearerToken || !environment) {
-      throw new Error("Dodo Payments environment variables are not set in your Convex dashboard.");
-    }
-
+  handler: async (_, { customerId, send_email, apiKey, environment }): Promise<{ portal_url: string }> => {
     if (!customerId) {
       throw new Error("customerId is required for customerPortal.");
     }
 
     const dodopayments = new DodoPayments({
-      bearerToken,
+      bearerToken: apiKey,
       environment,
     });
     
