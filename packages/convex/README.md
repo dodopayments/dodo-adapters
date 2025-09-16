@@ -6,7 +6,7 @@ A TypeScript library that provides a Convex component for seamless integration o
 
 ## Documentation
 
-Detailed documentation can be found at [Dodo Payments Convex adaptor](https://docs.dodopayments.com/developer-resources/convex-adaptor)
+Detailed documentation can be found at [Dodo Payments Convex Component](https://docs.dodopayments.com/developer-resources/convex-component)
 
 ## Installation
 
@@ -32,10 +32,10 @@ export default app;
 
 In your Convex dashboard (**Settings** → **Environment Variables**):
 
-```
+```env
 DODO_PAYMENTS_API_KEY=your-api-key
 DODO_PAYMENTS_ENVIRONMENT=test_mode
-DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
+DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret (if using webhooks)
 ```
 
 ### 3. Create Payment Functions
@@ -57,7 +57,7 @@ export const dodo = new DodoPayments(components.dodopayments, {
 export const { checkout, sessionCheckout, staticCheckout, dynamicCheckout, customerPortal } = dodo.api();
 ```
 
-### 5. Set Up Webhooks (Optional)
+### 4. Set Up Webhooks (Optional)
 
 For handling Dodo Payments webhooks, create a file `convex/http.ts`:
 
@@ -89,11 +89,11 @@ export default http;
 
 Set up webhook environment variable in your Convex dashboard or .env file:
 
-```
+```env
 DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
 ```
 
-### 6. Define Payment Actions
+### 5. Define Payment Actions
 
 ```typescript
 // convex/payments.ts
@@ -124,7 +124,7 @@ export const createSessionCheckout = action({
 });
 ```
 
-### 7. Frontend Usage
+### 6. Frontend Usage
 
 ```tsx
 import { useAction } from "convex/react";
@@ -148,7 +148,7 @@ export function CheckoutButton() {
 
 ## Prompt for LLM
 
-```
+```text
 You are an expert Convex developer assistant. Your task is to guide a user through integrating the @dodopayments/convex component into their existing Convex application.
 
 The @dodopayments/convex adapter provides a Convex component for Dodo Payments' Checkout, Customer Portal, and Webhook functionalities, built using the official Convex component architecture pattern.
@@ -242,7 +242,7 @@ export const createSessionCheckout = action({
 export const createStaticCheckout = action({
   args: {
     productId: v.string(),
-    quantity: v.optional(v.string()),
+    quantity: v.optional(v.number()),
     returnUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
