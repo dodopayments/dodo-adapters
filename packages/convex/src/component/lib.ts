@@ -59,7 +59,7 @@ type DynamicCheckoutArgs = z.infer<typeof dynamicCheckoutBodySchema>;
 
 // Convex validator for dynamic checkout body
 const dynamicCheckoutValidator = v.object({
-  product_id: v.string(),
+  product_id: v.optional(v.string()),
   quantity: v.optional(v.number()),
   product_cart: v.optional(v.array(v.object({
     product_id: v.string(),
