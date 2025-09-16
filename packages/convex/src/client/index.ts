@@ -5,6 +5,8 @@ import type {
 } from "@dodopayments/core/checkout";
 import type { z } from "zod";
 
+import { GenericActionCtx } from "convex/server";
+
 // Infer proper types from the schemas
 type StaticCheckoutArgs = z.infer<typeof checkoutQuerySchema>;
 type DynamicCheckoutArgs = z.infer<typeof dynamicCheckoutBodySchema>;
@@ -24,7 +26,7 @@ export interface DodoPaymentsComponent {
 
 // The config required to initialize the Dodo Payments client.
 export type DodoPaymentsClientConfig = {
-  identify: (ctx: any) => Promise<{ customerId: string; customerData?: any } | null>;
+  identify: (ctx: GenericActionCtx<any>) => Promise<{ customerId: string; customerData?: any } | null>;
   apiKey: string;
   environment: "test_mode" | "live_mode";
 };
