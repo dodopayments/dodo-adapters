@@ -27,7 +27,7 @@
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
-    "zod": "^3.25.74"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",
@@ -48,5 +48,5 @@
     "email": "support@dodopayments.com",
     "url": "https://dodopayments.com"
   },
-  "license": "Apache-2.0"
+  "license": "GPL-3.0-only"
 }
