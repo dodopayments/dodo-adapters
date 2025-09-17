@@ -41,7 +41,8 @@
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-commonjs": "^25.0.0",
     "rollup-plugin-dts": "^6.1.0",
-    "rimraf": "^5.0.0"
+    "rimraf": "^5.0.0",
+    "@dodopayments/testing": "*"
   },
   "peerDependencies": {
     "next": "^15.3.4",

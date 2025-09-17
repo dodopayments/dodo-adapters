@@ -43,7 +43,8 @@
     "@types/express": "^5.0.3",
     "rimraf": "^5.0.0",
     "rollup": "^4.0.0",
-    "rollup-plugin-dts": "^6.1.0"
+    "rollup-plugin-dts": "^6.1.0",
+    "@dodopayments/testing": "*"
   },
   "type": "module",
   "files": [

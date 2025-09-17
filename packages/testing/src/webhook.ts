@@ -1,12 +1,12 @@
 import { Webhook as StandardWebhook } from "standardwebhooks";
-import { 
-  Payment, 
-  Subscription, 
-  Refund, 
-  Dispute, 
+import type { 
+  Payment,
+  Subscription,
+  Refund,
+  Dispute,
   LicenseKey,
   WebhookPayload
-} from "../schemas/webhook";
+} from "@dodopayments/core/schemas";
 
 // Helper function to generate mock timestamps
 const mockTimestamp = (): string => new Date().toISOString();

@@ -1,11 +1,13 @@
 {
-  "name": "@dodopayments/core",
-  "version": "0.1.16",
+  "name": "@dodopayments/testing",
+  "version": "0.1.0",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
     "dev": "tsc --watch",
     "test": "vitest --run",
     "test:watch": "vitest --watch",
@@ -14,24 +16,14 @@
     "check-types": "tsc --noEmit"
   },
   "exports": {
-    "./checkout": {
-      "import": "./dist/checkout/checkout.js",
-      "require": "./dist/checkout/checkout.cjs",
-      "types": "./dist/checkout/checkout.d.ts"
-    },
-    "./webhook": {
-      "import": "./dist/webhook/webhook.js",
-      "require": "./dist/webhook/webhook.cjs",
-      "types": "./dist/webhook/webhook.d.ts"
-    },
-    "./schemas": {
-      "import": "./dist/schemas/webhook.js",
-      "require": "./dist/schemas/webhook.cjs",
-      "types": "./dist/schemas/webhook.d.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "dependencies": {
-    "dodopayments": "^1.51.2",
+    "@dodopayments/core": "*",
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
@@ -46,10 +38,9 @@
   ],
   "keywords": [
     "payments",
-    "core",
+    "testing",
     "webhooks",
-    "checkout",
-    "api",
+    "mocks",
     "typescript"
   ],
   "author": {

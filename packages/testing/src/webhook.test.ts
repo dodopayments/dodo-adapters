@@ -17,7 +17,7 @@ import {
   createMockWebhookBatch
 } from "./webhook";
 import { Webhook as StandardWebhook } from "standardwebhooks";
-import { WebhookPayloadSchema } from "../schemas/webhook";
+import { WebhookPayloadSchema } from "@dodopayments/core/schemas";
 
 describe("Webhook Testing Utilities", () => {
   const SECRET = "whsec_testsecret123";
