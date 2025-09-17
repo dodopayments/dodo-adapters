@@ -23,7 +23,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "*",
+    "@dodopayments/core": "workspace:*",
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
