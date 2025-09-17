@@ -29,7 +29,7 @@ describe('Next.js Webhook Handler', () => {
     // Create the webhook handler
     const handler = Webhooks({
       webhookKey: 'whsec_testsecret123',
-      onPayment: vi.fn()
+      onPaymentSucceeded: vi.fn()
     });
     
     // Call the webhook handler

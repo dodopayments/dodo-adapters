@@ -28,7 +28,7 @@ describe('Express Webhook Handler', () => {
     // Create the webhook handler
     const handler = Webhooks({
       webhookKey: 'whsec_testsecret123',
-      onSubscription: vi.fn()
+      onSubscriptionActive: vi.fn()
     });
     
     // Call the webhook handler
