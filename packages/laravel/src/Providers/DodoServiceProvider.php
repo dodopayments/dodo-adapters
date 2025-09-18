@@ -28,7 +28,8 @@ class DodoServiceProvider extends ServiceProvider
         $this->registerRoutes();
 
         // Register middleware alias for webhook verification
-        $router = $this->app['router'];
+        /** @var \Illuminate\Routing\Router $router */
+        $router = $this->app->make('router');
         $router->aliasMiddleware('dodo.webhook', \Dodopayments\Laravel\Http\Middleware\VerifyDodoWebhook::class);
     }
 

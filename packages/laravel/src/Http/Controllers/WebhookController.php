@@ -35,6 +35,9 @@ class WebhookController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     protected function dispatchTypedEvent(string $type, array $payload): void
     {
         // Full mapping of supported webhook types to Laravel Events.

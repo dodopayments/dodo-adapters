@@ -4,11 +4,7 @@ includes:
 parameters:
     paths:
         - src
-    level: 6
+    level: 8
+    treatPhpDocTypesAsCertain: false
     tmpDir: build/phpstan
-    reportUnmatchedIgnoredErrors: false
-    ignoreErrors:
-        -
-            identifier: missingType.iterableValue
-        -
-            identifier: missingType.generics
+    reportUnmatchedIgnoredErrors: true

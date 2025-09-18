@@ -7,6 +7,14 @@ use Dodopayments\Client as DodoClient;
 
 class Client
 {
+    /**
+     * @phpstan-return bool
+     */
+    private function isOffline(): bool
+    {
+        return (bool) config('dodo.offline');
+    }
+
     public function __construct(
         private string $apiKey,
     ) {}
@@ -23,7 +31,7 @@ class Client
      * Create a static checkout URL (GET flow) for a given product.
      *
      * @param  array{productId:string,quantity?:int,return_url?:string}  $params
-     * @return array{checkout_url:string}
+     * @return array<string, string>
      */
     public function createStaticCheckout(array $params): array
     {
@@ -39,7 +47,11 @@ class Client
     /**
      * Create a dynamic checkout URL (POST flow) for one-time or subscription payments.
      *
-     * @return array{checkout_url:string}
+     * @return array<string, string>
+     */
+    /**
+     * @param  array<string, mixed>  $params
+     * @return array<string, string>
      */
     public function createDynamicCheckout(array $params): array
     {
@@ -63,11 +75,15 @@ class Client
      * Create a checkout session (recommended flow) from a product cart.
      *
      * @param  array{product_cart:array<array{product_id:string,quantity:int}>,return_url?:string,metadata?:array}  $params
-     * @return array{checkout_url:string}
+     * @return array<string, string>
+     */
+    /**
+     * @param  array<string, mixed>  $params
+     * @return array<string, string>
      */
     public function createCheckoutSession(array $params): array
     {
-        if (config('dodo.offline')) {
+        if ($this->isOffline()) {
             return ['checkout_url' => 'https://checkout.dodopayments.com/placeholder-session'];
         }
 
@@ -80,12 +96,13 @@ class Client
                 \Log::warning('createCheckoutSession called without valid product_cart', [
                     'params_keys' => array_keys($params),
                 ]);
-                return ['checkout_url' => 'https://checkout.dodopayments.com/placeholder-session'];
+                throw new \InvalidArgumentException('product_cart must be a non-empty array');
             }
 
             foreach ($params['product_cart'] as $index => $item) {
                 if (! is_array($item)) {
                     \Log::warning('Skipping invalid cart item: not an array', ['index' => $index, 'item' => $item]);
+
                     continue;
                 }
 
@@ -98,6 +115,7 @@ class Client
                         'index' => $index,
                         'item' => $item,
                     ]);
+
                     continue;
                 }
 
@@ -117,29 +135,29 @@ class Client
             );
 
             // Try to extract a URL from known response fields defensively
-            // @phpstan-ignore-next-line - SDK response is a typed object not known to PHPStan here
-            $url = $resp->checkout_url ?? null;
-            if (! is_string($url)) {
-                // @phpstan-ignore-next-line
-                $url = $resp->url ?? null;
+            $url = null;
+            $respVars = is_object($resp) ? get_object_vars($resp) : [];
+            if (isset($respVars['checkout_url']) && is_string($respVars['checkout_url'])) {
+                $url = $respVars['checkout_url'];
+            } elseif (isset($respVars['url']) && is_string($respVars['url'])) {
+                $url = $respVars['url'];
+            } elseif (isset($respVars['session_id']) && is_string($respVars['session_id'])) {
+                $url = 'https://checkout.dodopayments.com/session/'.$respVars['session_id'];
             }
+
             if (! is_string($url)) {
-                // @phpstan-ignore-next-line
-                $sid = $resp->session_id ?? null;
-                if (is_string($sid)) {
-                    $url = 'https://checkout.dodopayments.com/session/'.$sid;
-                }
+                throw new \RuntimeException('Failed to resolve checkout_url from SDK response.');
             }
 
             return [
-                'checkout_url' => is_string($url) ? $url : 'https://checkout.dodopayments.com/unknown-session',
+                'checkout_url' => $url,
             ];
         } catch (\Throwable $e) {
             \Log::error('Failed to create checkout session', [
                 'exception' => $e,
                 'params_present' => array_keys($params),
             ]);
-            return ['checkout_url' => 'https://checkout.dodopayments.com/placeholder-session'];
+            throw $e;
         }
     }
 
@@ -151,7 +169,7 @@ class Client
      */
     public function createCustomerPortal(array $params): array
     {
-        if (config('dodo.offline')) {
+        if ($this->isOffline()) {
             return ['portal_url' => 'https://portal.dodopayments.com/placeholder'];
         }
 
@@ -175,29 +193,32 @@ class Client
                 // @phpstan-ignore-next-line
                 $resp = $client->portal->create(customerId: $customerId, sendEmail: $sendEmail);
             } else {
-                return ['portal_url' => 'https://portal.dodopayments.com/placeholder'];
+                throw new \RuntimeException('Customer portal creation method not available on SDK client.');
             }
 
             // Extract link/url field defensively
-            // @phpstan-ignore-next-line - dynamic SDK object
-            $url = $resp->portal_url ?? null;
-            if (! is_string($url)) {
-                // @phpstan-ignore-next-line
-                $url = $resp->link ?? null;
-            }
-            if (! is_string($url)) {
-                // @phpstan-ignore-next-line
-                $url = $resp->url ?? null;
+            $url = null;
+            $respVars = is_object($resp) ? get_object_vars($resp) : [];
+            if (isset($respVars['portal_url']) && is_string($respVars['portal_url'])) {
+                $url = $respVars['portal_url'];
+            } elseif (isset($respVars['link']) && is_string($respVars['link'])) {
+                $url = $respVars['link'];
+            } elseif (isset($respVars['url']) && is_string($respVars['url'])) {
+                $url = $respVars['url'];
             }
 
-            return ['portal_url' => is_string($url) ? $url : 'https://portal.dodopayments.com/unknown'];
+            if (! is_string($url)) {
+                throw new \RuntimeException('Failed to resolve portal_url from SDK response.');
+            }
+
+            return ['portal_url' => $url];
         } catch (\Throwable $e) {
             \Log::error('Failed to create customer portal session', [
                 'exception' => $e,
                 'customer_id' => $params['customer_id'] ?? null,
                 'send_email' => $params['send_email'] ?? null,
             ]);
-            return ['portal_url' => 'https://portal.dodopayments.com/placeholder'];
+            throw $e;
         }
     }
 }

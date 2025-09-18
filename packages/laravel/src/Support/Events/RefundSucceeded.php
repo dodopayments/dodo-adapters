@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dodopayments\Laravel\Support\Events;
 
-class RefundSucceeded
+final class RefundSucceeded
 {
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     public function __construct(
-        public array $payload,
+        public readonly array $payload,
     ) {}
 }

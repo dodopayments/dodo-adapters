@@ -14,6 +14,7 @@ class CustomerPortalController extends Controller
     // GET /customer-portal
     public function show(CustomerPortalRequest $request): JsonResponse
     {
+        /** @var array{customer_id:string,send_email?:bool} $validated */
         $validated = $request->validated();
 
         // TODO: Call SDK to create portal session. Support optional send_email flag.

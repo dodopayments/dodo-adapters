@@ -16,11 +16,29 @@ class CheckoutController extends Controller
     // GET /checkout (static)
     public function static(CheckoutStaticRequest $request): JsonResponse
     {
+        /** @var array{productId:string,quantity?:int,return_url?:string} $validated */
         $validated = $request->validated();
         $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
 
-        // Call client wrapper (SDK integration to be completed inside Client)
-        $result = $this->client->createStaticCheckout($validated + ['return_url' => $returnUrl]);
+        try {
+            $result = $this->client->createStaticCheckout($validated + ['return_url' => $returnUrl]);
+        } catch (\InvalidArgumentException|\RuntimeException $e) {
+            return response()->json([
+                'error' => [
+                    'code' => 'checkout_static_failed',
+                    'message' => $e->getMessage(),
+                ],
+            ], 400);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'error' => [
+                    'code' => 'checkout_static_error',
+                    'message' => 'Unexpected error creating checkout.',
+                ],
+            ], 500);
+        }
 
         return response()->json([
             'checkout_url' => $result['checkout_url'],
@@ -32,11 +50,29 @@ class CheckoutController extends Controller
     // POST /checkout (dynamic)
     public function dynamic(CheckoutDynamicRequest $request): JsonResponse
     {
+        /** @var array<string,mixed> $validated */
         $validated = $request->validated();
         $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
 
-        // Call client wrapper (SDK integration to be completed inside Client)
-        $result = $this->client->createDynamicCheckout($validated + ['return_url' => $returnUrl]);
+        try {
+            $result = $this->client->createDynamicCheckout($validated + ['return_url' => $returnUrl]);
+        } catch (\InvalidArgumentException|\RuntimeException $e) {
+            return response()->json([
+                'error' => [
+                    'code' => 'checkout_dynamic_failed',
+                    'message' => $e->getMessage(),
+                ],
+            ], 400);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'error' => [
+                    'code' => 'checkout_dynamic_error',
+                    'message' => 'Unexpected error creating checkout.',
+                ],
+            ], 500);
+        }
 
         return response()->json([
             'checkout_url' => $result['checkout_url'],
@@ -48,11 +84,29 @@ class CheckoutController extends Controller
     // POST /checkout/session (recommended sessions flow)
     public function session(CheckoutSessionRequest $request): JsonResponse
     {
+        /** @var array{product_cart:array<array{product_id:string,quantity:int}>,return_url?:string,metadata?:array<string,mixed>} $validated */
         $validated = $request->validated();
         $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
 
-        // Call client wrapper (uses official SDK)
-        $result = $this->client->createCheckoutSession($validated + ['return_url' => $returnUrl]);
+        try {
+            $result = $this->client->createCheckoutSession($validated + ['return_url' => $returnUrl]);
+        } catch (\InvalidArgumentException|\RuntimeException $e) {
+            return response()->json([
+                'error' => [
+                    'code' => 'checkout_session_failed',
+                    'message' => $e->getMessage(),
+                ],
+            ], 400);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'error' => [
+                    'code' => 'checkout_session_error',
+                    'message' => 'Unexpected error creating checkout session.',
+                ],
+            ], 500);
+        }
 
         return response()->json([
             'checkout_url' => $result['checkout_url'],
