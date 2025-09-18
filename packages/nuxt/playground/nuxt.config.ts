@@ -1,4 +1,4 @@
-import { defineNuxtConfig } from 'nuxt/config'
+import { defineNuxtConfig } from "nuxt/config";
 
 export default defineNuxtConfig({
   modules: ["../src/module"],
@@ -13,9 +13,7 @@ export default defineNuxtConfig({
   },
   vite: {
     server: {
-      allowedHosts: [
-        '33aca32030ab.ngrok-free.app'
-      ]
-    }
-  }
+      allowedHosts: ["33aca32030ab.ngrok-free.app"],
+    },
+  },
 });

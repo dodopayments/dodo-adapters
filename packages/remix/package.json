@@ -8,7 +8,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "format": "prettier --write .",
-    "check-format": "prettier --check .",
+    "check-format": "prettier --check . --ignore-path ../../.prettierignore",
     "check-types": "tsc --noEmit"
   },
   "exports": {
