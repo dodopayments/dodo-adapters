@@ -10,7 +10,7 @@
     "test": "vitest --run",
     "test:watch": "vitest --watch",
     "format": "prettier --write .",
-    "check-format": "prettier --check .",
+    "check-format": "prettier --check . --ignore-path ../../.prettierignore",
     "check-types": "tsc --noEmit"
   },
   "exports": {
@@ -31,7 +31,7 @@
     }
   },
   "dependencies": {
-    "dodopayments": "^1.51.2",
+    "dodopayments": "^2.0.2",
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
