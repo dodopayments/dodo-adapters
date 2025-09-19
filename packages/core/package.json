@@ -9,8 +9,6 @@
     "dev": "tsc --watch",
     "test": "vitest --run",
     "test:watch": "vitest --watch",
-    "format": "prettier --write .",
-    "check-format": "prettier --check . --ignore-path ../../.prettierignore",
     "check-types": "tsc --noEmit"
   },
   "exports": {

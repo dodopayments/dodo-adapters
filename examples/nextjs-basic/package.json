@@ -8,8 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc --noEmit",
-    "format": "prettier --write .",
-    "check-format": "prettier --check . --ignore-path ../../.prettierignore",
     "test": "echo 'No unit tests defined yet'",
     "test:e2e": "playwright test",
     "test:ui": "playwright test --ui",
