@@ -1,0 +1,52 @@
+{
+  "name": "@dodopayments/testing",
+  "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "dev": "tsc --watch",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@dodopayments/core": "workspace:*",
+    "standardwebhooks": "^1.0.0"
+  },
+  "peerDependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@dodo/typescript-config": "*",
+    "vitest": "^2.0.4"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "payments",
+    "testing",
+    "webhooks",
+    "mocks",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dodo Payments",
+    "email": "support@dodopayments.com",
+    "url": "https://dodopayments.com"
+  },
+  "license": "GPL-3.0-only"
+}
