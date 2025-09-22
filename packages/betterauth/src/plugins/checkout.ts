@@ -2,7 +2,7 @@ import type DodoPayments from "dodopayments";
 import { APIError, getSessionFromCtx } from "better-auth/api";
 import { createAuthEndpoint } from "better-auth/plugins";
 import { z } from "zod";
-import type { Product } from "../types";
+import type { CreateCheckoutResponse, Product } from "../types";
 import {
   buildCheckoutUrl,
   dynamicCheckoutBodySchema,
@@ -37,7 +37,7 @@ export const checkout =
           }),
           requireRequest: true,
         },
-        async (ctx) => {
+        async (ctx): Promise<CreateCheckoutResponse> => {
           const session = await getSessionFromCtx(ctx);
 
           let dodoPaymentsProductId: string | undefined;

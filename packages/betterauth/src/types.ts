@@ -41,3 +41,13 @@ export interface DodoPaymentsOptions {
    */
   use: DodoPaymentsPlugins;
 }
+
+type PaymentsList = Awaited<ReturnType<DodoPayments["payments"]["list"]>>;
+type SubscriptionsList = Awaited<
+  ReturnType<DodoPayments["subscriptions"]["list"]>
+>;
+export type PaymentItems = { items: PaymentsList["items"] };
+export type SubscriptionItems = { items: SubscriptionsList["items"] };
+export type CustomerPortalResponse = { url: string; redirect: boolean };
+export type CreateCheckoutResponse = { url: string; redirect: boolean };
+export type WebhookResponse = { received: boolean };
