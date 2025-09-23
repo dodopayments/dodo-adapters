@@ -55,3 +55,11 @@ packages/**/*.sqlite
 
 
 *.tgz
+
+# Laravel package (PHP) ignores
+packages/laravel/vendor/
+packages/laravel/composer.lock
+packages/laravel/.phpunit.result.cache
+packages/laravel/.php-cs-fixer.cache
+packages/laravel/storage/
+packages/laravel/bootstrap/cache/
