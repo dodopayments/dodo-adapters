@@ -16,6 +16,7 @@
       "require": "./dist/index.cjs"
     }
   },
+  "types": "./dist/index.d.ts",
   "dependencies": {
   "@dodopayments/core": "^0.2.0"
   },
@@ -46,7 +47,7 @@
     "rollup-plugin-dts": "^6.1.0"
   },
   "peerDependencies": {
-    "dodopayments": "^1.42.0",
+    "dodopayments": "^1.53.0",
     "zod": "^3.0.0"
   },
   "type": "module",
