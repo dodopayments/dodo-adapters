@@ -20,25 +20,7 @@ class CheckoutController extends Controller
         $validated = $request->validated();
         $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
 
-        try {
-            $result = $this->client->createStaticCheckout($validated + ['return_url' => $returnUrl]);
-        } catch (\InvalidArgumentException|\RuntimeException $e) {
-            return response()->json([
-                'error' => [
-                    'code' => 'checkout_static_failed',
-                    'message' => $e->getMessage(),
-                ],
-            ], 400);
-        } catch (\Throwable $e) {
-            report($e);
-
-            return response()->json([
-                'error' => [
-                    'code' => 'checkout_static_error',
-                    'message' => 'Unexpected error creating checkout.',
-                ],
-            ], 500);
-        }
+        $result = $this->client->createStaticCheckout($validated + ['return_url' => $returnUrl]);
 
         return response()->json([
             'checkout_url' => $result['checkout_url'],
@@ -54,25 +36,7 @@ class CheckoutController extends Controller
         $validated = $request->validated();
         $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
 
-        try {
-            $result = $this->client->createDynamicCheckout($validated + ['return_url' => $returnUrl]);
-        } catch (\InvalidArgumentException|\RuntimeException $e) {
-            return response()->json([
-                'error' => [
-                    'code' => 'checkout_dynamic_failed',
-                    'message' => $e->getMessage(),
-                ],
-            ], 400);
-        } catch (\Throwable $e) {
-            report($e);
-
-            return response()->json([
-                'error' => [
-                    'code' => 'checkout_dynamic_error',
-                    'message' => 'Unexpected error creating checkout.',
-                ],
-            ], 500);
-        }
+        $result = $this->client->createDynamicCheckout($validated + ['return_url' => $returnUrl]);
 
         return response()->json([
             'checkout_url' => $result['checkout_url'],
@@ -88,25 +52,7 @@ class CheckoutController extends Controller
         $validated = $request->validated();
         $returnUrl = $validated['return_url'] ?? config('dodo.return_url');
 
-        try {
-            $result = $this->client->createCheckoutSession($validated + ['return_url' => $returnUrl]);
-        } catch (\InvalidArgumentException|\RuntimeException $e) {
-            return response()->json([
-                'error' => [
-                    'code' => 'checkout_session_failed',
-                    'message' => $e->getMessage(),
-                ],
-            ], 400);
-        } catch (\Throwable $e) {
-            report($e);
-
-            return response()->json([
-                'error' => [
-                    'code' => 'checkout_session_error',
-                    'message' => 'Unexpected error creating checkout session.',
-                ],
-            ], 500);
-        }
+        $result = $this->client->createCheckoutSession($validated + ['return_url' => $returnUrl]);
 
         return response()->json([
             'checkout_url' => $result['checkout_url'],

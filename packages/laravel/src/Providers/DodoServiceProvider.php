@@ -31,6 +31,30 @@ class DodoServiceProvider extends ServiceProvider
         /** @var \Illuminate\Routing\Router $router */
         $router = $this->app->make('router');
         $router->aliasMiddleware('dodo.webhook', \Dodopayments\Laravel\Http\Middleware\VerifyDodoWebhook::class);
+
+        // Global exception mapping for Dodo domain errors
+        $exceptionHandler = $this->app->make(\Illuminate\Contracts\Debug\ExceptionHandler::class);
+        if (method_exists($exceptionHandler, 'renderable')) {
+            // Map invalid arguments (validation-like) to 400
+            $exceptionHandler->renderable(function (\InvalidArgumentException $e, $request) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'invalid_request',
+                        'message' => $e->getMessage(),
+                    ],
+                ], 400);
+            });
+
+            // Map expected runtime domain failures to 400
+            $exceptionHandler->renderable(function (\RuntimeException $e, $request) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'operation_failed',
+                        'message' => $e->getMessage(),
+                    ],
+                ], 400);
+            });
+        }
     }
 
     protected function registerRoutes(): void
