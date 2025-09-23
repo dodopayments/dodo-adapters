@@ -50,7 +50,7 @@ export default defineEventHandler((event) => {
 
   const handler = checkoutHandler({
     bearerToken: bearerToken,
-    environment: env,
+    environment: environment,
     returnUrl: returnUrl,
   });
 

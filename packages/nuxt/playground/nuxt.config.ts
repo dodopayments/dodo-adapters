@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     private: {
       bearerToken: process.env.NUXT_PRIVATE_BEARER_TOKEN,
-      webhookKey: process.env.NUXT_PRIVATE_BEARER_TOKEN,
+      webhookKey: process.env.NUXT_PRIVATE_WEBHOOK_KEY,
       environment: process.env.NUXT_PRIVATE_ENVIRONMENT,
     },
   },
