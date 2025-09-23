@@ -13,8 +13,11 @@ class DodoServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../../config/dodo.php', 'dodo');
 
         $this->app->singleton(Client::class, function ($app) {
+            /** @var \Illuminate\Contracts\Config\Repository $config */
+            $config = $app->make('config');
+
             return new Client(
-                apiKey: (string) config('dodo.api_key'),
+                apiKey: (string) $config->get('dodo.api_key'),
             );
         });
     }
@@ -35,8 +38,19 @@ class DodoServiceProvider extends ServiceProvider
         // Global exception mapping for Dodo domain errors
         $exceptionHandler = $this->app->make(\Illuminate\Contracts\Debug\ExceptionHandler::class);
         if (method_exists($exceptionHandler, 'renderable')) {
-            // Map invalid arguments (validation-like) to 400
             $exceptionHandler->renderable(function (\InvalidArgumentException $e, $request) {
+                /** @var \Illuminate\Contracts\Config\Repository $config */
+                $config = app('config');
+                if (! (bool) $config->get('dodo.map_exceptions', true)) {
+                    return null;
+                }
+
+                $prefix = (string) $config->get('dodo.route_prefix', 'api/dodo');
+                $isDodo = $request->expectsJson() || $request->is($prefix.'/*') || $request->routeIs('dodo.*');
+                if (! $isDodo) {
+                    return null;
+                }
+
                 return response()->json([
                     'error' => [
                         'code' => 'invalid_request',
@@ -45,8 +59,19 @@ class DodoServiceProvider extends ServiceProvider
                 ], 400);
             });
 
-            // Map expected runtime domain failures to 400
             $exceptionHandler->renderable(function (\RuntimeException $e, $request) {
+                /** @var \Illuminate\Contracts\Config\Repository $config */
+                $config = app('config');
+                if (! (bool) $config->get('dodo.map_exceptions', true)) {
+                    return null;
+                }
+
+                $prefix = (string) $config->get('dodo.route_prefix', 'api/dodo');
+                $isDodo = $request->expectsJson() || $request->is($prefix.'/*') || $request->routeIs('dodo.*');
+                if (! $isDodo) {
+                    return null;
+                }
+
                 return response()->json([
                     'error' => [
                         'code' => 'operation_failed',
