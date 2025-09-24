@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/core",
-  "version": "0.1.16",
+  "version": "0.2.0",
   "publishConfig": {
     "access": "public"
   },
@@ -9,8 +9,6 @@
     "dev": "tsc --watch",
     "test": "vitest --run",
     "test:watch": "vitest --watch",
-    "format": "prettier --write .",
-    "check-format": "prettier --check .",
     "check-types": "tsc --noEmit"
   },
   "exports": {
@@ -31,7 +29,7 @@
     }
   },
   "dependencies": {
-    "dodopayments": "^1.51.2",
+    "dodopayments": "^2.0.2",
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {

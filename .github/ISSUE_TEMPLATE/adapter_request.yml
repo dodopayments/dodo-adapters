@@ -170,7 +170,7 @@ body:
         ```typescript
         // Proposed API design for this framework
         import { Checkout, Webhooks, CustomerPortal } from '@dodopayments/framework-name';
-        
+
         // Example usage
         ```
     validations:

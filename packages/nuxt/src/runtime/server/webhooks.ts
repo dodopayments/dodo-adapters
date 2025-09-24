@@ -24,8 +24,8 @@ export function Webhooks(config: WebhookHandlerConfig) {
     const headers = Object.fromEntries(
       Object.entries(event.node.req.headers).map(([key, val]) => [
         key,
-        Array.isArray(val) ? val.join(",") : val ?? "",
-      ])
+        Array.isArray(val) ? val.join(",") : (val ?? ""),
+      ]),
     );
 
     // Read raw body
@@ -50,7 +50,10 @@ export function Webhooks(config: WebhookHandlerConfig) {
     try {
       payload = JSON.parse(rawString);
     } catch {
-      throw createError({ statusCode: 400, statusMessage: "Invalid JSON payload" });
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Invalid JSON payload",
+      });
     }
 
     const { success, data, error } = WebhookPayloadSchema.safeParse(payload);

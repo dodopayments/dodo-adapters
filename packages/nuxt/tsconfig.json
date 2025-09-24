@@ -6,13 +6,6 @@
     "target": "ES2020",
     "declarationMap": false
   },
-  "include": [
-    "src",
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "playground",
-    ".output"
-  ]
+  "include": ["src"],
+  "exclude": ["dist", "node_modules", "playground", ".output"]
 }

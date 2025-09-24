@@ -4,12 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "NODE_ENV=production next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc --noEmit",
-    "format": "prettier --write .",
-    "check-format": "prettier --check .",
     "test": "echo 'No unit tests defined yet'"
   },
   "dependencies": {

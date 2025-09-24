@@ -32,9 +32,9 @@ export default defineNuxtConfig({
       bearerToken: process.env.NUXT_PRIVATE_BEARER_TOKEN,
       webhookKey: process.env.NUXT_PRIVATE_BEARER_TOKEN,
       environment: process.env.NUXT_PRIVATE_ENVIRONMENT,
-      returnUrl: process.env.NUXT_PRIVATE_RETURNURL
+      returnUrl: process.env.NUXT_PRIVATE_RETURNURL,
     },
-  }
+  },
 });
 ```
 
@@ -47,11 +47,11 @@ export default defineEventHandler((event) => {
   const {
     private: { bearerToken, environment, returnUrl },
   } = useRuntimeConfig();
-  
+
   const handler = checkoutHandler({
     bearerToken: bearerToken,
-    environment: env,
-    returnUrl: returnUrl
+    environment: environment,
+    returnUrl: returnUrl,
   });
 
   return handler(event);
@@ -60,7 +60,6 @@ export default defineEventHandler((event) => {
 
 - Accepts GET requests with `productId` as a query parameter.
 
-
 ### 3. Customer Portal API Route
 
 Create a new file at `server/routes/api/customer-portal.get.ts`:
@@ -68,16 +67,16 @@ Create a new file at `server/routes/api/customer-portal.get.ts`:
 ```ts
 export default defineEventHandler((event) => {
   const {
-    private: { bearerToken, environment }
-  } = useRuntimeConfig()
+    private: { bearerToken, environment },
+  } = useRuntimeConfig();
 
   const handler = customerPortalHandler({
     bearerToken,
     environment: environment,
-  })
+  });
 
-  return handler(event)
-})
+  return handler(event);
+});
 ```
 
 - Accepts GET requests with `customer_id` as a query parameter.
@@ -89,20 +88,19 @@ Create a new file at `server/routes/api/webhook.post.ts`:
 
 ```ts
 export default defineEventHandler((event) => {
-    const {
-        private: { webhookKey }
-    } = useRuntimeConfig()
+  const {
+    private: { webhookKey },
+  } = useRuntimeConfig();
 
-    const handler = Webhooks({
-        webhookKey: webhookKey,
-        onPayload: async (payload: any) => {
-            // Handle here
-        }
-    })
+  const handler = Webhooks({
+    webhookKey: webhookKey,
+    onPayload: async (payload: any) => {
+      // Handle here
+    },
+  });
 
-    return handler(event)
-})
-
+  return handler(event);
+});
 ```
 
 - Only POST requests are supported. Signature is verified using `webhookSecret`.
@@ -126,7 +124,6 @@ NUXT_PRIVATE_RETURN_URL=""
 **Important:** Never commit sensitive environment variables to version control.
 
 ---
-
 
 ## Prompt for LLM
 
@@ -210,7 +207,7 @@ Dynamic Checkout (POST): Parameters are sent as a JSON body. Supports both one-t
 - Docs - Subscription Product: https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
 
 Checkout Sessions (POST) - (Recommended) A more customizable checkout experience:
-- Parameters are sent as a JSON body. Supports both one-time and recurring payments. 
+- Parameters are sent as a JSON body. Supports both one-time and recurring payments.
 - Returns: {"checkout_url": "https://checkout.dodopayments.com/session/..."}
 - For a complete list of supported POST body fields, refer to:
   - Docs - One Time Payment Product: https://docs.dodopayments.com/api-reference/payments/post-payments
