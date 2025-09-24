@@ -18,7 +18,7 @@
   },
   "types": "./dist/index.d.ts",
   "dependencies": {
-  "@dodopayments/core": "^0.2.0"
+    "@dodopayments/core": "^0.2.0"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -47,7 +47,6 @@
     "rollup-plugin-dts": "^6.1.0"
   },
   "peerDependencies": {
-    "dodopayments": "^1.53.0",
     "zod": "^3.0.0"
   },
   "type": "module",

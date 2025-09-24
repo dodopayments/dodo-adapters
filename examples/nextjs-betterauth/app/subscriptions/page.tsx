@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { SubscriptionListResponse } from "dodopayments/src/resources.js";
+import { SubscriptionListResponse } from "dodopayments/resources.js";
 
 export default function SubscriptionsPage() {
   const [subscriptions, setSubscriptions] = useState<

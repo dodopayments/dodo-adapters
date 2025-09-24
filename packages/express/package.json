@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-  "@dodopayments/core": "^0.2.0",
+    "@dodopayments/core": "^0.2.0",
     "express": "^5.1.0"
   },
   "keywords": [
