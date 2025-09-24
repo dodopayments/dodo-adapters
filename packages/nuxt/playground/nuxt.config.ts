@@ -11,9 +11,4 @@ export default defineNuxtConfig({
       environment: process.env.NUXT_PRIVATE_ENVIRONMENT,
     },
   },
-  vite: {
-    server: {
-      allowedHosts: ["33aca32030ab.ngrok-free.app"],
-    },
-  },
 });
