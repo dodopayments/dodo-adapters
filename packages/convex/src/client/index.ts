@@ -1,15 +1,19 @@
 import type {
-  CheckoutSessionPayload,
+  CheckoutSessionPayload
+} from "@dodopayments/core/checkout";
+
+import {
   checkoutQuerySchema,
   dynamicCheckoutBodySchema
 } from "@dodopayments/core/checkout";
 import type { z } from "zod";
 
+import { GenericActionCtx } from "convex/server";
+
 // Infer proper types from the schemas
 type StaticCheckoutArgs = z.infer<typeof checkoutQuerySchema>;
 type DynamicCheckoutArgs = z.infer<typeof dynamicCheckoutBodySchema>;
 type CustomerPortalArgs = {
-  customerId: string;
   send_email?: boolean;
 };
 
@@ -25,6 +29,7 @@ export interface DodoPaymentsComponent {
 
 // The config required to initialize the Dodo Payments client.
 export type DodoPaymentsClientConfig = {
+  identify: (ctx: GenericActionCtx<any>) => Promise<{ customerId: string; customerData?: any } | null>;
   apiKey: string;
   environment: "test_mode" | "live_mode";
 };
@@ -46,7 +51,7 @@ export class DodoPayments {
     return {
       /**
        * Creates a modern Dodo Payments checkout session (recommended).
-       * Uses the new /session endpoint.
+       * Uses the new /checkouts endpoint with full feature support.
        */
       checkout: async (
         ctx: any,
@@ -60,8 +65,8 @@ export class DodoPayments {
       },
 
       /**
-       * Creates a modern Dodo Payments checkout session (recommended).
-       * Uses the new /session endpoint.
+       * Creates a modern Dodo Payments checkout session.
+       * Alias for checkout() - uses the new /checkouts endpoint.
        */
       sessionCheckout: async (
         ctx: any,
@@ -105,22 +110,19 @@ export class DodoPayments {
       },
 
       /**
-       * Retrieves a URL for the customer portal for a specific customer.
-       * 
-       * @param ctx - The Convex action context.
-       * @param args - The arguments for the customer portal, including:
-       *   - customerId: The ID of the customer (required).
-       *   - send_email: Whether to send the URL via email (optional).
+       * Retrieves a URL for the customer portal.
+       * This function is designed to be called from a public Convex query in your app.
        */
       customerPortal: async (
         ctx: any,
-        args: CustomerPortalArgs
+        args?: CustomerPortalArgs
       ) => {
-        if (!args.customerId) {
-          throw new Error("customerId is required for customerPortal.");
+        const identity = await this.config.identify(ctx);
+        if (!identity) {
+          throw new Error("User is not authenticated.");
         }
         return await ctx.runAction(this.component.lib.customerPortal, {
-          customerId: args.customerId,
+          customerId: identity.customerId,
           send_email: args?.send_email,
           apiKey: this.config.apiKey,
           environment: this.config.environment,
