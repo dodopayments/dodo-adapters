@@ -1,7 +1,10 @@
 import DodoPayments, { ClientOptions } from "dodopayments";
 import { getQuery, sendRedirect, H3Event } from "h3";
 
-export type CustomerPortalConfig = Pick<ClientOptions, "environment" | "bearerToken">;
+export type CustomerPortalConfig = Pick<
+  ClientOptions,
+  "environment" | "bearerToken"
+>;
 
 export function customerPortalHandler(config: CustomerPortalConfig) {
   return async (event: H3Event) => {
@@ -26,7 +29,10 @@ export function customerPortalHandler(config: CustomerPortalConfig) {
       );
       return sendRedirect(event, session.link, 302);
     } catch (error: any) {
-      return { status: 500, body: `Failed to create customer portal session: ${error.message}` };
+      return {
+        status: 500,
+        body: `Failed to create customer portal session: ${error.message}`,
+      };
     }
   };
-} 
+}

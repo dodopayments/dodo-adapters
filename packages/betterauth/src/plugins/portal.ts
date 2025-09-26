@@ -3,6 +3,11 @@ import { APIError } from "better-auth/api";
 import { sessionMiddleware } from "better-auth/api";
 import { createAuthEndpoint } from "better-auth/plugins";
 import { z } from "zod";
+import {
+  CustomerPortalResponse,
+  PaymentItems,
+  SubscriptionItems,
+} from "../types";
 
 export const portal = () => (dodopayments: DodoPayments) => {
   return {
@@ -12,7 +17,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
         method: "GET",
         use: [sessionMiddleware],
       },
-      async (ctx) => {
+      async (ctx): Promise<CustomerPortalResponse> => {
         if (!ctx.context.session?.user.id) {
           throw new APIError("BAD_REQUEST", {
             message: "User not found",
@@ -76,7 +81,6 @@ export const portal = () => (dodopayments: DodoPayments) => {
                 "cancelled",
                 "on_hold",
                 "pending",
-                "paused",
                 "failed",
                 "expired",
               ])
@@ -85,7 +89,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
           .optional(),
         use: [sessionMiddleware],
       },
-      async (ctx) => {
+      async (ctx): Promise<SubscriptionItems> => {
         if (!ctx.context.session.user.id) {
           throw new APIError("BAD_REQUEST", {
             message: "User not found",
@@ -162,7 +166,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
           .optional(),
         use: [sessionMiddleware],
       },
-      async (ctx) => {
+      async (ctx): Promise<PaymentItems> => {
         if (!ctx.context.session.user.id) {
           throw new APIError("BAD_REQUEST", {
             message: "User not found",

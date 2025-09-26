@@ -15,9 +15,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Remove node modules
         run: rm -rf node_modules
       - name: Install dependencies
@@ -63,9 +63,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -99,7 +99,7 @@ jobs:
         run: npm publish --access public
         working-directory: packages/nextjs
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-betterauth:
     name: Release @dodopayments/better-auth
@@ -112,9 +112,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Build core (ensure up-to-date)
@@ -146,8 +146,8 @@ jobs:
         run: npm publish --access public
         working-directory: packages/betterauth
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
-  
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
+
   release-nuxt:
     name: Release @dodopayments/nuxt
     runs-on: ubuntu-latest
@@ -159,9 +159,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -195,7 +195,7 @@ jobs:
         run: npm publish --access public
         working-directory: packages/nuxt
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }} 
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-express:
     name: Release @dodopayments/express
@@ -208,9 +208,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -257,9 +257,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -306,9 +306,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -355,9 +355,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -404,9 +404,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -453,9 +453,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup
@@ -502,9 +502,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install dependency - Rollup

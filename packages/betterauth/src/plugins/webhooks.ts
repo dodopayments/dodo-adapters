@@ -6,6 +6,7 @@ import {
 import { APIError, createAuthEndpoint } from "better-auth/api";
 import { WebhookPayload } from "@dodopayments/core/schemas";
 import { verifyWebhookPayload } from "@dodopayments/core/webhook";
+import type { WebhookResponse } from "../types";
 
 export const webhooks =
   (options: WebhookHandlerConfig) => (_dodopayments: DodoPayments) => {
@@ -19,7 +20,7 @@ export const webhooks =
           },
           cloneRequest: true,
         },
-        async (ctx) => {
+        async (ctx): Promise<WebhookResponse> => {
           const { webhookKey } = options;
 
           if (!ctx.request?.body) {

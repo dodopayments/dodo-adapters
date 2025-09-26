@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/nuxt",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Dodo Payments Nuxt integration",
   "type": "module",
   "publishConfig": {
@@ -20,7 +20,7 @@
     "dev": "rollup -c -w"
   },
   "dependencies": {
-    "@dodopayments/core": "^0.1.13",
+    "@dodopayments/core": "^0.2.0",
     "@nuxt/module-builder": "^1.0.1"
   },
   "devDependencies": {
