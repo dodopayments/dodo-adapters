@@ -24,6 +24,7 @@ npm install @dodopayments/sveltekit  # SvelteKit
 npm install @dodopayments/astro      # Astro
 npm install @dodopayments/tanstack   # TanStack
 npm install @dodopayments/nuxt       # Nuxt
+npm install @dodopayments/convex     # Convex
 npm install @dodopayments/better-auth # BetterAuth
 ```
 
@@ -61,6 +62,7 @@ export const POST = Webhooks({
 | TanStack   | `@dodopayments/tanstack`   | ✅     |
 | Nuxt       | `@dodopayments/nuxt`       | ✅     |
 | BetterAuth | `@dodopayments/betterauth` | ✅     |
+| Convex     | `@dodopayments/convex`     | ✅     |
 
 ## 🔧 Features
 
@@ -83,6 +85,7 @@ packages/
 ├── sveltekit/             # SvelteKit hooks
 ├── astro/                 # Astro endpoints
 ├── tanstack/              # TanStack Start adapter
+├── convex/                # Convex backend component
 ├── nuxt/                  # Nuxt 3 server routes
 └── betterauth/            # BetterAuth plugin
 
