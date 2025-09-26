@@ -67,15 +67,15 @@ export const checkout = action({
 
 export const customerPortal = action({
   args: {
-    customerId: v.string(),
+    dodoCustomerId: v.string(),
     send_email: v.optional(v.boolean()),
     apiKey: v.string(),
     environment: v.union(v.literal("test_mode"), v.literal("live_mode")),
   },
   returns: v.object({ portal_url: v.string() }),
-  handler: async (_, { customerId, send_email, apiKey, environment }): Promise<{ portal_url: string }> => {
-    if (!customerId) {
-      throw new Error("customerId is required for customerPortal.");
+  handler: async (_, { dodoCustomerId, send_email, apiKey, environment }): Promise<{ portal_url: string }> => {
+    if (!dodoCustomerId) {
+      throw new Error("dodoCustomerId is required for customerPortal.");
     }
 
     const dodopayments = new DodoPayments({
@@ -86,8 +86,8 @@ export const customerPortal = action({
     const params = {
       send_email: Boolean(send_email),
     };
-    
-    const session = await dodopayments.customers.customerPortal.create(customerId, params);
+
+    const session = await dodopayments.customers.customerPortal.create(dodoCustomerId, params);
     return { portal_url: session.link };
   },
 });

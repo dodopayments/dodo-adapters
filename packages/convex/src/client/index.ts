@@ -17,7 +17,7 @@ export interface DodoPaymentsComponent {
 
 // The config required to initialize the Dodo Payments client.
 export type DodoPaymentsClientConfig = {
-  identify: (ctx: GenericActionCtx<any>) => Promise<{ customerId: string; customerData?: any } | null>;
+  identify: (ctx: GenericActionCtx<any>) => Promise<{ dodoCustomerId: string; customerData?: any } | null>;
   apiKey: string;
   environment: "test_mode" | "live_mode";
 };
@@ -65,7 +65,7 @@ export class DodoPayments {
           throw new Error("User is not authenticated.");
         }
         return await ctx.runAction(this.component.lib.customerPortal, {
-          customerId: identity.customerId,
+          dodoCustomerId: identity.dodoCustomerId,
           send_email: args?.send_email,
           apiKey: this.config.apiKey,
           environment: this.config.environment,

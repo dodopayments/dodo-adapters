@@ -46,15 +46,36 @@ import { DodoPayments } from "@dodopayments/convex";
 import { components } from "./_generated/api";
 
 export const dodo = new DodoPayments(components.dodopayments, {
+  // This function maps your Convex user to a Dodo Payments customer
+  // Customize it based on your authentication provider and/or user database
   identify: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    return identity ? { customerId: identity.subject } : null;
+    if (!identity) {
+      return null; // User is not logged in
+    }
+    
+    // Lookup user from your database
+    const user = await ctx.db.query("users")
+       .withIndex("by_auth_id", (q) => q.eq("authId", identity.subject))
+       .first();
+     if (!user) {
+       return null; // User not found in database
+     }
+     
+     return {
+       dodoCustomerId: user.dodoCustomerId, // Use stored dodoCustomerId
+       customerData: {
+         name: user.name,
+         email: user.email,
+       },
+     };
   },
   apiKey: process.env.DODO_PAYMENTS_API_KEY!,
   environment: process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode",
 });
 
-export const { checkout, sessionCheckout, staticCheckout, dynamicCheckout, customerPortal } = dodo.api();
+// Export the API methods for use in your app
+export const { checkout, customerPortal } = dodo.api();
 ```
 
 ### 4. Set Up Webhooks (Optional)
@@ -99,9 +120,9 @@ DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
 // convex/payments.ts
 import { action } from "./_generated/server";
 import { v } from "convex/values";
-import { sessionCheckout } from "./dodo";
+import { checkout } from "./dodo";
 
-export const createSessionCheckout = action({
+export const createCheckout = action({
   args: { 
     product_cart: v.array(v.object({
       product_id: v.string(),
@@ -110,7 +131,7 @@ export const createSessionCheckout = action({
     returnUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    return await sessionCheckout(ctx, {
+    return await checkout(ctx, {
       payload: {
         product_cart: args.product_cart,
         return_url: args.returnUrl,
@@ -131,10 +152,10 @@ import { useAction } from "convex/react";
 import { api } from "../convex/_generated/api";
 
 export function CheckoutButton() {
-  const createSessionCheckout = useAction(api.payments.createSessionCheckout);
+  const createCheckout = useAction(api.payments.createCheckout);
 
   const handleCheckout = async () => {
-    const { checkout_url } = await createSessionCheckout({
+    const { checkout_url } = await createCheckout({
       product_cart: [{ product_id: "prod_123", quantity: 1 }],
     });
     window.location.href = checkout_url;
@@ -198,25 +219,55 @@ import { DodoPayments } from "@dodopayments/convex";
 import { components } from "./_generated/api";
 
 export const dodo = new DodoPayments(components.dodopayments, {
+  // This function maps your Convex user to a Dodo Payments customer
+  // Customize it based on your authentication provider
   identify: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    return identity ? { customerId: identity.subject } : null;
+    if (!identity) {
+      return null; // User is not logged in
+    }
+    
+    // Option 1: Use identity data directly
+    return {
+      dodoCustomerId: identity.subject, // Use a stable identifier for the customer ID
+      customerData: { // Optional: additional customer information
+        name: identity.name,
+        email: identity.email,
+      },
+    };
+    
+    // Lookup user from your database
+    const user = await ctx.db.query("users")
+      .withIndex("by_auth_id", (q) => q.eq("authId", identity.subject))
+      .first();
+    if (!user) {
+      return null; // User not found in database
+    }
+
+    return {
+      dodoCustomerId: user.dodoCustomerId, // Use stored dodoCustomerId
+      customerData: {
+        name: user.name,
+        email: user.email,
+      },
+    };
   },
   apiKey: process.env.DODO_PAYMENTS_API_KEY!,
   environment: process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode",
 });
 
-export const { checkout, sessionCheckout, staticCheckout, dynamicCheckout, customerPortal } = dodo.api();
+// Export the API methods for use in your app
+export const { checkout, customerPortal } = dodo.api();
 
-Step 4: Create actions that use the checkout functions.
+Step 4: Create actions that use the checkout function.
 
 // convex/payments.ts
 import { action } from "./_generated/server";
 import { v } from "convex/values";
-import { sessionCheckout, staticCheckout, dynamicCheckout } from "./dodo";
+import { checkout } from "./dodo";
 
-// Modern checkout session (recommended)
-export const createSessionCheckout = action({
+// Checkout session with full feature support
+export const createCheckout = action({
   args: { 
     product_cart: v.array(v.object({
       product_id: v.string(),
@@ -225,7 +276,7 @@ export const createSessionCheckout = action({
     returnUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    return await sessionCheckout(ctx, {
+    return await checkout(ctx, {
       payload: {
         product_cart: args.product_cart,
         return_url: args.returnUrl,
@@ -238,42 +289,6 @@ export const createSessionCheckout = action({
   },
 });
 
-// Static checkout (simple)
-export const createStaticCheckout = action({
-  args: {
-    productId: v.string(),
-    quantity: v.optional(v.number()),
-    returnUrl: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    return await staticCheckout(ctx, args);
-  },
-});
-
-// Dynamic checkout (complex scenarios)
-export const createDynamicCheckout = action({
-  args: {
-    product_cart: v.array(v.object({
-      product_id: v.string(),
-      quantity: v.number(),
-    })),
-    billing: v.object({
-      street: v.string(),
-      city: v.string(),
-      state: v.string(),
-      country: v.string(),
-      zipcode: v.string(),
-    }),
-    customer: v.object({
-      email: v.optional(v.string()),
-      name: v.optional(v.string()),
-    }),
-  },
-  handler: async (ctx, args) => {
-    return await dynamicCheckout(ctx, args);
-  },
-});
-
 Step 5: Use in your frontend.
 
 // Your frontend component
@@ -281,10 +296,10 @@ import { useAction } from "convex/react";
 import { api } from "../convex/_generated/api";
 
 export function CheckoutButton() {
-  const createSessionCheckout = useAction(api.payments.createSessionCheckout);
+  const createCheckout = useAction(api.payments.createCheckout);
 
   const handleCheckout = async () => {
-    const { checkout_url } = await createSessionCheckout({
+    const { checkout_url } = await createCheckout({
       product_cart: [{ product_id: "prod_123", quantity: 1 }],
     });
     window.location.href = checkout_url;
@@ -295,10 +310,8 @@ export function CheckoutButton() {
 
 Configuration Details:
 
-- `sessionCheckout()`: Modern checkout session (recommended).
-- `staticCheckout()`: Simple checkout with query parameters.
-- `dynamicCheckout()`: Complex checkout with API body support.
-- All methods return: `{"checkout_url": "https://checkout.dodopayments.com/..."}`
+- `checkout()`: Checkout session with full feature support using session checkout.
+- Returns: `{"checkout_url": "https://checkout.dodopayments.com/..."}`
 
 For complete API documentation, refer to:
 - Checkout Sessions: https://docs.dodopayments.com/developer-resources/checkout-session
