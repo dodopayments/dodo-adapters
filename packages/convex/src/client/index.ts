@@ -2,17 +2,8 @@ import type {
   CheckoutSessionPayload
 } from "@dodopayments/core/checkout";
 
-import {
-  checkoutQuerySchema,
-  dynamicCheckoutBodySchema
-} from "@dodopayments/core/checkout";
-import type { z } from "zod";
-
 import { GenericActionCtx } from "convex/server";
 
-// Infer proper types from the schemas
-type StaticCheckoutArgs = z.infer<typeof checkoutQuerySchema>;
-type DynamicCheckoutArgs = z.infer<typeof dynamicCheckoutBodySchema>;
 type CustomerPortalArgs = {
   send_email?: boolean;
 };
@@ -20,9 +11,6 @@ type CustomerPortalArgs = {
 export interface DodoPaymentsComponent {
   lib: {
     checkout: any;
-    sessionCheckout: any;
-    staticCheckout: any;
-    dynamicCheckout: any;
     customerPortal: any;
   };
 }
@@ -50,59 +38,14 @@ export class DodoPayments {
   api() {
     return {
       /**
-       * Creates a modern Dodo Payments checkout session (recommended).
-       * Uses the new /checkouts endpoint with full feature support.
+       * Creates a Dodo Payments checkout session.
+       * Uses session checkout with full feature support.
        */
       checkout: async (
         ctx: any,
         args: { payload: CheckoutSessionPayload },
       ) => {
         return await ctx.runAction(this.component.lib.checkout, {
-          ...args,
-          apiKey: this.config.apiKey,
-          environment: this.config.environment,
-        });
-      },
-
-      /**
-       * Creates a modern Dodo Payments checkout session.
-       * Alias for checkout() - uses the new /checkouts endpoint.
-       */
-      sessionCheckout: async (
-        ctx: any,
-        args: { payload: CheckoutSessionPayload },
-      ) => {
-        return await ctx.runAction(this.component.lib.sessionCheckout, {
-          ...args,
-          apiKey: this.config.apiKey,
-          environment: this.config.environment,
-        });
-      },
-
-      /**
-       * Creates a static checkout URL with query parameters.
-       * Uses the legacy checkout URL format - simpler but less features.
-       */
-      staticCheckout: async (
-        ctx: any,
-        args: StaticCheckoutArgs,
-      ) => {
-        return await ctx.runAction(this.component.lib.staticCheckout, {
-          ...args,
-          apiKey: this.config.apiKey,
-          environment: this.config.environment,
-        });
-      },
-
-      /**
-       * Creates a dynamic checkout using the payments/subscriptions API.
-       * Uses API calls to create payment links - good for complex scenarios.
-       */
-      dynamicCheckout: async (
-        ctx: any,
-        args: DynamicCheckoutArgs,
-      ) => {
-        return await ctx.runAction(this.component.lib.dynamicCheckout, {
           ...args,
           apiKey: this.config.apiKey,
           environment: this.config.environment,
