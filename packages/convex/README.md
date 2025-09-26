@@ -30,13 +30,19 @@ export default app;
 
 ### 2. Set Up Environment Variables
 
-In your Convex dashboard (**Settings** → **Environment Variables**):
+Add your environment variables in the Convex dashboard (**Settings** → **Environment Variables**). You can open the dashboard by running:
 
-```env
-DODO_PAYMENTS_API_KEY=your-api-key
-DODO_PAYMENTS_ENVIRONMENT=test_mode
-DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret (if using webhooks)
+```sh
+npx convex dashboard
 ```
+
+Set the following variables:
+
+- `DODO_PAYMENTS_API_KEY=your-api-key`
+- `DODO_PAYMENTS_ENVIRONMENT=test_mode`
+- `DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret` (if using webhooks)
+
+> **Note:** Convex backend functions only read environment variables set in the Convex dashboard. `.env` files are ignored. Always set secrets in the Convex dashboard for both production and development.
 
 ### 3. Create Payment Functions
 
@@ -108,11 +114,9 @@ http.route({
 export default http;
 ```
 
-Set up webhook environment variable in your Convex dashboard or .env file:
+Add your webhook secret in the Convex dashboard (**Settings** → **Environment Variables**):
 
-```env
-DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
-```
+- `DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret`
 
 ### 5. Define Payment Actions
 
@@ -184,16 +188,16 @@ Here's how you should structure your response:
 
 "Which parts of the @dodopayments/convex component would you like to integrate into your project? You can choose one or more of the following:
 
-- Checkout Functions (for handling product checkouts)
+- Checkout Function (for handling product checkouts)
 - Customer Portal Function (for managing customer subscriptions/details)
 - Webhook Handler (for receiving Dodo Payments webhook events)
 - All (integrate all three)"
 
 2. Based on the user's selection, provide detailed integration steps for each chosen functionality.
 
-If Checkout Functions are selected:
+If Checkout Function is selected:
 
-Purpose: These functions handle different types of checkout flows and return checkout URLs for programmatic handling.
+Purpose: This function handles different types of checkout flows and returns checkout URLs for programmatic handling.
 
 Integration Steps:
 
@@ -207,7 +211,11 @@ const app = defineApp();
 app.use(dodopayments);
 export default app;
 
-Step 2: Set up environment variables in your Convex dashboard (Settings → Environment Variables):
+Step 2: Guide the user to set up environment variables in the Convex dashboard. Instruct them to open the dashboard by running:
+
+npx convex dashboard
+
+Then add the required environment variables (e.g., DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_ENVIRONMENT, DODO_PAYMENTS_WEBHOOK_SECRET) in **Settings → Environment Variables**. Do not use .env files for backend functions.
 
 DODO_PAYMENTS_API_KEY=your-api-key
 DODO_PAYMENTS_ENVIRONMENT=test_mode
@@ -324,7 +332,7 @@ Purpose: This function allows customers to manage their subscriptions and paymen
 
 Integration Steps:
 
-Follow Steps 1-3 from the Checkout Functions section, then:
+Follow Steps 1-3 from the Checkout Function section, then:
 
 Step 4: Create a customer portal action.
 
@@ -369,9 +377,17 @@ Purpose: This handler processes incoming webhook events from Dodo Payments, allo
 
 Integration Steps:
 
-Step 1: Add the webhook secret to your environment variables in the Convex dashboard:
+Step 1: Add the webhook secret to your environment variables in the Convex dashboard. You can open the dashboard by running:
 
-DODO_PAYMENTS_WEBHOOK_SECRET=whsec_...
+Guide the user to open the Convex dashboard by running:
+
+npx convex dashboard
+
+In the dashboard, go to **Settings → Environment Variables** and add:
+
+- `DODO_PAYMENTS_WEBHOOK_SECRET=whsec_...`
+
+Do not use .env files for backend functions; always set secrets in the Convex dashboard.
 
 Step 2: Create a file `convex/http.ts`:
 
@@ -403,11 +419,15 @@ Now, you can set the webhook endpoint URL in your Dodo Payments dashboard to `ht
 
 Environment Variable Setup:
 
-Set up the following environment variables in your Convex dashboard (Settings → Environment Variables):
+Set up the following environment variables in your Convex dashboard (Settings → Environment Variables). You can open the dashboard by running:
 
-DODO_PAYMENTS_API_KEY=your-api-key
-DODO_PAYMENTS_ENVIRONMENT=test_mode
-DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret
+npx convex dashboard
+
+Set:
+
+- `DODO_PAYMENTS_API_KEY=your-api-key`
+- `DODO_PAYMENTS_ENVIRONMENT=test_mode`
+- `DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret`
 
 Usage in your component configuration:
 
