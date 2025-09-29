@@ -1,10 +1,16 @@
-# `@dodopayments/convex`
+# Dodo Payments Convex Component
 
-A TypeScript library that provides a Convex component for seamless integration of Dodo Payments into your Convex applications.
+[![npm version](https://badge.fury.io/js/@dodopayments%2Fconvex.svg)](https://badge.fury.io/js/@dodopayments%2Fconvex.svg)
 
-> **AI Agent Integration Guide:** See the AI Agent Prompt section below for detailed instructions and guidance for AI assistants.
+This component is the official way to integrate the Dodo Payments in your Convex project.
 
-## Documentation
+Features:
+
+- Checkout Session: Integrate Dodo Payments Checkout with a couple of lines code.
+
+- Customer Portal: Allow customers to manage subscriptions and details
+
+- Webhooks: Handle webhooks efficiently. Just write your business logic and handle the events you want. Webhook verification is taken care by us
 
 Detailed documentation can be found at [Dodo Payments Convex Component](https://docs.dodopayments.com/developer-resources/convex-component)
 
@@ -15,6 +21,7 @@ npm install @dodopayments/convex
 ```
 
 ## Quick Start
+
 
 ### 1. Add Component to Convex Config
 
@@ -30,8 +37,15 @@ export default app;
 
 ### 2. Set Up Environment Variables
 
+Create a [Dodo Payments](https://dodopayments.com) account and get the API_KEY and WEBHOOK_SECRET
+
 Add your environment variables in the Convex dashboard (**Settings** → **Environment Variables**). You can open the dashboard by running:
 
+```env
+DODO_PAYMENTS_API_KEY=your-dodo-payments-api-key
+DODO_PAYMENTS_ENVIRONMENT=test_mode
+DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret (if using webhooks)
+```
 ```sh
 npx convex dashboard
 ```
@@ -80,6 +94,7 @@ export const dodo = new DodoPayments(components.dodopayments, {
   environment: process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode",
 });
 
+export const { checkout, customerPortal } = dodo.api();
 // Export the API methods for use in your app
 export const { checkout, customerPortal } = dodo.api();
 ```
