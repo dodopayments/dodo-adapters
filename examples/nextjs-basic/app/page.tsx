@@ -1,3 +1,4 @@
+"use client";
 export default function Home() {
   return (
     <main style={{ maxWidth: 800, margin: "0 auto", padding: "2rem" }}>
@@ -58,6 +59,9 @@ export default function Home() {
             <code>DODO_PAYMENTS_API_KEY</code> - Your Dodo Payments API key
           </li>
           <li>
+            <code>DODO_ENVIRONMENT</code> - <code>test_mode</code> or <code>live_mode</code>
+          </li>
+          <li>
             <code>RETURN_URL</code> - URL to redirect after successful checkout
           </li>
           <li>
@@ -83,6 +87,26 @@ export default function Home() {
             <a href="/customer-portal?customer_id=cus_example123">
               Customer Portal Example
             </a>
+          </li>
+          <li>
+            <button
+              onClick={async () => {
+                const res = await fetch("/api/change-plan", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    subscription_id: "sub_example123",
+                    product_id: "pdt_newplan123",
+                    proration_billing_mode: "prorated_immediately",
+                    quantity: 1,
+                  }),
+                });
+                const json = await res.json();
+                alert(res.ok ? "Plan changed" : `Error: ${json.error}`);
+              }}
+            >
+              Example: Change Plan (POST /api/change-plan)
+            </button>
           </li>
         </ul>
       </div>
