@@ -63,6 +63,7 @@ export const POST = Webhooks({
 | Nuxt       | `@dodopayments/nuxt`       | ✅     |
 | BetterAuth | `@dodopayments/betterauth` | ✅     |
 | Convex     | `@dodopayments/convex`     | ✅     |
+| Laravel    | `@dodopayments/laravel`    | ✅     |
 
 ## 🔧 Features
 
