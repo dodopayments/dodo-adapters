@@ -141,9 +141,33 @@ routes/api.php
 - Runtime: `dodopayments/client`, `standard-webhooks/standard-webhooks`
 - Dev: `orchestra/testbench`, `phpunit/phpunit`, `larastan/phpstan`, `laravel/pint`
 
-## Example app (planned)
+## Example Usage
 
-A minimal `laravel-basic` example demonstrating the three flows, with Playbook for ngrok testing and a Postman collection.
+### Basic Setup
+
+```php
+// routes/api.php
+Route::prefix(config('dodo.route_prefix', 'api/dodo'))->group(function () {
+    Route::get('/checkout', [\Dodopayments\Laravel\Http\Controllers\CheckoutController::class, 'static']);
+    Route::post('/checkout', [\Dodopayments\Laravel\Http\Controllers\CheckoutController::class, 'dynamic']);
+    Route::post('/checkout/session', [\Dodopayments\Laravel\Http\Controllers\CheckoutController::class, 'session']);
+
+    Route::get('/customer-portal', [\Dodopayments\Laravel\Http\Controllers\CustomerPortalController::class, 'show']);
+
+    Route::post('/webhook', [\Dodopayments\Laravel\Http\Controllers\WebhookController::class, 'handle'])
+        ->middleware('dodo.webhook');
+});
+```
+
+### Testing Webhooks Locally
+
+- Use ngrok to expose your local server: `ngrok http http://localhost:8000`
+- Set the public URL in your Dodo Payments dashboard webhook settings to `/api/dodo/webhook`
+- Ensure `DODO_PAYMENTS_WEBHOOK_SECRET` matches the secret in your dashboard
+
+### Postman Collection
+
+A sample Postman collection is available to test the checkout, portal, and webhook endpoints.
 
 ## Roadmap
 
