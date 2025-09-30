@@ -29,7 +29,17 @@ export async function POST(req: NextRequest) {
       (process.env.DODO_ENVIRONMENT as any) ??
       (process.env.DODO_PAYMENTS_ENVIRONMENT as any),
   };
-  const env = envSchema.parse(envInput);
+  let env: z.infer<typeof envSchema>;
+  try {
+    env = envSchema.parse(envInput);
+  } catch (e: unknown) {
+    const desc = e instanceof Error ? e.message : "Invalid environment configuration";
+    console.error("Change-plan env parse failed", { error: desc, envInput: { DODO_ENVIRONMENT: envInput.DODO_ENVIRONMENT ? "[set]" : undefined, DODO_PAYMENTS_API_KEY: envInput.DODO_PAYMENTS_API_KEY ? "[set]" : undefined } });
+    return NextResponse.json(
+      { error: `Missing or invalid environment variables: ${desc}` },
+      { status: 500 },
+    );
+  }
 
   const json = await req.json().catch(() => null);
   const parsed = bodySchema.safeParse(json);
@@ -49,19 +59,23 @@ export async function POST(req: NextRequest) {
     });
     // Some endpoints return empty body on success; normalize response
     return NextResponse.json(result ?? { success: true });
-  } catch (e: unknown) {
-    const message = e instanceof Error ? e.message : "Unknown error";
-    const status =
-      /404/.test(message)
-        ? 404
-        : /403/.test(message)
-        ? 403
-        : /401/.test(message)
-        ? 401
-        : /422/.test(message)
-        ? 422
-        : 500;
-    return NextResponse.json({ error: message }, { status });
+  } catch (e: any) {
+    // Prefer structured status if provided by SDK/core
+    const status: number = e?.status ?? e?.statusCode ?? 500;
+    // Map to safe, client-facing messages
+    const safeMessage =
+      status === 404
+        ? "Resource not found"
+        : status === 403
+        ? "Forbidden"
+        : status === 401
+        ? "Unauthorized"
+        : status === 422
+        ? "Request validation failed"
+        : "Internal server error";
+    // Log full server-side error for observability
+    console.error("Change-plan failed", { status: e?.status ?? e?.statusCode, message: e?.message, stack: e?.stack });
+    return NextResponse.json({ error: safeMessage }, { status });
   }
 }
 
