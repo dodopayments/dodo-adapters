@@ -1,3 +1,4 @@
+"use client";
 export default function Home() {
   return (
     <main style={{ maxWidth: 800, margin: "0 auto", padding: "2rem" }}>
@@ -58,6 +59,9 @@ export default function Home() {
             <code>DODO_PAYMENTS_API_KEY</code> - Your Dodo Payments API key
           </li>
           <li>
+            <code>DODO_ENVIRONMENT</code> - <code>test_mode</code> or <code>live_mode</code>
+          </li>
+          <li>
             <code>RETURN_URL</code> - URL to redirect after successful checkout
           </li>
           <li>
@@ -83,6 +87,54 @@ export default function Home() {
             <a href="/customer-portal?customer_id=cus_example123">
               Customer Portal Example
             </a>
+          </li>
+          <li>
+            <button
+              onClick={async () => {
+                try {
+                  const res = await fetch("/api/change-plan", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      subscription_id: "sub_example123",
+                      product_id: "pdt_newplan123",
+                      proration_billing_mode: "prorated_immediately",
+                      quantity: 1,
+                    }),
+                  });
+
+                  if (!res.ok) {
+                    let message = `Request failed (${res.status})`;
+                    try {
+                      const maybeJson = await res.json();
+                      if (maybeJson && maybeJson.error) {
+                        message = maybeJson.error;
+                      }
+                    } catch (_) {
+                      try {
+                        const text = await res.text();
+                        if (text) message = text;
+                      } catch (_) {}
+                    }
+                    alert(`Error: ${message}`);
+                    return;
+                  }
+
+                  let payload: any = null;
+                  try {
+                    payload = await res.json();
+                  } catch (_) {
+                    // empty body OK; treat as success
+                  }
+                  alert("Plan changed");
+                } catch (err) {
+                  console.error("Change plan request failed", err);
+                  alert("Network error. Please try again.");
+                }
+              }}
+            >
+              Example: Change Plan (POST /api/change-plan)
+            </button>
           </li>
         </ul>
       </div>
