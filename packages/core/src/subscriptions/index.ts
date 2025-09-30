@@ -3,7 +3,7 @@ import DodoPayments, { ClientOptions } from "dodopayments";
 
 export const attachAddonReqSchema = z.object({
   addon_id: z.string(),
-  quantity: z.number().int().nonnegative(),
+  quantity: z.number().int().positive(),
 });
 
 export const prorationBillingModeSchema = z.enum([
@@ -16,7 +16,7 @@ export const updateSubscriptionPlanReqSchema = z.object({
   product_id: z.string(),
   proration_billing_mode: prorationBillingModeSchema,
   quantity: z.number().int().positive(),
-  addons: z.array(attachAddonReqSchema).nullable().optional(),
+  addons: z.array(attachAddonReqSchema).nullish(),
 });
 
 export type UpdateSubscriptionPlanReq = z.infer<
@@ -52,6 +52,8 @@ export async function changeSubscriptionPlan(
   });
 
   try {
+    // TODO(dodopayments#SDK-v2.0.2): remove the `as any` casts when types are available
+    // Tracking: internal ticket or upstream issue to add proper typings for subscriptions.changePlan
     return await (dodopayments as any).subscriptions.changePlan(
       subscriptionId,
       validation.data as any,

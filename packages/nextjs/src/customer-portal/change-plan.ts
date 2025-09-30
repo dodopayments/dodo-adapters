@@ -4,7 +4,7 @@ import { changeSubscriptionPlan } from "@dodopayments/core/subscriptions";
 
 const envSchema = z.object({
   DODO_PAYMENTS_API_KEY: z.string().min(1),
-  DODO_ENVIRONMENT: z.enum(["test_mode", "live_mode"]).default("live_mode"),
+  DODO_ENVIRONMENT: z.enum(["test_mode", "live_mode"]),
 });
 
 const bodySchema = z.object({
@@ -23,14 +23,13 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const env = envSchema.parse({
+  const envInput = {
     DODO_PAYMENTS_API_KEY: process.env.DODO_PAYMENTS_API_KEY,
-    // Accept both variable names for compatibility
     DODO_ENVIRONMENT:
       (process.env.DODO_ENVIRONMENT as any) ??
-      (process.env.DODO_PAYMENTS_ENVIRONMENT as any) ??
-      "live_mode",
-  });
+      (process.env.DODO_PAYMENTS_ENVIRONMENT as any),
+  };
+  const env = envSchema.parse(envInput);
 
   const json = await req.json().catch(() => null);
   const parsed = bodySchema.safeParse(json);

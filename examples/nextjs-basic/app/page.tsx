@@ -91,18 +91,46 @@ export default function Home() {
           <li>
             <button
               onClick={async () => {
-                const res = await fetch("/api/change-plan", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    subscription_id: "sub_example123",
-                    product_id: "pdt_newplan123",
-                    proration_billing_mode: "prorated_immediately",
-                    quantity: 1,
-                  }),
-                });
-                const json = await res.json();
-                alert(res.ok ? "Plan changed" : `Error: ${json.error}`);
+                try {
+                  const res = await fetch("/api/change-plan", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      subscription_id: "sub_example123",
+                      product_id: "pdt_newplan123",
+                      proration_billing_mode: "prorated_immediately",
+                      quantity: 1,
+                    }),
+                  });
+
+                  if (!res.ok) {
+                    let message = `Request failed (${res.status})`;
+                    try {
+                      const maybeJson = await res.json();
+                      if (maybeJson && maybeJson.error) {
+                        message = maybeJson.error;
+                      }
+                    } catch (_) {
+                      try {
+                        const text = await res.text();
+                        if (text) message = text;
+                      } catch (_) {}
+                    }
+                    alert(`Error: ${message}`);
+                    return;
+                  }
+
+                  let payload: any = null;
+                  try {
+                    payload = await res.json();
+                  } catch (_) {
+                    // empty body OK; treat as success
+                  }
+                  alert("Plan changed");
+                } catch (err) {
+                  console.error("Change plan request failed", err);
+                  alert("Network error. Please try again.");
+                }
               }}
             >
               Example: Change Plan (POST /api/change-plan)
