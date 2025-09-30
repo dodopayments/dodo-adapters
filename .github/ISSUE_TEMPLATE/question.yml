@@ -9,7 +9,7 @@ body:
     attributes:
       value: |
         Thanks for your question! Please provide as much context as possible to help us give you the best answer.
-        
+
         **Note**: For complex implementation questions, consider joining our [Discord community](https://discord.gg/dodopayments) for faster interactive help.
 
   - type: checkboxes

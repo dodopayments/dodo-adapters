@@ -29,31 +29,35 @@ This project adheres to a code of conduct that we expect all contributors to fol
 ### Development Setup
 
 1. **Fork and Clone**
+
    ```bash
    git clone https://github.com/your-username/dodo-adapters.git
    cd dodo-adapters
    ```
 
 2. **Install Dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Build All Packages**
+
    ```bash
    npm run build
    ```
 
- 4. **Local Testing**
-    ```bash
-    # Build and link the adapter you want to test
-    cd packages/nextjs  # or any other adapter
-    npm run build
-    npm link
+4. **Local Testing**
 
-    # In your test project
-    npm link @dodopayments/nextjs
-    ```
+   ```bash
+   # Build and link the adapter you want to test
+   cd packages/nextjs  # or any other adapter
+   npm run build
+   npm link
+
+   # In your test project
+   npm link @dodopayments/nextjs
+   ```
 
 ### Project Structure
 
@@ -93,7 +97,7 @@ We welcome several types of contributions:
 git checkout -b feature/your-feature-name
 # or
 git checkout -b fix/issue-description
-# or  
+# or
 git checkout -b adapter/framework-name
 ```
 
@@ -143,6 +147,7 @@ Then create a pull request using our [PR template](.github/pull_request_template
 ### 1. Framework Requirements
 
 Before adding a new framework adapter, ensure:
+
 - Framework is actively maintained
 - Has TypeScript support
 - Has significant user base
@@ -168,7 +173,7 @@ packages/framework-name/
 
 ```typescript
 // src/checkout.ts
-import { CheckoutConfig, createCheckoutSession } from '@dodopayments/core';
+import { CheckoutConfig, createCheckoutSession } from "@dodopayments/core";
 
 export function Checkout(config: CheckoutConfig) {
   // Return framework-specific handler
@@ -215,7 +220,7 @@ export function Checkout(config: CheckoutConfig) {
 
 ```typescript
 // Use custom error types from core
-import { DodoApiError } from '@dodopayments/core';
+import { DodoApiError } from "@dodopayments/core";
 
 // Proper error handling
 try {
@@ -233,7 +238,7 @@ try {
 
 ### Documentation Comments
 
-```typescript
+````typescript
 /**
  * Creates a checkout session for the specified product
  * @param config - Checkout configuration including API key and return URL
@@ -249,13 +254,14 @@ try {
 export function Checkout(config: CheckoutConfig) {
   // Implementation
 }
-```
+````
 
 ## Documentation Guidelines
 
 ### README Requirements
 
 Each adapter package needs:
+
 - Installation instructions
 - Basic usage examples
 - Framework-specific patterns
@@ -281,6 +287,7 @@ Each adapter package needs:
 ### Changelog
 
 Update CHANGELOG.md with:
+
 - New features
 - Bug fixes
 - Breaking changes
@@ -295,6 +302,7 @@ Update CHANGELOG.md with:
 ## Recognition
 
 Contributors will be recognized in:
+
 - README.md contributors section
 - Release notes
 - Documentation credits

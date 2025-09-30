@@ -2,6 +2,20 @@ import type { BetterAuthPlugin } from "better-auth";
 import { onUserCreate, onUserUpdate } from "./hooks/customer";
 import type { DodoPaymentsEndpoints, DodoPaymentsOptions } from "./types";
 
+// Re-export public types explicitly for wider TS compatibility
+export type {
+  Product,
+  DodoPaymentsPlugin,
+  DodoPaymentsPlugins,
+  DodoPaymentsEndpoints,
+  DodoPaymentsOptions,
+  PaymentItems,
+  SubscriptionItems,
+  CustomerPortalResponse,
+  CreateCheckoutResponse,
+  WebhookResponse,
+} from "./types";
+
 export { dodopaymentsClient } from "./client";
 
 export { portal } from "./plugins/portal";

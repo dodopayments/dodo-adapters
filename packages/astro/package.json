@@ -1,14 +1,12 @@
 {
   "name": "@dodopayments/astro",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "format": "prettier --write .",
-    "check-format": "prettier --check .",
     "check-types": "tsc --noEmit"
   },
   "exports": {
@@ -19,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.1.7"
+    "@dodopayments/core": "^0.2.0"
   },
   "keywords": [
     "payments",

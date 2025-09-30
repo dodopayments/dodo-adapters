@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { PaymentListResponse } from "dodopayments/src/resources.js";
+import { PaymentListResponse } from "dodopayments/resources";
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<PaymentListResponse[]>([]);

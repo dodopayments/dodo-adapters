@@ -9,7 +9,6 @@
   </a>
 </p>
 
-
 Framework-specific adapters for seamless [Dodo Payments](https://dodopayments.com) integration across web frameworks.
 
 ## 🚀 Quick Start
@@ -25,6 +24,7 @@ npm install @dodopayments/sveltekit  # SvelteKit
 npm install @dodopayments/astro      # Astro
 npm install @dodopayments/tanstack   # TanStack
 npm install @dodopayments/nuxt       # Nuxt
+npm install @dodopayments/convex     # Convex
 npm install @dodopayments/better-auth # BetterAuth
 ```
 
@@ -32,7 +32,7 @@ npm install @dodopayments/better-auth # BetterAuth
 
 ```typescript
 // Next.js example - app/api/checkout/route.ts
-import { Checkout, Webhooks } from '@dodopayments/nextjs';
+import { Checkout, Webhooks } from "@dodopayments/nextjs";
 
 export const POST = Checkout({
   bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
@@ -50,19 +50,20 @@ export const POST = Webhooks({
 
 ## 📦 Available Adapters
 
-| Framework | Package | Status |
-|-----------|---------|--------|
-| Next.js | `@dodopayments/nextjs` | ✅ |
-| Express | `@dodopayments/express` | ✅ |
-| Fastify | `@dodopayments/fastify` | ✅ |
-| Hono | `@dodopayments/hono` | ✅ |
-| Remix | `@dodopayments/remix` | ✅ |
-| SvelteKit | `@dodopayments/sveltekit` | ✅ |
-| Astro | `@dodopayments/astro` | ✅ |
-| TanStack | `@dodopayments/tanstack` | ✅ |
-| Nuxt | `@dodopayments/nuxt` | ✅ |
-| BetterAuth | `@dodopayments/betterauth` | ✅ |
-| Laravel | `@dodopayments/laravel` | ✅ |
+| Framework  | Package                    | Status |
+| ---------- | -------------------------- | ------ |
+| Next.js    | `@dodopayments/nextjs`     | ✅     |
+| Express    | `@dodopayments/express`    | ✅     |
+| Fastify    | `@dodopayments/fastify`    | ✅     |
+| Hono       | `@dodopayments/hono`       | ✅     |
+| Remix      | `@dodopayments/remix`      | ✅     |
+| SvelteKit  | `@dodopayments/sveltekit`  | ✅     |
+| Astro      | `@dodopayments/astro`      | ✅     |
+| TanStack   | `@dodopayments/tanstack`   | ✅     |
+| Nuxt       | `@dodopayments/nuxt`       | ✅     |
+| BetterAuth | `@dodopayments/betterauth` | ✅     |
+| Convex     | `@dodopayments/convex`     | ✅     |
+| Laravel    | `@dodopayments/laravel`    | ✅     |
 
 ## 🔧 Features
 
@@ -85,6 +86,7 @@ packages/
 ├── sveltekit/             # SvelteKit hooks
 ├── astro/                 # Astro endpoints
 ├── tanstack/              # TanStack Start adapter
+├── convex/                # Convex backend component
 ├── nuxt/                  # Nuxt 3 server routes
 └── betterauth/            # BetterAuth plugin
 
@@ -121,7 +123,7 @@ npm link
 npm link @dodopayments/nextjs
 ```
 
-```
+````
 
 ### Commands
 
@@ -140,7 +142,7 @@ npm run lint
 
 # Format code
 npm run format
-```
+````
 
 ## 🤝 Contributing
 
