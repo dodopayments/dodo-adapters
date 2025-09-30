@@ -1,6 +1,6 @@
-# `@dodopayments/laravel` (Blueprint)
+# `@dodopayments/laravel`
 
-This directory documents the design and intended API for a first‑class Laravel adapter for Dodo Payments. The actual PHP package will be published separately to Packagist as `dodopayments/laravel` and maintained in a dedicated repository.
+This directory contains the actual Laravel adapter implementation for Dodo Payments. The package provides Laravel-native endpoints and middleware for seamless payment integration. The package will be published to Packagist as `dodopayments/laravel` and is maintained as part of this monorepo.
 
 ## Goals
 
@@ -82,7 +82,7 @@ Example listener registration:
 
 ```php
 // app/Providers/EventServiceProvider.php
-use Dodopayments\\Laravel\\Support\\Events\\PaymentSucceeded;
+use Dodopayments\Laravel\Support\Events\PaymentSucceeded;
 
 protected $listen = [
     PaymentSucceeded::class => [
@@ -161,7 +161,7 @@ Route::prefix(config('dodo.route_prefix', 'api/dodo'))->group(function () {
 
 ### Testing Webhooks Locally
 
-- Use ngrok to expose your local server: `ngrok http http://localhost:8000`
+- Use ngrok to expose your local server: `ngrok http 8000`
 - Set the public URL in your Dodo Payments dashboard webhook settings to `/api/dodo/webhook`
 - Ensure `DODO_PAYMENTS_WEBHOOK_SECRET` matches the secret in your dashboard
 
