@@ -17,7 +17,7 @@ const bodySchema = z.object({
   ]),
   quantity: z.number().int().positive(),
   addons: z
-    .array(z.object({ addon_id: z.string(), quantity: z.number().int().nonnegative() }))
+    .array(z.object({ addon_id: z.string(), quantity: z.number().int().positive() }))
     .optional()
     .nullable(),
 });
@@ -52,7 +52,15 @@ export async function POST(req: NextRequest) {
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : "Unknown error";
     const status =
-      /404/.test(message) ? 404 : /401|403/.test(message) ? 401 : /422/.test(message) ? 422 : 500;
+      /404/.test(message)
+        ? 404
+        : /403/.test(message)
+        ? 403
+        : /401/.test(message)
+        ? 401
+        : /422/.test(message)
+        ? 422
+        : 500;
     return NextResponse.json({ error: message }, { status });
   }
 }
