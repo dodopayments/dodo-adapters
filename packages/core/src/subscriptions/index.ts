@@ -59,8 +59,16 @@ export async function changeSubscriptionPlan(
       validation.data as any,
     );
   } catch (error) {
+    // Preserve structured error metadata from SDK if available
     if (error instanceof Error) {
-      throw new Error(`Failed to change subscription plan: ${error.message}`);
+      const wrapped: any = new Error(
+        `Failed to change subscription plan: ${error.message}`,
+      );
+      const anyErr = error as any;
+      if (typeof anyErr.status !== "undefined") wrapped.status = anyErr.status;
+      if (typeof anyErr.statusCode !== "undefined")
+        wrapped.statusCode = anyErr.statusCode;
+      throw wrapped;
     }
     throw new Error("Failed to change subscription plan due to unknown error");
   }
