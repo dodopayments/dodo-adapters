@@ -50,4 +50,5 @@ export type PaymentItems = { items: PaymentsList["items"] };
 export type SubscriptionItems = { items: SubscriptionsList["items"] };
 export type CustomerPortalResponse = { url: string; redirect: boolean };
 export type CreateCheckoutResponse = { url: string; redirect: boolean };
+export type CreateCheckoutSessionResponse = { url: string; redirect: boolean };
 export type WebhookResponse = { received: boolean };
