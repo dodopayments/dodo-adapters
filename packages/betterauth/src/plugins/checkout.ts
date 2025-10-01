@@ -6,6 +6,7 @@ import type { CreateCheckoutResponse, Product } from "../types";
 import {
   buildCheckoutUrl,
   dynamicCheckoutBodySchema,
+  checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
 
 export interface CheckoutOptions {
@@ -21,6 +22,10 @@ export interface CheckoutOptions {
    * Only allow authenticated customers to checkout
    */
   authenticatedUsersOnly?: boolean;
+  /**
+   * Enable checkout sessions (modern checkout flow)
+   */
+  enableCheckoutSessions?: boolean;
 }
 
 export const checkout =
@@ -126,5 +131,108 @@ export const checkout =
           }
         },
       ),
+      ...(checkoutOptions.enableCheckoutSessions && {
+        checkoutSession: createAuthEndpoint(
+          "/dodopayments/checkout/session",
+          {
+            method: "POST",
+            body: checkoutSessionPayloadSchema.extend({
+              slug: z.string().optional(),
+              referenceId: z.string().optional(),
+            }),
+            requireRequest: true,
+          },
+          async (ctx): Promise<CreateCheckoutResponse> => {
+            const session = await getSessionFromCtx(ctx);
+
+            if (checkoutOptions.authenticatedUsersOnly && !session?.user.id) {
+              throw new APIError("UNAUTHORIZED", {
+                message: "You must be logged in to checkout",
+              });
+            }
+
+            try {
+              // Handle slug-based product lookup
+              let sessionPayload = { ...ctx.body };
+              
+              if (ctx.body?.slug) {
+                const resolvedProducts = await (typeof checkoutOptions.products ===
+                "function"
+                  ? checkoutOptions.products()
+                  : checkoutOptions.products);
+
+                const product = resolvedProducts?.find(
+                  (product) => product.slug === ctx.body.slug,
+                );
+
+                if (!product) {
+                  throw new APIError("BAD_REQUEST", {
+                    message: "Product not found",
+                  });
+                }
+
+                // Replace slug with actual product in product_cart
+                if (sessionPayload.product_cart && sessionPayload.product_cart.length > 0) {
+                  sessionPayload.product_cart[0]!.product_id = product.productId;
+                } else {
+                  sessionPayload.product_cart = [{
+                    product_id: product.productId,
+                    quantity: 1,
+                  }];
+                }
+              }
+
+              // Add customer information from session if available
+              if (session?.user) {
+                sessionPayload.customer = {
+                  email: session.user.email,
+                  name: session.user.name,
+                  ...sessionPayload.customer,
+                };
+              }
+
+              // Add reference ID to metadata if provided
+              if (ctx.body.referenceId) {
+                sessionPayload.metadata = {
+                  referenceId: ctx.body.referenceId,
+                  ...sessionPayload.metadata,
+                };
+              }
+
+              // Set return URL
+              if (checkoutOptions.successUrl) {
+                sessionPayload.return_url = new URL(
+                  checkoutOptions.successUrl,
+                  ctx.request?.url,
+                ).toString();
+              }
+
+              const checkoutUrl = await buildCheckoutUrl({
+                sessionPayload,
+                bearerToken: dodopayments.bearerToken,
+                environment: dodopayments.baseURL.includes("test")
+                  ? "test_mode"
+                  : "live_mode",
+                type: "session",
+              });
+
+              return ctx.json({
+                url: checkoutUrl,
+                redirect: true,
+              });
+            } catch (e: unknown) {
+              if (e instanceof Error) {
+                ctx.context.logger.error(
+                  `DodoPayments checkout session creation failed. Error: ${e.message}`,
+                );
+              }
+
+              throw new APIError("INTERNAL_SERVER_ERROR", {
+                message: "Checkout session creation failed",
+              });
+            }
+          },
+        ),
+      }),
     };
   };

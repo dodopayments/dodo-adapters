@@ -13,6 +13,7 @@ export type {
   SubscriptionItems,
   CustomerPortalResponse,
   CreateCheckoutResponse,
+  CreateCheckoutSessionResponse,
   WebhookResponse,
 } from "./types";
 

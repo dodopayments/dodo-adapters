@@ -6,6 +6,7 @@ A Better Auth plugin for integrating Dodo Payments into your authentication flow
 
 - **Automatic Customer Management** - Creates Dodo Payments customers when users sign up
 - **Secure Checkout Integration** - Type-safe checkout flows with product slug mapping
+- **Modern Checkout Sessions** - Enhanced checkout experience with the latest Dodo Payments API
 - **Customer Portal Access** - Self-service portal for subscription and payment management
 - **Webhook Event Handling** - Real-time payment event processing with signature verification
 - **TypeScript Support** - Full type safety with TypeScript definitions
@@ -67,6 +68,7 @@ export const { auth, endpoints, client } = BetterAuth({
           ],
           successUrl: "/dashboard/success",
           authenticatedUsersOnly: true, // Require login for checkout
+          enableCheckoutSessions: true, // Enable modern checkout sessions
         }),
         portal(),
         webhooks({
@@ -100,7 +102,7 @@ export const authClient = createAuthClient({
 
 ## Usage
 
-### Creating a Checkout Session
+### Creating a Checkout Session (Dynamic Checkout)
 
 ```typescript
 // Create checkout with customer details
@@ -123,6 +125,63 @@ const { data: checkout, error } = await authClient.dodopayments.checkout({
 
 // Redirect to checkout URL
 window.location.href = checkout.url;
+```
+
+### Creating a Modern Checkout Session
+
+When `enableCheckoutSessions: true` is set in the checkout configuration, you can use the modern checkout sessions API:
+
+```typescript
+// Create modern checkout session with enhanced features
+const { data: checkoutSession, error } = await authClient.dodopayments.checkoutSession({
+  slug: "premium-plan", // The slug you provided in the checkout configuration
+  product_cart: [
+    {
+      product_id: "pdt_xxxxxxxxxxxxxxxxxxxxx", // Your product ID
+      quantity: 1,
+    },
+  ],
+  customer: {
+    email: "customer@example.com",
+    name: "John Doe",
+    phone_number: "+1234567890", // Optional
+  },
+  billing_address: {
+    street: "123 Market St",
+    city: "San Francisco",
+    state: "CA",
+    country: "US",
+    zipcode: "94103",
+  },
+  return_url: "https://yoursite.com/success",
+  allowed_payment_method_types: ["credit", "debit", "apple_pay", "google_pay"],
+  billing_currency: "USD",
+  show_saved_payment_methods: true,
+  discount_code: "SAVE10", // Optional
+  metadata: {
+    order_id: "order_123",
+    campaign: "summer_sale",
+  },
+  customization: {
+    theme: "light", // "light", "dark", or "system"
+    show_order_details: true,
+    show_on_demand_tag: false,
+  },
+  feature_flags: {
+    allow_currency_selection: true,
+    allow_discount_code: true,
+    allow_phone_number_collection: true,
+    allow_tax_id: false,
+    always_create_new_customer: false,
+  },
+  subscription_data: {
+    trial_period_days: 7, // Optional trial period
+  },
+  referenceId: "order_123", // Optional reference for your records
+});
+
+// Redirect to checkout URL
+window.location.href = checkoutSession.url;
 ```
 
 ### Accessing Customer Portal
@@ -194,6 +253,7 @@ webhooks({
 - **`products`** - Array of products or async function returning products
 - **`successUrl`** - URL to redirect after successful payment
 - **`authenticatedUsersOnly`** - Require user authentication (default: false)
+- **`enableCheckoutSessions`** - Enable modern checkout sessions API (default: false)
 
 ## Prompt for LLMs
 
