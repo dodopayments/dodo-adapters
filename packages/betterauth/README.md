@@ -28,7 +28,7 @@ Add the required environment variables to your `.env` file:
 DODO_PAYMENTS_API_KEY=your_api_key_here
 # use the webhook endpoint `/api/auth/dodopayments/webhooks` to generate a webhook secret
 # from Dodo Payments Dashboard > Developer > Webhooks
-DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here # Use
+DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here 
 BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=your_better_auth_secret_here
 ```
