@@ -1,5 +1,5 @@
-import { z } from "zod";
 import DodoPayments, { ClientOptions } from "dodopayments";
+import { z } from "zod";
 
 export type CheckoutHandlerConfig = Pick<
   ClientOptions,
@@ -84,6 +84,20 @@ export const dynamicCheckoutBodySchema = z
     // Allow any additional fields (for future compatibility)
   })
   .catchall(z.unknown());
+
+// Add Zod schema for subscription charge
+export const subscriptionChargeSchema = z.object({
+  product_price: z.number({
+    required_error: "product_price is required",
+    invalid_type_error: "product_price must be a number",
+  }).int().nonnegative("product_price must be a non-negative integer"),
+  product_currency: z.string().length(3, "Currency must be a 3-letter ISO code").nullable().optional(),
+  product_description: z.string().optional(),
+  adaptive_currency_fees_inclusive: z.boolean().optional(),
+  metadata: z.record(z.string(), z.string()).optional(),
+});
+
+export type SubscriptionChargePayload = z.infer<typeof subscriptionChargeSchema>;
 
 // ========================================
 // CHECKOUT SESSIONS SCHEMAS & TYPES
@@ -599,5 +613,94 @@ export const buildCheckoutUrl = async ({
       );
     }
     return payment.payment_link;
+  }
+};
+
+/**
+ * Creates an on-demand charge for a subscription using the Dodo Payments API.
+ * This function provides a clean, type-safe interface to charge a subscription outside its regular billing cycle.
+ *
+ * @param subscriptionId - The ID of the subscription to charge
+ * @param payload - The charge data, validated against SubscriptionChargeSchema
+ * @param config - Dodo Payments client configuration (bearerToken, environment)
+ * @returns Promise<{ payment_id: string }> - The payment ID of the created charge
+ *
+ * @throws {Error} When payload validation fails or API request fails
+ *
+ * @example
+ * ```typescript
+ * const charge = await createSubscriptionCharge('sub_123', {
+ *   product_price: 1000, // $10.00 in cents
+ *   product_currency: 'USD',
+ *   product_description: 'One-time add-on charge'
+ * }, {
+ *   bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+ *   environment: 'test_mode'
+ * });
+ * ```
+ */
+export const createSubscriptionCharge = async (
+  subscriptionId: string,
+  payload: SubscriptionChargePayload,
+  config: Pick<ClientOptions, "bearerToken" | "environment">,
+): Promise<{ payment_id: string }> => {
+  // Validate the payload against the schema
+  const validation = subscriptionChargeSchema.safeParse(payload);
+  if (!validation.success) {
+    throw new Error(
+      `Invalid subscription charge payload: ${validation.error.issues
+        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+        .join(", ")}`,
+    );
+  }
+
+  // Validate subscriptionId
+  if (!subscriptionId || typeof subscriptionId !== 'string') {
+    throw new Error("Invalid subscription ID: must be a non-empty string");
+  }
+
+  // Initialize the DodoPayments client
+  const dodopayments = new DodoPayments({
+    bearerToken: config.bearerToken,
+    environment: config.environment,
+  });
+
+  try {
+    // Use the official SDK for creating subscription charges
+    // Type assertion to work around strict typing issues
+    const charge = await dodopayments.subscriptions.charge(
+      subscriptionId,
+      validation.data as any,
+    );
+
+    // Validate that we got a payment_id back
+    if (!charge || !charge.payment_id) {
+      throw new Error(
+        "Invalid response from Dodo Payments API: missing payment_id",
+      );
+    }
+
+    return { payment_id: charge.payment_id };
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Dodo Payments Subscription Charge API Error:", {
+        message: error.message,
+        subscriptionId,
+        payload: validation.data,
+        config: {
+          environment: config.environment,
+          hasBearerToken: !!config.bearerToken,
+        },
+      });
+
+      // Re-throw with a more user-friendly message
+      throw new Error(`Failed to create subscription charge: ${error.message}`);
+    }
+
+    // Handle non-Error objects
+    console.error("Unknown error creating subscription charge:", error);
+    throw new Error(
+      "Failed to create subscription charge due to an unknown error",
+    );
   }
 };
