@@ -22,10 +22,6 @@ export interface CheckoutOptions {
    * Only allow authenticated customers to checkout
    */
   authenticatedUsersOnly?: boolean;
-  /**
-   * Enable checkout sessions (modern checkout flow)
-   */
-  enableCheckoutSessions?: boolean;
 }
 
 export const checkout =
@@ -131,8 +127,7 @@ export const checkout =
           }
         },
       ),
-      ...(checkoutOptions.enableCheckoutSessions && {
-        checkoutSession: createAuthEndpoint(
+      checkoutSession: createAuthEndpoint(
           "/dodopayments/checkout/session",
           {
             method: "POST",
@@ -233,6 +228,5 @@ export const checkout =
             }
           },
         ),
-      }),
     };
   };

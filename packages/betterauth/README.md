@@ -68,7 +68,7 @@ export const { auth, endpoints, client } = BetterAuth({
           ],
           successUrl: "/dashboard/success",
           authenticatedUsersOnly: true, // Require login for checkout
-          enableCheckoutSessions: true, // Enable modern checkout sessions
+          // Checkout Sessions endpoint is available by default
         }),
         portal(),
         webhooks({
@@ -129,11 +129,11 @@ window.location.href = checkout.url;
 
 ### Creating a Modern Checkout Session
 
-When `enableCheckoutSessions: true` is set in the checkout configuration, you can use the modern checkout sessions API:
+You can use the modern checkout sessions API directly; the endpoint is available by default:
 
 ```typescript
 // Create modern checkout session with enhanced features
-const { data: checkoutSession, error } = await authClient.dodopayments.checkoutSession({
+const { data: checkoutSession, error } = await authClient.dodopayments.checkout.session({
   slug: "premium-plan", // The slug you provided in the checkout configuration
   product_cart: [
     {
@@ -253,7 +253,7 @@ webhooks({
 - **`products`** - Array of products or async function returning products
 - **`successUrl`** - URL to redirect after successful payment
 - **`authenticatedUsersOnly`** - Require user authentication (default: false)
-- **`enableCheckoutSessions`** - Enable modern checkout sessions API (default: false)
+// No option needed; checkout sessions endpoint is always available
 
 ## Prompt for LLMs
 

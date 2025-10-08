@@ -104,21 +104,23 @@ export default function CheckoutPage() {
       setError(null);
 
       // Use the real product ID from DodoPayments with billing info
-      const result = await authClient.dodopayments.checkout({
-        product_id: productId,
-        quantity: 1,
+      const result = await authClient.dodopayments.checkout.session({
+        product_cart: [
+          { product_id: productId, quantity: 1 },
+        ],
         customer: {
           email: billingInfo.email,
           name: billingInfo.name,
+          phone_number: billingInfo.phone,
         },
-        billing: {
-          phone: billingInfo.phone,
+        billing_address: {
           street: billingInfo.street,
           city: billingInfo.city,
           state: billingInfo.state,
-          zipcode: billingInfo.zipcode,
           country: billingInfo.country,
+          zipcode: billingInfo.zipcode,
         },
+        return_url: typeof window !== "undefined" ? window.location.origin + "/dashboard" : undefined,
       });
 
       console.log(result);
