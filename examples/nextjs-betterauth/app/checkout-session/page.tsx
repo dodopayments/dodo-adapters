@@ -14,10 +14,17 @@ export default function CheckoutSessionPage() {
 
       const result = await authClient.dodopayments.checkout.session({
         product_cart: [{ product_id: "pdt_nZuwz45WAs64n3l07zpQR", quantity: 1 }],
-        // Note: customer fields are auto-filled from session when available; if omitted
-        // and there's no session, you can provide them here. If still omitted, the
-        // hosted checkout will collect the information.
+        // Note: customer fields are auto-filled from the session when available.
+        // This example also demonstrates providing explicit customer data.
+        customer: {
+          email: "customer@example.com",
+          name: "John Doe",
+        },
         billing_address: {
+          street: "123 Market St",
+          city: "San Francisco",
+          state: "CA",
+          zipcode: "94103",
           country: "US",
         },
         // If omitted, users will be returned to the current origin.
