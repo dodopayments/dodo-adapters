@@ -141,11 +141,16 @@ const { data: checkoutSession, error } = await authClient.dodopayments.checkout.
       quantity: 1,
     },
   ],
+  // Note: customer information is auto-filled from the session when available.
+  // If omitted and there's no session, you can provide it here; otherwise the
+  // hosted checkout will collect it.
   customer: {
     email: "customer@example.com",
     name: "John Doe",
     phone_number: "+1234567890", // Optional
   },
+  // Note: billing_address is optional for sessions; if omitted the hosted
+  // checkout will capture it from the customer.
   billing_address: {
     street: "123 Market St",
     city: "San Francisco",
@@ -253,7 +258,6 @@ webhooks({
 - **`products`** - Array of products or async function returning products
 - **`successUrl`** - URL to redirect after successful payment
 - **`authenticatedUsersOnly`** - Require user authentication (default: false)
-// No option needed; checkout sessions endpoint is always available
 
 ## Prompt for LLMs
 

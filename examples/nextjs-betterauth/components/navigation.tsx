@@ -45,6 +45,7 @@ export function Navigation() {
     { href: "/", label: "Home", icon: "🏠" },
     { href: "/dashboard", label: "Dashboard", icon: "📊", authRequired: true },
     { href: "/checkout", label: "Plans", icon: "🛒" },
+    { href: "/checkout-session", label: "Checkout Session", icon: "🆕", authRequired: true },
     {
       href: "/customer-portal",
       label: "Portal",
