@@ -134,7 +134,9 @@ You can use the modern checkout sessions API directly; the endpoint is available
 ```typescript
 // Create modern checkout session with enhanced features
 const { data: checkoutSession, error } = await authClient.dodopayments.checkout.session({
-  slug: "premium-plan", // The slug you provided in the checkout configuration
+  // Use either slug OR product_cart. If slug is provided, it will be resolved
+  // to a product_id using your checkout configuration.
+  // slug: "premium-plan",
   product_cart: [
     {
       product_id: "pdt_xxxxxxxxxxxxxxxxxxxxx", // Your product ID

@@ -28,7 +28,9 @@ export default function CheckoutSessionPage() {
           zipcode: "94103",
           country: "US",
         },
-        // If omitted, users will be returned to the current origin.
+        // Redirect behavior: in this example we send users to origin + "/dashboard".
+        // If return_url is omitted server-side, it will be undefined and the
+        // hosted checkout handles the post-payment return.
         return_url:
           typeof window !== "undefined"
             ? window.location.origin + "/dashboard"
