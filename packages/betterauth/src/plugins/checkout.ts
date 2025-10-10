@@ -184,7 +184,7 @@ export const checkout =
                 // If a cart exists, append the slug-resolved product to it.
                 // Otherwise, create a single-item cart with the resolved product.
                 const resolvedItem = { product_id: product.productId, quantity: 1 };
-                if (Array.isArray(sessionPayload.product_cart) && sessionPayload.product_cart.length > 0) {
+                if (sessionPayload.product_cart?.length) {
                   sessionPayload.product_cart = [
                     ...sessionPayload.product_cart,
                     resolvedItem,
