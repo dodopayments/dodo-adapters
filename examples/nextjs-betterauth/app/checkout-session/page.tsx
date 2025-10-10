@@ -14,7 +14,9 @@ export default function CheckoutSessionPage() {
 
       const result = await authClient.dodopayments.checkout.session({
         // Replace with your actual product ID
-        product_cart: [{ product_id: "pdt_xxxxxxxxxxxxx", quantity: 1 }],
+        product_cart: [
+          { product_id: "pdt_nZuwz45WAs64n3l07zpQR", quantity: 1 },
+        ],
         // Note: customer fields are auto-filled from the session when available.
         // This example also demonstrates providing explicit customer data.
         customer: {
