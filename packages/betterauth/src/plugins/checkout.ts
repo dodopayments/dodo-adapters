@@ -1,13 +1,13 @@
 import type DodoPayments from "dodopayments";
 import { APIError, getSessionFromCtx } from "better-auth/api";
 import { createAuthEndpoint } from "better-auth/plugins";
-import { z } from "zod";
 import type { CreateCheckoutResponse, Product } from "../types";
 import {
   buildCheckoutUrl,
   dynamicCheckoutBodySchema,
   checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
+import { z } from "zod";
 
 export interface CheckoutOptions {
   /**
@@ -131,10 +131,15 @@ export const checkout =
           "/dodopayments/checkout/session",
           {
             method: "POST",
-            body: checkoutSessionPayloadSchema.extend({
-              slug: z.string().optional(),
-              referenceId: z.string().optional(),
-            }),
+            // Allow slug-only payloads by making product_cart optional here.
+            body: checkoutSessionPayloadSchema
+              .partial({ product_cart: true })
+              .and(
+                z.object({
+                  slug: z.string().optional(),
+                  referenceId: z.string().optional(),
+                }),
+              ),
             requireRequest: true,
           },
           async (ctx): Promise<CreateCheckoutResponse> => {
@@ -148,8 +153,8 @@ export const checkout =
 
             try {
               // Handle slug-based product lookup
-              let sessionPayload = { ...ctx.body };
-              
+              let sessionPayload = { ...ctx.body } as any;
+
               if (ctx.body?.slug) {
                 const resolvedProducts = await (typeof checkoutOptions.products ===
                 "function"
@@ -166,14 +171,16 @@ export const checkout =
                   });
                 }
 
-                // Replace slug with actual product in product_cart
-                if (sessionPayload.product_cart && sessionPayload.product_cart.length > 0) {
-                  sessionPayload.product_cart[0]!.product_id = product.productId;
+                // If a cart exists, append the slug-resolved product to it.
+                // Otherwise, create a single-item cart with the resolved product.
+                const resolvedItem = { product_id: product.productId, quantity: 1 };
+                if (Array.isArray(sessionPayload.product_cart) && sessionPayload.product_cart.length > 0) {
+                  sessionPayload.product_cart = [
+                    ...sessionPayload.product_cart,
+                    resolvedItem,
+                  ];
                 } else {
-                  sessionPayload.product_cart = [{
-                    product_id: product.productId,
-                    quantity: 1,
-                  }];
+                  sessionPayload.product_cart = [resolvedItem];
                 }
               }
 
