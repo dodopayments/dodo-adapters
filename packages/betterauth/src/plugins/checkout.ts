@@ -153,17 +153,7 @@ export const checkout =
             }
 
             try {
-              // Handle slug-based product lookup with precise typing
-              const sessionSchema = checkoutSessionPayloadSchema
-                .partial({ product_cart: true })
-                .and(
-                  z.object({
-                    slug: z.string().optional(),
-                    referenceId: z.string().optional(),
-                  }),
-                );
-
-              let sessionPayload = sessionSchema.parse(ctx.body);
+              let sessionPayload = { ...ctx.body };
 
               if (ctx.body?.slug) {
                 const resolvedProducts = await (typeof checkoutOptions.products ===
@@ -184,7 +174,7 @@ export const checkout =
                 // If a cart exists, append the slug-resolved product to it.
                 // Otherwise, create a single-item cart with the resolved product.
                 const resolvedItem = { product_id: product.productId, quantity: 1 };
-                if (sessionPayload.product_cart?.length) {
+                if (sessionPayload.product_cart && sessionPayload.product_cart.length > 0) {
                   sessionPayload.product_cart = [
                     ...sessionPayload.product_cart,
                     resolvedItem,
@@ -221,10 +211,7 @@ export const checkout =
 
               // Strip helper-only fields and re-validate against core schema
               const { slug: _slug, referenceId: _referenceId, ...coreDraft } =
-                sessionPayload as typeof sessionPayload & {
-                  slug?: string;
-                  referenceId?: string;
-                };
+                sessionPayload;
 
               const coreSessionPayload: CheckoutSessionPayload =
                 checkoutSessionPayloadSchema.parse(coreDraft);
