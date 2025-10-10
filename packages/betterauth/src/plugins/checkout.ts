@@ -134,7 +134,7 @@ export const checkout =
             method: "POST",
             // Allow slug-only payloads by making product_cart optional here.
             body: checkoutSessionPayloadSchema
-              .partial({ product_cart: true })
+              .partial({ product_cart: true, customization: true })
               .and(
                 z.object({
                   slug: z.string().optional(),
@@ -196,8 +196,8 @@ export const checkout =
               // Add reference ID to metadata if provided
               if (ctx.body.referenceId) {
                 sessionPayload.metadata = {
-                  referenceId: ctx.body.referenceId,
                   ...sessionPayload.metadata,
+                  referenceId: ctx.body.referenceId,
                 };
               }
 
@@ -213,8 +213,13 @@ export const checkout =
               const { slug: _slug, referenceId: _referenceId, ...coreDraft } =
                 sessionPayload;
 
-              const coreSessionPayload: CheckoutSessionPayload =
-                checkoutSessionPayloadSchema.parse(coreDraft);
+              const parsed = checkoutSessionPayloadSchema.safeParse(coreDraft);
+              if (!parsed.success) {
+                throw new APIError("BAD_REQUEST", {
+                  message: `Invalid checkout session payload: ${JSON.stringify(parsed.error.issues)}`,
+                });
+              }
+              const coreSessionPayload: CheckoutSessionPayload = parsed.data;
 
               const checkoutUrl = await buildCheckoutUrl({
                 sessionPayload: coreSessionPayload,
@@ -230,12 +235,15 @@ export const checkout =
                 redirect: true,
               });
             } catch (e: unknown) {
+              if (e instanceof APIError) {
+                // Propagate explicit API errors (e.g., 400 validation)
+                throw e;
+              }
               if (e instanceof Error) {
                 ctx.context.logger.error(
                   `DodoPayments checkout session creation failed. Error: ${e.message}`,
                 );
               }
-
               throw new APIError("INTERNAL_SERVER_ERROR", {
                 message: "Checkout session creation failed",
               });
