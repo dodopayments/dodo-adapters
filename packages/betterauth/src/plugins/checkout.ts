@@ -134,7 +134,7 @@ export const checkout =
             method: "POST",
             // Allow slug-only payloads by making product_cart optional here.
             body: checkoutSessionPayloadSchema
-              .partial({ product_cart: true, customization: true })
+              .partial({ product_cart: true })
               .and(
                 z.object({
                   slug: z.string().optional(),
