@@ -7,6 +7,7 @@ import {
   dynamicCheckoutBodySchema,
   checkoutSessionPayloadSchema,
 } from "@dodopayments/core/checkout";
+import type { CheckoutSessionPayload } from "@dodopayments/core/checkout";
 import { z } from "zod";
 
 export interface CheckoutOptions {
@@ -152,8 +153,17 @@ export const checkout =
             }
 
             try {
-              // Handle slug-based product lookup
-              let sessionPayload = { ...ctx.body } as any;
+              // Handle slug-based product lookup with precise typing
+              const sessionSchema = checkoutSessionPayloadSchema
+                .partial({ product_cart: true })
+                .and(
+                  z.object({
+                    slug: z.string().optional(),
+                    referenceId: z.string().optional(),
+                  }),
+                );
+
+              let sessionPayload = sessionSchema.parse(ctx.body);
 
               if (ctx.body?.slug) {
                 const resolvedProducts = await (typeof checkoutOptions.products ===
@@ -209,8 +219,18 @@ export const checkout =
                 ).toString();
               }
 
+              // Strip helper-only fields and re-validate against core schema
+              const { slug: _slug, referenceId: _referenceId, ...coreDraft } =
+                sessionPayload as typeof sessionPayload & {
+                  slug?: string;
+                  referenceId?: string;
+                };
+
+              const coreSessionPayload: CheckoutSessionPayload =
+                checkoutSessionPayloadSchema.parse(coreDraft);
+
               const checkoutUrl = await buildCheckoutUrl({
-                sessionPayload,
+                sessionPayload: coreSessionPayload,
                 bearerToken: dodopayments.bearerToken,
                 environment: dodopayments.baseURL.includes("test")
                   ? "test_mode"
