@@ -450,6 +450,7 @@ Step 2: Create a file `convex/http.ts`:
 // convex/http.ts
 import { httpRouter } from "convex/server";
 import { createDodoWebhookHandler } from "@dodopayments/convex";
+import { internal } from "./_generated/api";
 
 const http = httpRouter();
 
