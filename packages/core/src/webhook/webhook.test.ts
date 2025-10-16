@@ -103,3 +103,76 @@ describe("handleWebhookPayload", () => {
     expect(onPaymentFailed).not.toHaveBeenCalled();
   });
 });
+
+describe("handleWebhookPayload with context", () => {
+  const mockContext = {
+    userId: "user_123",
+    dbTransaction: vi.fn(),
+  };
+
+  it("should call handler with context as first parameter when context provided", async () => {
+    const onPaymentSucceeded = vi.fn().mockResolvedValue(undefined);
+    const config: WebhookHandlerConfig<typeof mockContext> = {
+      webhookKey: "wh_123",
+      onPaymentSucceeded,
+    };
+    const payload: WebhookPayload = { type: "payment.succeeded" } as any;
+
+    await handleWebhookPayload(payload, config, mockContext);
+
+    expect(onPaymentSucceeded).toHaveBeenCalledWith(mockContext, payload);
+  });
+
+  it("should call handler with only payload when no context provided", async () => {
+    const onPaymentSucceeded = vi.fn().mockResolvedValue(undefined);
+    const config: WebhookHandlerConfig<void> = {
+      webhookKey: "wh_123",
+      onPaymentSucceeded,
+    };
+    const payload: WebhookPayload = { type: "payment.succeeded" } as any;
+
+    await handleWebhookPayload(payload, config);
+
+    expect(onPaymentSucceeded).toHaveBeenCalledWith(payload);
+    expect(onPaymentSucceeded).toHaveBeenCalledTimes(1);
+  });
+
+  it("should call both onPayload and event handler with context", async () => {
+    const onPayload = vi.fn().mockResolvedValue(undefined);
+    const onPaymentSucceeded = vi.fn().mockResolvedValue(undefined);
+    const config: WebhookHandlerConfig<typeof mockContext> = {
+      webhookKey: "wh_123",
+      onPayload,
+      onPaymentSucceeded,
+    };
+    const payload: WebhookPayload = { type: "payment.succeeded" } as any;
+
+    await handleWebhookPayload(payload, config, mockContext);
+
+    expect(onPayload).toHaveBeenCalledWith(mockContext, payload);
+    expect(onPaymentSucceeded).toHaveBeenCalledWith(mockContext, payload);
+  });
+
+  it("should pass same context instance to all handlers", async () => {
+    const receivedContexts: unknown[] = [];
+    const onPayload = vi.fn(async (ctx) => {
+      receivedContexts.push(ctx);
+    });
+    const onPaymentSucceeded = vi.fn(async (ctx) => {
+      receivedContexts.push(ctx);
+    });
+
+    const config: WebhookHandlerConfig<typeof mockContext> = {
+      webhookKey: "wh_123",
+      onPayload,
+      onPaymentSucceeded,
+    };
+    const payload: WebhookPayload = { type: "payment.succeeded" } as any;
+
+    await handleWebhookPayload(payload, config, mockContext);
+
+    expect(receivedContexts).toHaveLength(2);
+    expect(receivedContexts[0]).toBe(mockContext);
+    expect(receivedContexts[1]).toBe(mockContext);
+  });
+});

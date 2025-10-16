@@ -30,17 +30,39 @@ export type {
 export type CheckoutResponse = { checkout_url: string };
 export type CustomerPortalResponse = { portal_url: string };
 import { httpAction } from "./component/_generated/server";
-import { handleWebhookPayload, verifyWebhookPayload } from "@dodopayments/core/webhook";
-import type { WebhookHandlerConfig } from "@dodopayments/core/webhook";
+import type { GenericActionCtx } from "convex/server";
+import { 
+  verifyWebhookPayload, 
+  handleWebhookPayload,
+  type WebhookHandlerConfig
+} from "@dodopayments/core/webhook";
+
+// Convex-specific webhook handler types that include ctx as the first parameter
+export type ConvexWebhookHandlerConfig = Omit<WebhookHandlerConfig<GenericActionCtx<any>>, 'webhookKey'>;
 
 /**
  * Creates a Convex HTTP action to securely handle Dodo Payments webhooks.
+ * 
+ * All webhook handlers receive the Convex ActionCtx as the first parameter,
+ * allowing you to use ctx.runQuery() and ctx.runMutation() to interact with your database.
  *
  * @param handlers - An object containing your webhook event handlers (e.g., onPaymentSucceeded).
  * @returns A Convex HTTP action.
+ * 
+ * @example
+ * ```typescript
+ * createDodoWebhookHandler({
+ *   onPaymentSucceeded: async (ctx, payload) => {
+ *     await ctx.runMutation(internal.orders.markAsPaid, {
+ *       orderId: payload.data.metadata.orderId,
+ *       paymentId: payload.data.payment_id,
+ *     });
+ *   },
+ * })
+ * ```
  */
-export const createDodoWebhookHandler = (handlers: Omit<WebhookHandlerConfig, 'webhookKey'>) => {
-  return httpAction(async (_, request) => {
+export const createDodoWebhookHandler = (handlers: ConvexWebhookHandlerConfig) => {
+  return httpAction(async (ctx, request) => {
     const webhookSecret = process.env.DODO_PAYMENTS_WEBHOOK_SECRET;
 
     if (!webhookSecret) {
@@ -60,10 +82,15 @@ export const createDodoWebhookHandler = (handlers: Omit<WebhookHandlerConfig, 'w
         body,
       });
 
-      await handleWebhookPayload(payload, {
-        webhookKey: webhookSecret,
-        ...handlers,
-      });
+      // Use the core library's handleWebhookPayload with ctx as the third parameter
+      await handleWebhookPayload(
+        payload,
+        {
+          webhookKey: webhookSecret,
+          ...handlers,
+        },
+        ctx, // Pass Convex ActionCtx as the context parameter
+      );
 
       return new Response(null, { status: 200 });
     } catch (error) {
