@@ -32,6 +32,7 @@ Which packages are affected by this change:
 - [ ] `@dodopayments/tanstack`
 - [ ] `@dodopayments/nuxt`
 - [ ] `@dodopayments/betterauth`
+- [ ] `@dodopayments/convex`
 - [ ] Examples
 - [ ] Documentation
 
