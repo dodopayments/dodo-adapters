@@ -58,7 +58,28 @@ Set the following variables:
 
 > **Note:** Convex backend functions only read environment variables set in the Convex dashboard. `.env` files are ignored. Always set secrets in the Convex dashboard for both production and development.
 
-### 3. Create Payment Functions
+### 3. Create Internal Query
+
+First, create an internal query to fetch users from your database. This will be used in the payment functions to identify customers.
+
+```typescript
+// convex/users.ts
+import { internalQuery } from "./_generated/server";
+import { v } from "convex/values";
+
+// Internal query to fetch user by auth ID
+export const getByAuthId = internalQuery({
+  args: { authId: v.string() },
+  handler: async (ctx, { authId }) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_auth_id", (q) => q.eq("authId", authId))
+      .first();
+  },
+});
+```
+
+### 4. Create Payment Functions
 
 ```typescript
 // convex/dodo.ts
@@ -97,26 +118,7 @@ export const dodo = new DodoPayments(components.dodopayments, {
 export const { checkout, customerPortal } = dodo.api();
 ```
 
-**Internal Query Example:**
-
-```typescript
-// convex/users.ts
-import { internalQuery } from "./_generated/server";
-import { v } from "convex/values";
-
-// Internal query to fetch user by auth ID
-export const getByAuthId = internalQuery({
-  args: { authId: v.string() },
-  handler: async (ctx, { authId }) => {
-    return await ctx.db
-      .query("users")
-      .withIndex("by_auth_id", (q) => q.eq("authId", authId))
-      .first();
-  },
-});
-```
-
-### 4. Set Up Webhooks (Optional)
+### 5. Set Up Webhooks (Optional)
 
 For handling Dodo Payments webhooks, create a file `convex/http.ts`:
 
@@ -165,7 +167,7 @@ Add your webhook secret in the Convex dashboard (**Settings** → **Environment 
 
 - `DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret`
 
-### 5. Define Payment Actions
+### 6. Define Payment Actions
 
 ```typescript
 // convex/payments.ts
@@ -196,7 +198,7 @@ export const createCheckout = action({
 });
 ```
 
-### 6. Frontend Usage
+### 7. Frontend Usage
 
 ```tsx
 import { useAction } from "convex/react";
@@ -267,7 +269,24 @@ Then add the required environment variables (e.g., DODO_PAYMENTS_API_KEY, DODO_P
 DODO_PAYMENTS_API_KEY=your-api-key
 DODO_PAYMENTS_ENVIRONMENT=test_mode
 
-Step 3: Create your payment functions file.
+Step 3: Create an internal query to fetch users from your database.
+
+// convex/users.ts
+import { internalQuery } from "./_generated/server";
+import { v } from "convex/values";
+
+// Internal query to fetch user by auth ID
+export const getByAuthId = internalQuery({
+  args: { authId: v.string() },
+  handler: async (ctx, { authId }) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_auth_id", (q) => q.eq("authId", authId))
+      .first();
+  },
+});
+
+Step 4: Create your payment functions file.
 
 // convex/dodo.ts
 import { DodoPayments } from "@dodopayments/convex";
@@ -304,7 +323,7 @@ export const dodo = new DodoPayments(components.dodopayments, {
 // Export the API methods for use in your app
 export const { checkout, customerPortal } = dodo.api();
 
-Step 4: Create actions that use the checkout function.
+Step 5: Create actions that use the checkout function.
 
 // convex/payments.ts
 import { action } from "./_generated/server";
@@ -334,7 +353,7 @@ export const createCheckout = action({
   },
 });
 
-Step 5: Use in your frontend.
+Step 6: Use in your frontend.
 
 // Your frontend component
 import { useAction } from "convex/react";
@@ -369,9 +388,9 @@ Purpose: This function allows customers to manage their subscriptions and paymen
 
 Integration Steps:
 
-Follow Steps 1-3 from the Checkout Function section, then:
+Follow Steps 1-4 from the Checkout Function section, then:
 
-Step 4: Create a customer portal action.
+Step 5: Create a customer portal action.
 
 // convex/payments.ts (add to existing file)
 import { action } from "./_generated/server";
@@ -387,7 +406,7 @@ export const getCustomerPortal = action({
   },
 });
 
-Step 5: Use in your frontend.
+Step 6: Use in your frontend.
 
 // Your frontend component
 import { useAction } from "convex/react";
@@ -440,7 +459,7 @@ http.route({
   handler: createDodoWebhookHandler({
     onPaymentSucceeded: async (ctx, payload) => {
       console.log("Payment succeeded:", payload.data.payment_id);
-      // Use ctx to interact with your database
+      // Update order status in your database
       await ctx.runMutation(internal.orders.markAsPaid, {
         orderId: payload.data.metadata.orderId,
         paymentId: payload.data.payment_id,
