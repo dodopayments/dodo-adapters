@@ -135,8 +135,7 @@ http.route({
   method: "POST",
   handler: createDodoWebhookHandler({
     onPaymentSucceeded: async (ctx, payload) => {
-      console.log("Payment succeeded:", payload.data.payment_id);
-      
+      console.log("Payment succeeded:", payload.data.payment_id);  
       // Update order status in your database
       await ctx.runMutation(internal.orders.markAsPaid, {
         orderId: payload.data.metadata.orderId,
@@ -144,9 +143,9 @@ http.route({
         amount: payload.data.amount,
       });
     },
+    
     onSubscriptionActive: async (ctx, payload) => {
       console.log("Subscription activated:", payload.data.subscription_id);
-      
       // Create or update subscription record in your database
       await ctx.runMutation(internal.subscriptions.createOrUpdate, {
         subscriptionId: payload.data.subscription_id,
@@ -466,6 +465,7 @@ http.route({
         paymentId: payload.data.payment_id,
       });
     },
+    
     onSubscriptionActive: async (ctx, payload) => {
       console.log("Subscription activated:", payload.data.subscription_id);
       // Use ctx to create or update subscription records
