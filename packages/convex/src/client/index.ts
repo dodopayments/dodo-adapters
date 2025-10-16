@@ -17,7 +17,7 @@ export interface DodoPaymentsComponent {
 
 // The config required to initialize the Dodo Payments client.
 export type DodoPaymentsClientConfig = {
-  identify: (ctx: GenericActionCtx<any>) => Promise<{ dodoCustomerId: string; customerData?: any } | null>;
+  identify: (ctx: GenericActionCtx<any>) => Promise<{ dodoCustomerId: string } | null>;
   apiKey: string;
   environment: "test_mode" | "live_mode";
 };
