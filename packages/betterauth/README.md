@@ -6,6 +6,7 @@ A Better Auth plugin for integrating Dodo Payments into your authentication flow
 
 - **Automatic Customer Management** - Creates Dodo Payments customers when users sign up
 - **Secure Checkout Integration** - Type-safe checkout flows with product slug mapping
+- **Modern Checkout Sessions** - Enhanced checkout experience with the latest Dodo Payments API
 - **Customer Portal Access** - Self-service portal for subscription and payment management
 - **Webhook Event Handling** - Real-time payment event processing with signature verification
 - **TypeScript Support** - Full type safety with TypeScript definitions
@@ -27,7 +28,7 @@ Add the required environment variables to your `.env` file:
 DODO_PAYMENTS_API_KEY=your_api_key_here
 # use the webhook endpoint `/api/auth/dodopayments/webhooks` to generate a webhook secret
 # from Dodo Payments Dashboard > Developer > Webhooks
-DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here # Use
+DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here 
 BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=your_better_auth_secret_here
 ```
@@ -67,6 +68,7 @@ export const { auth, endpoints, client } = BetterAuth({
           ],
           successUrl: "/dashboard/success",
           authenticatedUsersOnly: true, // Require login for checkout
+          // Checkout Sessions endpoint is available by default
         }),
         portal(),
         webhooks({
@@ -100,7 +102,7 @@ export const authClient = createAuthClient({
 
 ## Usage
 
-### Creating a Checkout Session
+### Creating a Checkout Session (Dynamic Checkout)
 
 ```typescript
 // Create checkout with customer details
@@ -123,6 +125,70 @@ const { data: checkout, error } = await authClient.dodopayments.checkout({
 
 // Redirect to checkout URL
 window.location.href = checkout.url;
+```
+
+### Creating a Modern Checkout Session
+
+You can use the modern checkout sessions API directly; the endpoint is available by default:
+
+```typescript
+// Create modern checkout session with enhanced features
+const { data: checkoutSession, error } = await authClient.dodopayments.checkout.session({
+  // Use either slug OR product_cart. If slug is provided, it will be resolved
+  // to a product_id using your checkout configuration.
+  // slug: "premium-plan",
+  product_cart: [
+    {
+      product_id: "pdt_xxxxxxxxxxxxxxxxxxxxx", // Your product ID
+      quantity: 1,
+    },
+  ],
+  // Note: customer information is auto-filled from the session when available.
+  // If omitted and there's no session, you can provide it here; otherwise the
+  // hosted checkout will collect it.
+  customer: {
+    email: "customer@example.com",
+    name: "John Doe",
+    phone_number: "+1234567890", // Optional
+  },
+  // Note: billing_address is optional for sessions; if omitted the hosted
+  // checkout will capture it from the customer.
+  billing_address: {
+    street: "123 Market St",
+    city: "San Francisco",
+    state: "CA",
+    country: "US",
+    zipcode: "94103",
+  },
+  return_url: "https://yoursite.com/success",
+  allowed_payment_method_types: ["credit", "debit", "apple_pay", "google_pay"],
+  billing_currency: "USD",
+  show_saved_payment_methods: true,
+  discount_code: "SAVE10", // Optional
+  metadata: {
+    order_id: "order_123",
+    campaign: "summer_sale",
+  },
+  customization: {
+    theme: "light", // "light", "dark", or "system"
+    show_order_details: true,
+    show_on_demand_tag: false,
+  },
+  feature_flags: {
+    allow_currency_selection: true,
+    allow_discount_code: true,
+    allow_phone_number_collection: true,
+    allow_tax_id: false,
+    always_create_new_customer: false,
+  },
+  subscription_data: {
+    trial_period_days: 7, // Optional trial period
+  },
+  referenceId: "order_123", // Optional reference for your records
+});
+
+// Redirect to checkout URL
+window.location.href = checkoutSession.url;
 ```
 
 ### Accessing Customer Portal
