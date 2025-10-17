@@ -22,7 +22,6 @@ npm install @dodopayments/convex
 
 ## Quick Start
 
-
 ### 1. Add Component to Convex Config
 
 ```typescript
@@ -46,6 +45,7 @@ DODO_PAYMENTS_API_KEY=your-dodo-payments-api-key
 DODO_PAYMENTS_ENVIRONMENT=test_mode
 DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret (if using webhooks)
 ```
+
 ```sh
 npx convex dashboard
 ```
@@ -124,8 +124,8 @@ For handling Dodo Payments webhooks, create a file `convex/http.ts`:
 
 ```typescript
 // convex/http.ts
-import { httpRouter } from "convex/server";
 import { createDodoWebhookHandler } from "@dodopayments/convex";
+import { httpRouter } from "convex/server";
 import { internal } from "./_generated/api";
 
 const http = httpRouter();
@@ -134,23 +134,31 @@ http.route({
   path: "/dodopayments-webhook",
   method: "POST",
   handler: createDodoWebhookHandler({
+    // Handle successful payments
     onPaymentSucceeded: async (ctx, payload) => {
-      console.log("Payment succeeded:", payload.data.payment_id);  
-      // Update order status in your database
-      await ctx.runMutation(internal.orders.markAsPaid, {
-        orderId: payload.data.metadata.orderId,
+      console.log("🎉 Payment Succeeded!");
+      // Use Convex context to persist payment data
+      await ctx.runMutation(internal.webhooks.createPayment, {
         paymentId: payload.data.payment_id,
-        amount: payload.data.amount,
+        businessId: payload.business_id,
+        customerEmail: payload.data.customer.email,
+        amount: payload.data.total_amount,
+        currency: payload.data.currency,
+        status: payload.data.status,
+        webhookPayload: JSON.stringify(payload),
       });
     },
-    
+
+    // Handle subscription activation
     onSubscriptionActive: async (ctx, payload) => {
-      console.log("Subscription activated:", payload.data.subscription_id);
-      // Create or update subscription record in your database
-      await ctx.runMutation(internal.subscriptions.createOrUpdate, {
+      console.log("🎉 Subscription Activated!");
+      // Use Convex context to persist subscription data
+      await ctx.runMutation(internal.webhooks.createSubscription, {
         subscriptionId: payload.data.subscription_id,
-        customerId: payload.data.customer_id,
-        status: "active",
+        businessId: payload.business_id,
+        customerEmail: payload.data.customer.email,
+        status: payload.data.status,
+        webhookPayload: JSON.stringify(payload),
       });
     },
     // Add other event handlers as needed
@@ -159,6 +167,8 @@ http.route({
 
 export default http;
 ```
+
+**Important:** Make sure to define the corresponding database mutations in your Convex backend for each webhook event you want to handle. For example, create a `createPayment` mutation to record successful payments or a `createSubscription` mutation to manage subscription state.
 
 **Important:** All webhook handlers receive the Convex `ActionCtx` as the first parameter, allowing you to use `ctx.runQuery()` and `ctx.runMutation()` to interact with your database.
 
@@ -447,8 +457,8 @@ Do not use .env files for backend functions; always set secrets in the Convex da
 Step 2: Create a file `convex/http.ts`:
 
 // convex/http.ts
-import { httpRouter } from "convex/server";
 import { createDodoWebhookHandler } from "@dodopayments/convex";
+import { httpRouter } from "convex/server";
 import { internal } from "./_generated/api";
 
 const http = httpRouter();
@@ -457,21 +467,31 @@ http.route({
   path: "/dodopayments-webhook",
   method: "POST",
   handler: createDodoWebhookHandler({
+    // Handle successful payments
     onPaymentSucceeded: async (ctx, payload) => {
-      console.log("Payment succeeded:", payload.data.payment_id);
-      // Update order status in your database
-      await ctx.runMutation(internal.orders.markAsPaid, {
-        orderId: payload.data.metadata.orderId,
+      console.log("🎉 Payment Succeeded!");
+      // Use Convex context to persist payment data
+      await ctx.runMutation(internal.webhooks.createPayment, {
         paymentId: payload.data.payment_id,
+        businessId: payload.business_id,
+        customerEmail: payload.data.customer.email,
+        amount: payload.data.total_amount,
+        currency: payload.data.currency,
+        status: payload.data.status,
+        webhookPayload: JSON.stringify(payload),
       });
     },
-    
+
+    // Handle subscription activation
     onSubscriptionActive: async (ctx, payload) => {
-      console.log("Subscription activated:", payload.data.subscription_id);
-      // Use ctx to create or update subscription records
-      await ctx.runMutation(internal.subscriptions.createOrUpdate, {
+      console.log("🎉 Subscription Activated!");
+      // Use Convex context to persist subscription data
+      await ctx.runMutation(internal.webhooks.createSubscription, {
         subscriptionId: payload.data.subscription_id,
-        customerId: payload.data.customer_id,
+        businessId: payload.business_id,
+        customerEmail: payload.data.customer.email,
+        status: payload.data.status,
+        webhookPayload: JSON.stringify(payload),
       });
     },
     // Add other event handlers as needed
@@ -479,6 +499,8 @@ http.route({
 });
 
 export default http;
+
+Note: Make sure to define the corresponding database mutations in your Convex backend for each webhook event you want to handle. For example, create a `createPayment` mutation to record successful payments or a `createSubscription` mutation to manage subscription state.
 
 Now, you can set the webhook endpoint URL in your Dodo Payments dashboard to `https://<your-convex-deployment-url>/dodopayments-webhook`.
 
@@ -505,4 +527,3 @@ If the user needs assistance setting up environment variables or deployment, ask
 
 Run `npx convex dev` after setting up the component to generate the necessary types.
 ```
-
