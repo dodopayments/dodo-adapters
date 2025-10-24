@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2025-10-25
+
+### Added
+
+- Added support for checkout sessions, deprecating the existing `checkout` method.
+
 ## [1.1.3] - 2025-09-22
 
 ### Added
