@@ -174,7 +174,12 @@ export const checkout =
             });
           }
 
-          if (!dodoPaymentsProductId && !ctx.body.product_cart) {
+          // Ensure we have a product_cart
+          const product_cart = dodoPaymentsProductId
+            ? [{ product_id: dodoPaymentsProductId, quantity: 1 }]
+            : ctx.body.product_cart;
+
+          if (!product_cart || product_cart.length === 0) {
             throw new APIError("BAD_REQUEST", {
               message: "Neither product_cart nor slug was provided",
             });
@@ -184,19 +189,12 @@ export const checkout =
             const checkoutUrl = await buildCheckoutUrl({
               sessionPayload: {
                 ...ctx.body,
+                product_cart,
                 customer: {
                   email: session?.user.email,
                   name: session?.user.name,
                   ...ctx.body.customer,
                 },
-                product_cart: dodoPaymentsProductId
-                  ? [
-                      {
-                        product_id: dodoPaymentsProductId,
-                        quantity: 1,
-                      },
-                    ]
-                  : ctx.body.product_cart!,
                 metadata: ctx.body.referenceId
                   ? {
                       referenceId: ctx.body.referenceId,
