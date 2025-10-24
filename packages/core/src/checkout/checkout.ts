@@ -41,49 +41,47 @@ export const checkoutQuerySchema = z
   .catchall(z.unknown());
 
 // Add Zod schema for dynamic checkout body
-export const dynamicCheckoutBodySchema = z
-  .object({
-    // For subscription
-    product_id: z.string().optional(),
-    quantity: z.number().optional(),
+export const dynamicCheckoutBodySchema = z.object({
+  // For subscription
+  product_id: z.string().optional(),
+  quantity: z.number().optional(),
 
-    // For one-time payment
-    product_cart: z
-      .array(
-        z.object({
-          product_id: z.string(),
-          quantity: z.number(),
-        }),
-      )
-      .optional(),
+  // For one-time payment
+  product_cart: z
+    .array(
+      z.object({
+        product_id: z.string(),
+        quantity: z.number(),
+      }),
+    )
+    .optional(),
 
-    // Common fields
-    billing: z.object({
-      city: z.string(),
-      country: z.string(),
-      state: z.string(),
-      street: z.string(),
-      zipcode: z.string(),
-    }),
-    customer: z.object({
-      customer_id: z.string().optional(),
-      email: z.string().optional(),
-      name: z.string().optional(),
-    }),
-    discount_id: z.string().optional(),
-    addons: z
-      .array(
-        z.object({
-          addon_id: z.string(),
-          quantity: z.number(),
-        }),
-      )
-      .optional(),
-    metadata: z.record(z.string(), z.string()).optional(),
-    currency: z.string().optional(),
-    // Allow any additional fields (for future compatibility)
-  })
-  .catchall(z.unknown());
+  // Common fields
+  billing: z.object({
+    city: z.string(),
+    country: z.string(),
+    state: z.string(),
+    street: z.string(),
+    zipcode: z.string(),
+  }),
+  customer: z.object({
+    customer_id: z.string().optional(),
+    email: z.string().optional(),
+    name: z.string().optional(),
+  }),
+  discount_id: z.string().optional(),
+  addons: z
+    .array(
+      z.object({
+        addon_id: z.string(),
+        quantity: z.number(),
+      }),
+    )
+    .optional(),
+  metadata: z.record(z.string(), z.string()).optional(),
+  currency: z.string().optional(),
+  // Allow any additional fields (for future compatibility)
+});
 
 // ========================================
 // CHECKOUT SESSIONS SCHEMAS & TYPES
