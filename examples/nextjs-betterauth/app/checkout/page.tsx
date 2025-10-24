@@ -39,17 +39,6 @@ const products = [
   },
 ];
 
-interface BillingInfo {
-  name: string;
-  email: string;
-  phone: string;
-  street: string;
-  city: string;
-  state: string;
-  zipcode: string;
-  country: string;
-}
-
 export default function CheckoutPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
