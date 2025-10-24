@@ -71,7 +71,33 @@ Returns 400 if `customer_id` is missing.
 
 ---
 
-### 3. Webhook Route Handler
+### 3. Change Subscription Plan (New)
+
+```typescript
+// app/api/change-plan/route.ts
+export { POST } from "@dodopayments/nextjs/customer-portal/change-plan";
+```
+
+POST body:
+
+```json
+{
+  "subscription_id": "sub_123",
+  "product_id": "pdt_456",
+  "proration_billing_mode": "prorated_immediately",
+  "quantity": 1,
+  "addons": [{ "addon_id": "adn_1", "quantity": 1 }]
+}
+```
+
+Environment:
+
+- DODO_PAYMENTS_API_KEY
+- DODO_ENVIRONMENT ("test_mode" | "live_mode")
+
+---
+
+### 4. Webhook Route Handler
 
 ```typescript
 // app/api/webhook/dodo-payments/route.ts
