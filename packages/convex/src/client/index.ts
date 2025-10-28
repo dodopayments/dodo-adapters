@@ -2,22 +2,31 @@ import type {
   CheckoutSessionPayload
 } from "@dodopayments/core/checkout";
 
-import { GenericActionCtx } from "convex/server";
+import type { 
+  FunctionReference,
+  GenericActionCtx,
+  GenericDataModel
+} from "convex/server";
 
 type CustomerPortalArgs = {
   send_email?: boolean;
 };
 
+// Context type for runAction
+type RunActionCtx = {
+  runAction: GenericActionCtx<GenericDataModel>["runAction"];
+};
+
 export interface DodoPaymentsComponent {
   lib: {
-    checkout: any;
-    customerPortal: any;
+    checkout: FunctionReference<"action", "internal">;
+    customerPortal: FunctionReference<"action", "internal">;
   };
 }
 
 // The config required to initialize the Dodo Payments client.
 export type DodoPaymentsClientConfig = {
-  identify: (ctx: GenericActionCtx<any>) => Promise<{ dodoCustomerId: string } | null>;
+  identify: (ctx: GenericActionCtx<GenericDataModel>) => Promise<{ dodoCustomerId: string } | null>;
   apiKey: string;
   environment: "test_mode" | "live_mode";
 };
@@ -42,9 +51,9 @@ export class DodoPayments {
        * Uses session checkout with full feature support.
        */
       checkout: async (
-        ctx: any,
+        ctx: RunActionCtx,
         args: { payload: CheckoutSessionPayload },
-      ) => {
+      ): Promise<{ checkout_url: string }> => {
         return await ctx.runAction(this.component.lib.checkout, {
           ...args,
           apiKey: this.config.apiKey,
@@ -59,7 +68,7 @@ export class DodoPayments {
       customerPortal: async (
         ctx: any,
         args?: CustomerPortalArgs
-      ) => {
+      ): Promise<{ portal_url: string }> => {
         const identity = await this.config.identify(ctx);
         if (!identity) {
           throw new Error("User is not authenticated.");

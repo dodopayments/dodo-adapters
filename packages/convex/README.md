@@ -14,13 +14,15 @@ Features:
 
 Detailed documentation can be found at [Dodo Payments Convex Component](https://docs.dodopayments.com/developer-resources/convex-component)
 
+## Quick Start
+
+> **Note:** This component does not define a schema. Define your own schema based on your application's needs.
+
 ## Installation
 
 ```bash
 npm install @dodopayments/convex
 ```
-
-## Quick Start
 
 ### 1. Add Component to Convex Config
 
@@ -60,7 +62,7 @@ Set the following variables:
 
 ### 3. Create Internal Query
 
-First, create an internal query to fetch users from your database. This will be used in the payment functions to identify customers.
+First, create an internal query to fetch users from your database. This will be used in the dodopayments component to identify customers.
 
 ```typescript
 // convex/users.ts
@@ -79,7 +81,7 @@ export const getByAuthId = internalQuery({
 });
 ```
 
-### 4. Create Payment Functions
+### 4. Configure DodoPayments Component
 
 ```typescript
 // convex/dodo.ts
@@ -118,7 +120,59 @@ export const dodo = new DodoPayments(components.dodopayments, {
 export const { checkout, customerPortal } = dodo.api();
 ```
 
-### 5. Set Up Webhooks (Optional)
+### 5. Define Payment Actions
+
+```typescript
+// convex/payments.ts
+import { action } from "./_generated/server";
+import { v } from "convex/values";
+import { checkout } from "./dodo";
+
+export const createCheckout = action({
+  args: {
+    returnUrl: v.string(),
+    customer: v.object({
+      name: v.string(),
+      email: v.string(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    return await checkout(ctx, {
+      payload: {
+        product_cart: [{ product_id: "prod_123", quantity: 1 }],
+        return_url: args.returnUrl,
+        customer: args.customer,
+      },
+    });
+  },
+});
+```
+
+### 6. Frontend Usage
+
+```tsx
+import { useAction } from "convex/react";
+import { api } from "../convex/_generated/api";
+
+export function CheckoutButton() {
+  const createCheckout = useAction(api.payments.createCheckout);
+
+  const handleCheckout = async () => {
+    const { checkout_url } = await createCheckout({
+      returnUrl: "https://example.com/your-return-url",
+      customer: {
+        name: "John Doe",
+        email: "john@example.com",
+      },
+    });
+    window.location.href = checkout_url;
+  };
+
+  return <button onClick={handleCheckout}>Buy Now</button>;
+}
+```
+
+### 7. Set Up Webhooks (Optional)
 
 For handling Dodo Payments webhooks, create a file `convex/http.ts`:
 
@@ -170,62 +224,11 @@ export default http;
 
 **Important:** Make sure to define the corresponding database mutations in your Convex backend for each webhook event you want to handle. For example, create a `createPayment` mutation to record successful payments or a `createSubscription` mutation to manage subscription state.
 
-**Important:** All webhook handlers receive the Convex `ActionCtx` as the first parameter, allowing you to use `ctx.runQuery()` and `ctx.runMutation()` to interact with your database.
+**Important:** All webhook handlers receive the Convex context as the first parameter, allowing you to use `ctx.runQuery()` and `ctx.runMutation()` to interact with your database.
 
 Add your webhook secret in the Convex dashboard (**Settings** → **Environment Variables**):
 
 - `DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret`
-
-### 6. Define Payment Actions
-
-```typescript
-// convex/payments.ts
-import { action } from "./_generated/server";
-import { v } from "convex/values";
-import { checkout } from "./dodo";
-
-export const createCheckout = action({
-  args: { 
-    product_cart: v.array(v.object({
-      product_id: v.string(),
-      quantity: v.number(),
-    })),
-    returnUrl: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    return await checkout(ctx, {
-      payload: {
-        product_cart: args.product_cart,
-        return_url: args.returnUrl,
-        billing_currency: "USD",
-        feature_flags: {
-          allow_discount_code: true,
-        },
-      },
-    });
-  },
-});
-```
-
-### 7. Frontend Usage
-
-```tsx
-import { useAction } from "convex/react";
-import { api } from "../convex/_generated/api";
-
-export function CheckoutButton() {
-  const createCheckout = useAction(api.payments.createCheckout);
-
-  const handleCheckout = async () => {
-    const { checkout_url } = await createCheckout({
-      product_cart: [{ product_id: "prod_123", quantity: 1 }],
-    });
-    window.location.href = checkout_url;
-  };
-
-  return <button onClick={handleCheckout}>Buy Now</button>;
-}
-```
 
 ---
 
@@ -255,7 +258,7 @@ Here's how you should structure your response:
 
 If Checkout Function is selected:
 
-Purpose: This function handles different types of checkout flows and returns checkout URLs for programmatic handling.
+Purpose: This function handles checkout flow and returns a checkout URL for redirecting users to complete their purchase.
 
 Integration Steps:
 
@@ -295,7 +298,7 @@ export const getByAuthId = internalQuery({
   },
 });
 
-Step 4: Create your payment functions file.
+Step 4: Create your dodo payments configuration file.
 
 // convex/dodo.ts
 import { DodoPayments } from "@dodopayments/convex";
@@ -335,28 +338,20 @@ export const { checkout, customerPortal } = dodo.api();
 Step 5: Create actions that use the checkout function.
 
 // convex/payments.ts
-import { action } from "./_generated/server";
-import { v } from "convex/values";
-import { checkout } from "./dodo";
-
-// Checkout session with full feature support
 export const createCheckout = action({
-  args: { 
-    product_cart: v.array(v.object({
-      product_id: v.string(),
-      quantity: v.number(),
-    })),
-    returnUrl: v.optional(v.string()),
+  args: {
+    returnUrl: v.string(),
+    customer: v.object({
+      name: v.string(),
+      email: v.string(),
+    }),
   },
   handler: async (ctx, args) => {
     return await checkout(ctx, {
       payload: {
-        product_cart: args.product_cart,
+        product_cart: [{ product_id: "prod_123", quantity: 1 }],
         return_url: args.returnUrl,
-        billing_currency: "USD",
-        feature_flags: {
-          allow_discount_code: true,
-        },
+        customer: args.customer,
       },
     });
   },
@@ -364,16 +359,16 @@ export const createCheckout = action({
 
 Step 6: Use in your frontend.
 
-// Your frontend component
-import { useAction } from "convex/react";
-import { api } from "../convex/_generated/api";
-
 export function CheckoutButton() {
   const createCheckout = useAction(api.payments.createCheckout);
 
   const handleCheckout = async () => {
     const { checkout_url } = await createCheckout({
-      product_cart: [{ product_id: "prod_123", quantity: 1 }],
+      returnUrl: "https://example.com/your-return-url",
+      customer: {
+        name: "John Doe",
+        email: "john@example.com",
+      },
     });
     window.location.href = checkout_url;
   };
