@@ -96,22 +96,24 @@ export const dodo = new DodoPayments(components.dodopayments, {
     if (!identity) {
       return null; // User is not logged in
     }
-    
+
     // Use ctx.runQuery() to lookup user from your database
     const user = await ctx.runQuery(internal.users.getByAuthId, {
       authId: identity.subject,
     });
-    
+
     if (!user) {
       return null; // User not found in database
     }
-    
+
     return {
       dodoCustomerId: user.dodoCustomerId, // Replace user.dodoCustomerId with your field storing Dodo Payments customer ID
     };
   },
   apiKey: process.env.DODO_PAYMENTS_API_KEY!,
-  environment: process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode",
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT as
+    | "test_mode"
+    | "live_mode",
 });
 
 // Export the API methods for use in your app
@@ -185,11 +187,13 @@ import { v } from "convex/values";
 import { checkout } from "./dodo";
 
 export const createCheckout = action({
-  args: { 
-    product_cart: v.array(v.object({
-      product_id: v.string(),
-      quantity: v.number(),
-    })),
+  args: {
+    product_cart: v.array(
+      v.object({
+        product_id: v.string(),
+        quantity: v.number(),
+      }),
+    ),
     returnUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -311,16 +315,16 @@ export const dodo = new DodoPayments(components.dodopayments, {
     if (!identity) {
       return null; // User is not logged in
     }
-    
+
     // Use ctx.runQuery() to lookup user from your database
     const user = await ctx.runQuery(internal.users.getByAuthId, {
       authId: identity.subject,
     });
-    
+
     if (!user) {
       return null; // User not found in database
     }
-    
+
     return {
       dodoCustomerId: user.dodoCustomerId, // Replace user.dodoCustomerId with your field storing Dodo Payments customer ID
     };
@@ -341,7 +345,7 @@ import { checkout } from "./dodo";
 
 // Checkout session with full feature support
 export const createCheckout = action({
-  args: { 
+  args: {
     product_cart: v.array(v.object({
       product_id: v.string(),
       quantity: v.number(),

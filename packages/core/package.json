@@ -33,7 +33,7 @@
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
-    "zod": "^3.25.74"
+    "zod": "^3.25.0 || ^4.0.0"
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",

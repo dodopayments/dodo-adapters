@@ -28,7 +28,7 @@
     "convex": "^1.26.0"
   },
   "peerDependencies": {
-    "zod": "^3.23.8"
+    "zod": "^3.25.0 || ^4.0.0"
   },
   "keywords": [
     "payments",
