@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2025-10-28
+
+### Fixed
+
+- Added compatibility for zod v3 and v4
+
 ## [1.3.0] - 2025-10-25
 
 ### Added
