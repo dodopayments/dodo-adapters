@@ -33,7 +33,7 @@
     "test:e2e": "turbo run test:e2e --concurrency=1"
   },
   "dependencies": {
-    "@dodopayments/core": "^0.2.0",
+    "@dodopayments/core": "^0.3.1",
     "express": "^5.1.0",
     "standardwebhooks": "^1.0.0"
   }
