@@ -3,7 +3,7 @@ import {
   WebhookPayload,
   Resolve,
   WebhookPayloadSchema,
-  HandlerWithContext
+  HandlerWithContext,
 } from "../schemas/webhook";
 import {
   Webhook as StandardWebhook,
@@ -137,7 +137,7 @@ export async function handleWebhookPayload<TContext = void>(
   if (payload.type === "license_key.created") {
     await callHandler(config.onLicenseKeyCreated, payload);
   }
-};
+}
 
 export const verifyWebhookPayload = async ({
   webhookKey,

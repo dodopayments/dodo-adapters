@@ -65,7 +65,14 @@ const config = [
         emitDeclarationOnly: false,
       }),
     ],
-    external: ["convex", "convex/server", "convex/values", "zod", "@dodopayments/core", "dodopayments"],
+    external: [
+      "convex",
+      "convex/server",
+      "convex/values",
+      "zod",
+      "@dodopayments/core",
+      "dodopayments",
+    ],
   },
   // Type Declarations
   {
