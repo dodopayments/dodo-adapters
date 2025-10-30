@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2025-10-30
+
+### Fixed
+
+- Added 'dodo' prefix to object keys for plugins to avoid conflicts with other payment-related plugins
+
 ## [1.3.1] - 2025-10-28
 
 ### Fixed
