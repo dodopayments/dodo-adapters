@@ -17,6 +17,11 @@
       "require": "./dist/checkout/checkout.cjs",
       "types": "./dist/checkout/checkout.d.ts"
     },
+    "./subscriptions": {
+      "import": "./dist/subscriptions/index.js",
+      "require": "./dist/subscriptions/index.cjs",
+      "types": "./dist/subscriptions/index.d.ts"
+    },
     "./webhook": {
       "import": "./dist/webhook/webhook.js",
       "require": "./dist/webhook/webhook.cjs",
