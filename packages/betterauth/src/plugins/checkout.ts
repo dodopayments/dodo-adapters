@@ -31,7 +31,7 @@ export const checkout =
       /**
        * @deprecated
        */
-      checkout: createAuthEndpoint(
+      dodoCheckout: createAuthEndpoint(
         "/dodopayments/checkout",
         {
           method: "POST",
@@ -130,7 +130,7 @@ export const checkout =
           }
         },
       ),
-      checkoutSession: createAuthEndpoint(
+      dodoCheckoutSession: createAuthEndpoint(
         "/dodopayments/checkout-session",
         {
           method: "POST",

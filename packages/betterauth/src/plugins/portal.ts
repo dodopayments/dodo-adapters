@@ -11,7 +11,7 @@ import {
 
 export const portal = () => (dodopayments: DodoPayments) => {
   return {
-    portal: createAuthEndpoint(
+    dodoPortal: createAuthEndpoint(
       "/dodopayments/customer/portal",
       {
         method: "GET",
@@ -67,7 +67,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
       },
     ),
-    subscriptions: createAuthEndpoint(
+    dodoSubscriptions: createAuthEndpoint(
       "/dodopayments/customer/subscriptions/list",
       {
         method: "GET",
@@ -139,7 +139,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
       },
     ),
-    payments: createAuthEndpoint(
+    dodoPayments: createAuthEndpoint(
       "/dodopayments/customer/payments/list",
       {
         method: "GET",
