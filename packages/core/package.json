@@ -1,31 +1,37 @@
 {
   "name": "@dodopayments/core",
-  "version": "0.3.1",
+  "version": "0.3.2",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsup src/ --format esm,cjs --dist --clean --sourcemap",
+    "dev": "npm run build -- --watch",
     "test": "vitest --run",
     "test:watch": "vitest --watch",
     "check-types": "tsc --noEmit"
   },
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
     "./checkout": {
+      "types": "./dist/checkout/checkout.d.ts",
       "import": "./dist/checkout/checkout.js",
-      "require": "./dist/checkout/checkout.cjs",
-      "types": "./dist/checkout/checkout.d.ts"
+      "require": "./dist/checkout/checkout.cjs"
     },
     "./webhook": {
+      "types": "./dist/webhook/webhook.d.ts",
       "import": "./dist/webhook/webhook.js",
-      "require": "./dist/webhook/webhook.cjs",
-      "types": "./dist/webhook/webhook.d.ts"
+      "require": "./dist/webhook/webhook.cjs"
     },
     "./schemas": {
+      "types": "./dist/schemas/webhook.d.ts",
       "import": "./dist/schemas/webhook.js",
-      "require": "./dist/schemas/webhook.cjs",
-      "types": "./dist/schemas/webhook.d.ts"
+      "require": "./dist/schemas/webhook.cjs"
     }
   },
   "dependencies": {
