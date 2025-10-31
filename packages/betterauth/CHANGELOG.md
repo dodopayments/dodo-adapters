@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.4] - 2025-10-31
+
+### Fixed
+
+- Fix: switch to tsup from rollup in order to fix ESM bundling issue in dependent projects
+
 ## [1.3.2] - 2025-10-30
 
 ### Fixed
