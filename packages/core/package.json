@@ -6,7 +6,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup src/ --format esm,cjs --dist --clean --sourcemap",
+    "build": "tsup src/ --format esm,cjs --dts --clean --sourcemap",
     "dev": "npm run build -- --watch",
     "test": "vitest --run",
     "test:watch": "vitest --watch",
