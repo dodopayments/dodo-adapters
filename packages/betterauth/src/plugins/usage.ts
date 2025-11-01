@@ -17,7 +17,7 @@ const EventInputSchema = z.object({
     .record(z.union([z.string(), z.number(), z.boolean()]))
     .nullable()
     .optional(),
-  timestamp: z.string().optional(),
+  timestamp: z.string().date().optional(),
 });
 
 export const usage = () => (dodopayments: DodoPayments) => {
@@ -43,7 +43,13 @@ export const usage = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          const body = EventInputSchema.parse(ctx.body);
+          const body = EventInputSchema.safeParse(ctx.body);
+
+          if(!body.success) {
+            throw new APIError("BAD_REQUEST", {
+              message: "Invalid request body",
+            });
+          }
 
           const customers = await dodopayments.customers.list({
             email: ctx.context.session.user.email,
@@ -63,11 +69,11 @@ export const usage = () => (dodopayments: DodoPayments) => {
           const result = await dodopayments.usageEvents.ingest({
             events: [
               {
-                event_id: body.event_id,
+                event_id: body.data.event_id,
                 customer_id: customer.customer_id,
-                event_name: body.event_name,
-                timestamp: body.timestamp ?? new Date().toISOString(),
-                metadata: body.metadata ?? {},
+                event_name: body.data.event_name,
+                timestamp: body.data.timestamp ?? new Date().toISOString(),
+                metadata: body.data.metadata ?? {},
               },
             ],
           });
