@@ -23,7 +23,6 @@ export type DodoPaymentsPlugin =
   | ReturnType<typeof webhooks>
   | ReturnType<typeof usage>;
 
-
 export type DodoPaymentsPlugins = [DodoPaymentsPlugin, ...DodoPaymentsPlugin[]];
 
 export type DodoPaymentsEndpoints = UnionToIntersection<
