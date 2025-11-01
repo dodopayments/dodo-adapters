@@ -42,15 +42,15 @@ export const usage = () => (dodopayments: DodoPayments) => {
           });
         }
 
+        const body = EventInputSchema.safeParse(ctx.body);
+
+        if (!body.success) {
+          throw new APIError("BAD_REQUEST", {
+            message: "Invalid request body",
+          });
+        }
+
         try {
-          const body = EventInputSchema.safeParse(ctx.body);
-
-          if(!body.success) {
-            throw new APIError("BAD_REQUEST", {
-              message: "Invalid request body",
-            });
-          }
-
           const customers = await dodopayments.customers.list({
             email: ctx.context.session.user.email,
           });
@@ -141,9 +141,8 @@ export const usage = () => (dodopayments: DodoPayments) => {
 
           const meters = await dodopayments.usageEvents.list({
             customer_id: customer.customer_id,
-            ...ctx.query
-
-        });
+            ...ctx.query,
+          });
 
           return meters;
         } catch (e: unknown) {
