@@ -81,7 +81,7 @@ export const usage = () => (dodopayments: DodoPayments) => {
           }
 
           throw new APIError("INTERNAL_SERVER_ERROR", {
-            message: "Failed to record the user usuage",
+            message: "Failed to record the user usage",
           });
         }
       },
@@ -94,18 +94,12 @@ export const usage = () => (dodopayments: DodoPayments) => {
         method: "GET",
         query: z
           .object({
-            page: z.coerce.number().optional(),
-            limit: z.coerce.number().optional(),
-            status: z
-              .enum([
-                "active",
-                "cancelled",
-                "on_hold",
-                "pending",
-                "failed",
-                "expired",
-              ])
-              .optional(),
+            page_number: z.coerce.number().optional(),
+            page_size: z.coerce.number().optional(),
+            event_name: z.string().optional(),
+            meter_id: z.string().optional(),
+            start: z.string().optional(),
+            end: z.string().optional(),
           })
           .optional(),
         use: [sessionMiddleware],
@@ -141,18 +135,20 @@ export const usage = () => (dodopayments: DodoPayments) => {
 
           const meters = await dodopayments.usageEvents.list({
             customer_id: customer.customer_id,
-          });
+            ...ctx.query
+
+        });
 
           return meters;
         } catch (e: unknown) {
           if (e instanceof Error) {
             ctx.context.logger.error(
-              `User usuage meter list error: ${e.message}`,
+              `User usage meter list error: ${e.message}`,
             );
           }
 
           throw new APIError("INTERNAL_SERVER_ERROR", {
-            message: "Failed to fetch the user usuage",
+            message: "Failed to fetch the user usage",
           });
         }
       },
