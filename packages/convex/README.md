@@ -98,22 +98,24 @@ export const dodo = new DodoPayments(components.dodopayments, {
     if (!identity) {
       return null; // User is not logged in
     }
-    
+
     // Use ctx.runQuery() to lookup user from your database
     const user = await ctx.runQuery(internal.users.getByAuthId, {
       authId: identity.subject,
     });
-    
+
     if (!user) {
       return null; // User not found in database
     }
-    
+
     return {
       dodoCustomerId: user.dodoCustomerId, // Replace user.dodoCustomerId with your field storing Dodo Payments customer ID
     };
   },
   apiKey: process.env.DODO_PAYMENTS_API_KEY!,
-  environment: process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode",
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT as
+    | "test_mode"
+    | "live_mode",
 });
 
 // Export the API methods for use in your app
@@ -314,16 +316,16 @@ export const dodo = new DodoPayments(components.dodopayments, {
     if (!identity) {
       return null; // User is not logged in
     }
-    
+
     // Use ctx.runQuery() to lookup user from your database
     const user = await ctx.runQuery(internal.users.getByAuthId, {
       authId: identity.subject,
     });
-    
+
     if (!user) {
       return null; // User not found in database
     }
-    
+
     return {
       dodoCustomerId: user.dodoCustomerId, // Replace user.dodoCustomerId with your field storing Dodo Payments customer ID
     };

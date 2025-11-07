@@ -1,11 +1,9 @@
-import type {
-  CheckoutSessionPayload
-} from "@dodopayments/core/checkout";
+import type { CheckoutSessionPayload } from "@dodopayments/core/checkout";
 
-import type { 
+import type {
   FunctionReference,
   GenericActionCtx,
-  GenericDataModel
+  GenericDataModel,
 } from "convex/server";
 
 type CustomerPortalArgs = {
@@ -26,7 +24,9 @@ export interface DodoPaymentsComponent {
 
 // The config required to initialize the Dodo Payments client.
 export type DodoPaymentsClientConfig = {
-  identify: (ctx: GenericActionCtx<GenericDataModel>) => Promise<{ dodoCustomerId: string } | null>;
+  identify: (
+    ctx: GenericActionCtx<GenericDataModel>,
+  ) => Promise<{ dodoCustomerId: string } | null>;
   apiKey: string;
   environment: "test_mode" | "live_mode";
 };
@@ -36,7 +36,10 @@ export class DodoPayments {
   public component: DodoPaymentsComponent;
   private config: DodoPaymentsClientConfig;
 
-  constructor(component: DodoPaymentsComponent, config: DodoPaymentsClientConfig) {
+  constructor(
+    component: DodoPaymentsComponent,
+    config: DodoPaymentsClientConfig,
+  ) {
     this.component = component;
     this.config = config;
   }
@@ -67,7 +70,7 @@ export class DodoPayments {
        */
       customerPortal: async (
         ctx: any,
-        args?: CustomerPortalArgs
+        args?: CustomerPortalArgs,
       ): Promise<{ portal_url: string }> => {
         const identity = await this.config.identify(ctx);
         if (!identity) {
