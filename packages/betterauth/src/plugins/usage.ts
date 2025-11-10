@@ -17,7 +17,7 @@ const EventInputSchema = z.object({
     .record(z.union([z.string(), z.number(), z.boolean()]))
     .nullable()
     .optional(),
-  timestamp: z.string().date().optional(),
+  timestamp: z.string().datetime().optional(),
 });
 
 export const usage = () => (dodopayments: DodoPayments) => {
@@ -27,6 +27,7 @@ export const usage = () => (dodopayments: DodoPayments) => {
       "/dodopayments/usage/ingest",
       {
         method: "POST",
+        body:EventInputSchema,
         use: [sessionMiddleware],
       },
       async (ctx): Promise<UsageEventIngestResponse> => {
@@ -39,14 +40,6 @@ export const usage = () => (dodopayments: DodoPayments) => {
         if (!ctx.context.session?.user.emailVerified) {
           throw new APIError("UNAUTHORIZED", {
             message: "User email not verified",
-          });
-        }
-
-        const body = EventInputSchema.safeParse(ctx.body);
-
-        if (!body.success) {
-          throw new APIError("BAD_REQUEST", {
-            message: "Invalid request body",
           });
         }
 
@@ -69,11 +62,11 @@ export const usage = () => (dodopayments: DodoPayments) => {
           const result = await dodopayments.usageEvents.ingest({
             events: [
               {
-                event_id: body.data.event_id,
+                event_id: ctx.body.event_id,
                 customer_id: customer.customer_id,
-                event_name: body.data.event_name,
-                timestamp: body.data.timestamp ?? new Date().toISOString(),
-                metadata: body.data.metadata ?? {},
+                event_name: ctx.body.event_name,
+                timestamp: ctx.body.timestamp ?? new Date().toISOString(),
+                metadata: ctx.body.metadata ?? {},
               },
             ],
           });
