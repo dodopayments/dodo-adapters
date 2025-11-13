@@ -93,15 +93,36 @@ export const dynamicCheckoutBodySchema = z
 export const checkoutSessionProductCartItemSchema = z.object({
   product_id: z.string().min(1, "Product ID is required"),
   quantity: z.number().int().positive("Quantity must be a positive integer"),
+  addons: z
+    .array(
+      z.object({
+        addon_id: z.string(),
+        quantity: z.number().int().nonnegative(),
+      }),
+    )
+    .optional(),
+  amount: z
+    .number()
+    .int()
+    .nonnegative(
+      "Amount must be a non-negative integer (for pay-what-you-want products)",
+    )
+    .optional(),
 });
 
 // Customer information schema for checkout sessions
+// Supports both creating new customers and attaching existing ones
 export const checkoutSessionCustomerSchema = z
-  .object({
-    email: z.string().email().optional(),
-    name: z.string().min(1).optional(),
-    phone_number: z.string().optional(),
-  })
+  .union([
+    z.object({
+      email: z.string().email(),
+      name: z.string().min(1).optional(),
+      phone_number: z.string().optional(),
+    }),
+    z.object({
+      customer_id: z.string(),
+    }),
+  ])
   .optional();
 
 // Billing address schema for checkout sessions
@@ -122,13 +143,20 @@ export const paymentMethodTypeSchema = z.enum([
   "upi_collect",
   "upi_intent",
   "apple_pay",
+  "cashapp",
   "google_pay",
-  "amazon_pay",
-  "klarna",
+  "multibanco",
+  "bancontact_card",
+  "eps",
+  "ideal",
+  "przelewy24",
+  "paypal",
   "affirm",
-  "afterpay_clearpay",
+  "klarna",
   "sepa",
   "ach",
+  "amazon_pay",
+  "afterpay_clearpay",
 ]);
 
 // Customization options schema
@@ -137,6 +165,7 @@ export const checkoutSessionCustomizationSchema = z
     theme: z.enum(["light", "dark", "system"]).optional(),
     show_order_details: z.boolean().optional(),
     show_on_demand_tag: z.boolean().optional(),
+    force_language: z.string().optional(),
   })
   .optional();
 
@@ -151,10 +180,22 @@ export const checkoutSessionFeatureFlagsSchema = z
   })
   .optional();
 
+// On-demand subscription schema
+export const checkoutSessionOnDemandSchema = z
+  .object({
+    mandate_only: z.boolean(),
+    product_price: z.number().int().optional(),
+    product_currency: z.string().length(3).optional(),
+    product_description: z.string().optional(),
+    adaptive_currency_fees_inclusive: z.boolean().optional(),
+  })
+  .optional();
+
 // Subscription data schema
 export const checkoutSessionSubscriptionDataSchema = z
   .object({
     trial_period_days: z.number().int().nonnegative().optional(),
+    on_demand: checkoutSessionOnDemandSchema,
   })
   .optional();
 
@@ -181,6 +222,7 @@ export const checkoutSessionPayloadSchema = z.object({
   customization: checkoutSessionCustomizationSchema,
   feature_flags: checkoutSessionFeatureFlagsSchema,
   subscription_data: checkoutSessionSubscriptionDataSchema,
+  force_3ds: z.boolean().optional(),
 });
 
 // Checkout session response schema
@@ -210,6 +252,9 @@ export type CheckoutSessionCustomization = z.infer<
 >;
 export type CheckoutSessionFeatureFlags = z.infer<
   typeof checkoutSessionFeatureFlagsSchema
+>;
+export type CheckoutSessionOnDemand = z.infer<
+  typeof checkoutSessionOnDemandSchema
 >;
 export type CheckoutSessionSubscriptionData = z.infer<
   typeof checkoutSessionSubscriptionDataSchema
