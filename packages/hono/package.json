@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.2"
+    "@dodopayments/core": "^0.3.3"
   },
   "keywords": [
     "payments",
@@ -34,12 +34,12 @@
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",
-    "rollup": "^4.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-commonjs": "^25.0.0",
-    "rollup-plugin-dts": "^6.1.0",
-    "rimraf": "^5.0.0"
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "rimraf": "^5.0.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-dts": "^6.1.0"
   },
   "peerDependencies": {
     "hono": "^4.8.9",

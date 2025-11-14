@@ -20,7 +20,7 @@
     "dev": "rollup -c -w"
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.2",
+    "@dodopayments/core": "^0.3.3",
     "@nuxt/module-builder": "^1.0.1"
   },
   "devDependencies": {
