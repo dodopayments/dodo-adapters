@@ -22,6 +22,8 @@ npm install @dodopayments/convex
 
 ## Quick Start
 
+> **Note:** This component does not define a schema. Define your own schema based on your application's needs.
+
 ### 1. Add Component to Convex Config
 
 ```typescript
@@ -79,7 +81,7 @@ export const getByAuthId = internalQuery({
 });
 ```
 
-### 4. Create Payment Functions
+### 4. Configure DodoPayments Component
 
 ```typescript
 // convex/dodo.ts
@@ -120,7 +122,60 @@ export const dodo = new DodoPayments(components.dodopayments, {
 export const { checkout, customerPortal } = dodo.api();
 ```
 
-### 5. Set Up Webhooks (Optional)
+### 5. Define Payment Actions
+
+```typescript
+// convex/payments.ts
+import { action } from "./_generated/server";
+import { v } from "convex/values";
+import { checkout } from "./dodo";
+
+export const createCheckout = action({
+  args: {
+    product_cart: v.array(
+      v.object({
+        product_id: v.string(),
+        quantity: v.number(),
+      }),
+    ),
+    returnUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    return await checkout(ctx, {
+      payload: {
+        product_cart: args.product_cart,
+        return_url: args.returnUrl,
+        billing_currency: "USD",
+        feature_flags: {
+          allow_discount_code: true,
+        },
+      },
+    });
+  },
+});
+```
+
+### 6. Frontend Usage
+
+```tsx
+import { useAction } from "convex/react";
+import { api } from "../convex/_generated/api";
+
+export function CheckoutButton() {
+  const createCheckout = useAction(api.payments.createCheckout);
+
+  const handleCheckout = async () => {
+    const { checkout_url } = await createCheckout({
+      product_cart: [{ product_id: "prod_123", quantity: 1 }],
+    });
+    window.location.href = checkout_url;
+  };
+
+  return <button onClick={handleCheckout}>Buy Now</button>;
+}
+```
+
+### 7. Set Up Webhooks (Optional)
 
 For handling Dodo Payments webhooks, create a file `convex/http.ts`:
 
@@ -177,59 +232,6 @@ export default http;
 Add your webhook secret in the Convex dashboard (**Settings** → **Environment Variables**):
 
 - `DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret`
-
-### 6. Define Payment Actions
-
-```typescript
-// convex/payments.ts
-import { action } from "./_generated/server";
-import { v } from "convex/values";
-import { checkout } from "./dodo";
-
-export const createCheckout = action({
-  args: {
-    product_cart: v.array(
-      v.object({
-        product_id: v.string(),
-        quantity: v.number(),
-      }),
-    ),
-    returnUrl: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    return await checkout(ctx, {
-      payload: {
-        product_cart: args.product_cart,
-        return_url: args.returnUrl,
-        billing_currency: "USD",
-        feature_flags: {
-          allow_discount_code: true,
-        },
-      },
-    });
-  },
-});
-```
-
-### 7. Frontend Usage
-
-```tsx
-import { useAction } from "convex/react";
-import { api } from "../convex/_generated/api";
-
-export function CheckoutButton() {
-  const createCheckout = useAction(api.payments.createCheckout);
-
-  const handleCheckout = async () => {
-    const { checkout_url } = await createCheckout({
-      product_cart: [{ product_id: "prod_123", quantity: 1 }],
-    });
-    window.location.href = checkout_url;
-  };
-
-  return <button onClick={handleCheckout}>Buy Now</button>;
-}
-```
 
 ---
 
