@@ -11,14 +11,28 @@ const checkoutSessionPayloadValidator = v.object({
     v.object({
       product_id: v.string(),
       quantity: v.number(),
+      addons: v.optional(
+        v.array(
+          v.object({
+            addon_id: v.string(),
+            quantity: v.number(),
+          }),
+        ),
+      ),
+      amount: v.optional(v.number()),
     }),
   ),
   customer: v.optional(
-    v.object({
-      email: v.optional(v.string()),
-      name: v.optional(v.string()),
-      phone_number: v.optional(v.string()),
-    }),
+    v.union(
+      v.object({
+        email: v.string(),
+        name: v.optional(v.string()),
+        phone_number: v.optional(v.string()),
+      }),
+      v.object({
+        customer_id: v.string(),
+      }),
+    ),
   ),
   billing_address: v.optional(
     v.object({
@@ -41,6 +55,7 @@ const checkoutSessionPayloadValidator = v.object({
       theme: v.optional(v.string()),
       show_order_details: v.optional(v.boolean()),
       show_on_demand_tag: v.optional(v.boolean()),
+      force_language: v.optional(v.string()),
     }),
   ),
   feature_flags: v.optional(
@@ -55,8 +70,18 @@ const checkoutSessionPayloadValidator = v.object({
   subscription_data: v.optional(
     v.object({
       trial_period_days: v.optional(v.number()),
+      on_demand: v.optional(
+        v.object({
+          mandate_only: v.boolean(),
+          product_price: v.optional(v.number()),
+          product_currency: v.optional(v.string()),
+          product_description: v.optional(v.string()),
+          adaptive_currency_fees_inclusive: v.optional(v.boolean()),
+        }),
+      ),
     }),
   ),
+  force_3ds: v.optional(v.boolean()),
 });
 
 export const checkout = action({
