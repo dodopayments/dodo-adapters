@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.4] - 2025-10-31
+
+### Fixed
+
+- Fix: switch to tsup from rollup in order to fix ESM bundling issue in dependent projects
+
+## [1.3.2] - 2025-10-30
+
+### Fixed
+
+- Added 'dodo' prefix to object keys for plugins to avoid conflicts with other payment-related plugins
+
+## [1.3.1] - 2025-10-28
+
+### Fixed
+
+- Added compatibility for zod v3 and v4
+
 ## [1.3.0] - 2025-10-25
 
 ### Added

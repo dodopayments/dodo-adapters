@@ -2,7 +2,7 @@ import type { DodoPayments } from "dodopayments";
 import { APIError } from "better-auth/api";
 import { sessionMiddleware } from "better-auth/api";
 import { createAuthEndpoint } from "better-auth/plugins";
-import { z } from "zod";
+import { z } from "zod/v3";
 import {
   CustomerPortalResponse,
   PaymentItems,
@@ -11,7 +11,7 @@ import {
 
 export const portal = () => (dodopayments: DodoPayments) => {
   return {
-    portal: createAuthEndpoint(
+    dodoPortal: createAuthEndpoint(
       "/dodopayments/customer/portal",
       {
         method: "GET",
@@ -67,7 +67,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
       },
     ),
-    subscriptions: createAuthEndpoint(
+    dodoSubscriptions: createAuthEndpoint(
       "/dodopayments/customer/subscriptions/list",
       {
         method: "GET",
@@ -139,7 +139,7 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
       },
     ),
-    payments: createAuthEndpoint(
+    dodoPayments: createAuthEndpoint(
       "/dodopayments/customer/payments/list",
       {
         method: "GET",

@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/nextjs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.2.0"
+    "@dodopayments/core": "^0.3.2"
   },
   "keywords": [
     "payments",
@@ -42,8 +42,8 @@
     "rimraf": "^5.0.0"
   },
   "peerDependencies": {
-    "next": "^15.3.4",
-    "zod": "^3.25.73"
+    "next": "^15.3.4 || ^16.0.0",
+    "zod": "^3.25.0 || ^4.0.0"
   },
   "type": "module",
   "files": [

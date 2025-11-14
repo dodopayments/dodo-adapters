@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 export const PaymentSchema = z.object({
   payload_type: z.literal("Payment"),
@@ -407,26 +407,92 @@ export type HandlerWithContext<TContext, TPayload> = TContext extends void
   : (context: TContext, payload: TPayload) => Promise<void>;
 
 export type WebhookEventHandlers<TContext = void> = {
-  onPaymentSucceeded?: HandlerWithContext<TContext, z.infer<typeof PaymentSucceededPayloadSchema>>;
-  onPaymentFailed?: HandlerWithContext<TContext, z.infer<typeof PaymentFailedPayloadSchema>>;
-  onPaymentProcessing?: HandlerWithContext<TContext, z.infer<typeof PaymentProcessingPayloadSchema>>;
-  onPaymentCancelled?: HandlerWithContext<TContext, z.infer<typeof PaymentCancelledPayloadSchema>>;
-  onRefundSucceeded?: HandlerWithContext<TContext, z.infer<typeof RefundSucceededPayloadSchema>>;
-  onRefundFailed?: HandlerWithContext<TContext, z.infer<typeof RefundFailedPayloadSchema>>;
-  onDisputeOpened?: HandlerWithContext<TContext, z.infer<typeof DisputeOpenedPayloadSchema>>;
-  onDisputeExpired?: HandlerWithContext<TContext, z.infer<typeof DisputeExpiredPayloadSchema>>;
-  onDisputeAccepted?: HandlerWithContext<TContext, z.infer<typeof DisputeAcceptedPayloadSchema>>;
-  onDisputeCancelled?: HandlerWithContext<TContext, z.infer<typeof DisputeCancelledPayloadSchema>>;
-  onDisputeChallenged?: HandlerWithContext<TContext, z.infer<typeof DisputeChallengedPayloadSchema>>;
-  onDisputeWon?: HandlerWithContext<TContext, z.infer<typeof DisputeWonPayloadSchema>>;
-  onDisputeLost?: HandlerWithContext<TContext, z.infer<typeof DisputeLostPayloadSchema>>;
-  onSubscriptionActive?: HandlerWithContext<TContext, z.infer<typeof SubscriptionActivePayloadSchema>>;
-  onSubscriptionOnHold?: HandlerWithContext<TContext, z.infer<typeof SubscriptionOnHoldPayloadSchema>>;
-  onSubscriptionRenewed?: HandlerWithContext<TContext, z.infer<typeof SubscriptionRenewedPayloadSchema>>;
-  onSubscriptionPaused?: HandlerWithContext<TContext, z.infer<typeof SubscriptionPausedPayloadSchema>>;
-  onSubscriptionPlanChanged?: HandlerWithContext<TContext, z.infer<typeof SubscriptionPlanChangedPayloadSchema>>;
-  onSubscriptionCancelled?: HandlerWithContext<TContext, z.infer<typeof SubscriptionCancelledPayloadSchema>>;
-  onSubscriptionFailed?: HandlerWithContext<TContext, z.infer<typeof SubscriptionFailedPayloadSchema>>;
-  onSubscriptionExpired?: HandlerWithContext<TContext, z.infer<typeof SubscriptionExpiredPayloadSchema>>;
-  onLicenseKeyCreated?: HandlerWithContext<TContext, z.infer<typeof LicenseKeyCreatedPayloadSchema>>;
+  onPaymentSucceeded?: HandlerWithContext<
+    TContext,
+    z.infer<typeof PaymentSucceededPayloadSchema>
+  >;
+  onPaymentFailed?: HandlerWithContext<
+    TContext,
+    z.infer<typeof PaymentFailedPayloadSchema>
+  >;
+  onPaymentProcessing?: HandlerWithContext<
+    TContext,
+    z.infer<typeof PaymentProcessingPayloadSchema>
+  >;
+  onPaymentCancelled?: HandlerWithContext<
+    TContext,
+    z.infer<typeof PaymentCancelledPayloadSchema>
+  >;
+  onRefundSucceeded?: HandlerWithContext<
+    TContext,
+    z.infer<typeof RefundSucceededPayloadSchema>
+  >;
+  onRefundFailed?: HandlerWithContext<
+    TContext,
+    z.infer<typeof RefundFailedPayloadSchema>
+  >;
+  onDisputeOpened?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DisputeOpenedPayloadSchema>
+  >;
+  onDisputeExpired?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DisputeExpiredPayloadSchema>
+  >;
+  onDisputeAccepted?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DisputeAcceptedPayloadSchema>
+  >;
+  onDisputeCancelled?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DisputeCancelledPayloadSchema>
+  >;
+  onDisputeChallenged?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DisputeChallengedPayloadSchema>
+  >;
+  onDisputeWon?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DisputeWonPayloadSchema>
+  >;
+  onDisputeLost?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DisputeLostPayloadSchema>
+  >;
+  onSubscriptionActive?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionActivePayloadSchema>
+  >;
+  onSubscriptionOnHold?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionOnHoldPayloadSchema>
+  >;
+  onSubscriptionRenewed?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionRenewedPayloadSchema>
+  >;
+  onSubscriptionPaused?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionPausedPayloadSchema>
+  >;
+  onSubscriptionPlanChanged?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionPlanChangedPayloadSchema>
+  >;
+  onSubscriptionCancelled?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionCancelledPayloadSchema>
+  >;
+  onSubscriptionFailed?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionFailedPayloadSchema>
+  >;
+  onSubscriptionExpired?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionExpiredPayloadSchema>
+  >;
+  onLicenseKeyCreated?: HandlerWithContext<
+    TContext,
+    z.infer<typeof LicenseKeyCreatedPayloadSchema>
+  >;
 };

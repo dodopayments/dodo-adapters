@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/convex",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "publishConfig": {
     "access": "public"
   },
@@ -24,11 +24,11 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.0",
+    "@dodopayments/core": "^0.3.2",
     "convex": "^1.26.0"
   },
   "peerDependencies": {
-    "zod": "^3.23.8"
+    "zod": "^3.25.0 || ^4.0.0"
   },
   "keywords": [
     "payments",

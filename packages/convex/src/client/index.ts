@@ -25,7 +25,7 @@ export interface DodoPaymentsComponent {
 // The config required to initialize the Dodo Payments client.
 export type DodoPaymentsClientConfig = {
   identify: (
-    ctx: GenericActionCtx<GenericDataModel>,
+    ctx: GenericActionCtx<any>,
   ) => Promise<{ dodoCustomerId: string } | null>;
   apiKey: string;
   environment: "test_mode" | "live_mode";
@@ -66,7 +66,6 @@ export class DodoPayments {
 
       /**
        * Retrieves a URL for the customer portal.
-       * This function is designed to be called from a public Convex query in your app.
        */
       customerPortal: async (
         ctx: any,
