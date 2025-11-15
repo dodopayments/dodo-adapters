@@ -115,7 +115,7 @@ export const checkoutSessionProductCartItemSchema = z.object({
 export const checkoutSessionCustomerSchema = z
   .union([
     z.object({
-      email: z.string().email().optional(),
+      email: z.string().email(),
       name: z.string().min(1).optional(),
       phone_number: z.string().optional(),
     }),
