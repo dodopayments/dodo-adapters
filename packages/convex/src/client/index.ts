@@ -1,15 +1,23 @@
 import type { CheckoutSessionPayload } from "@dodopayments/core/checkout";
 
-import { GenericActionCtx } from "convex/server";
+import {
+  GenericActionCtx,
+  FunctionReference,
+  GenericDataModel,
+} from "convex/server";
 
 type CustomerPortalArgs = {
   send_email?: boolean;
 };
 
+type RunActionCtx = {
+  runAction: GenericActionCtx<GenericDataModel>["runAction"];
+};
+
 export interface DodoPaymentsComponent {
   lib: {
-    checkout: any;
-    customerPortal: any;
+    checkout: FunctionReference<"action", "internal">;
+    customerPortal: FunctionReference<"action", "internal">;
   };
 }
 
@@ -44,7 +52,10 @@ export class DodoPayments {
        * Creates a Dodo Payments checkout session.
        * Uses session checkout with full feature support.
        */
-      checkout: async (ctx: any, args: { payload: CheckoutSessionPayload }) => {
+      checkout: async (
+        ctx: RunActionCtx,
+        args: { payload: CheckoutSessionPayload },
+      ): Promise<{ checkout_url: string }> => {
         return await ctx.runAction(this.component.lib.checkout, {
           ...args,
           apiKey: this.config.apiKey,
@@ -54,9 +65,12 @@ export class DodoPayments {
 
       /**
        * Retrieves a URL for the customer portal.
-       * This function is designed to be called from a public Convex query in your app.
+       * Requires the user to be identified via the identify function in the config.
        */
-      customerPortal: async (ctx: any, args?: CustomerPortalArgs) => {
+      customerPortal: async (
+        ctx: any,
+        args?: CustomerPortalArgs,
+      ): Promise<{ portal_url: string }> => {
         const identity = await this.config.identify(ctx);
         if (!identity) {
           throw new Error("User is not authenticated.");

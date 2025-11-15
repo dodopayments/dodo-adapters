@@ -28,7 +28,7 @@ export type { WebhookHandlerConfig } from "@dodopayments/core/webhook";
 export type CheckoutResponse = { checkout_url: string };
 export type CustomerPortalResponse = { portal_url: string };
 import { httpAction } from "./component/_generated/server";
-import type { GenericActionCtx } from "convex/server";
+import type { GenericActionCtx, GenericDataModel } from "convex/server";
 import {
   verifyWebhookPayload,
   handleWebhookPayload,
@@ -37,7 +37,7 @@ import {
 
 // Convex-specific webhook handler types that include ctx as the first parameter
 export type ConvexWebhookHandlerConfig = Omit<
-  WebhookHandlerConfig<GenericActionCtx<any>>,
+  WebhookHandlerConfig<GenericActionCtx<GenericDataModel>>,
   "webhookKey"
 >;
 
