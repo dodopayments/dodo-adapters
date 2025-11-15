@@ -190,11 +190,12 @@ export const checkout =
               sessionPayload: {
                 ...ctx.body,
                 product_cart,
-                customer: {
-                  email: session?.user.email,
-                  name: session?.user.name,
-                  ...ctx.body.customer,
-                },
+                customer: session?.user.email
+                  ? {
+                      email: session?.user.email,
+                      name: session?.user.name,
+                    }
+                  : ctx.body.customer,
                 metadata: ctx.body.referenceId
                   ? {
                       referenceId: ctx.body.referenceId,
