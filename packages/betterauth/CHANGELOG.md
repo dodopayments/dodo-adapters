@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.5] - 2025-11-15
+
+### Fixed
+
+- Do not bundle node_modules to avoid CJS bundling issues in dependent projects
+
 ## [1.3.4] - 2025-10-31
 
 ### Fixed
