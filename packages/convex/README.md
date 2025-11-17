@@ -42,12 +42,6 @@ Create a [Dodo Payments](https://dodopayments.com) account and get the API_KEY a
 
 Add your environment variables in the Convex dashboard (**Settings** → **Environment Variables**). You can open the dashboard by running:
 
-```env
-DODO_PAYMENTS_API_KEY=your-dodo-payments-api-key
-DODO_PAYMENTS_ENVIRONMENT=test_mode
-DODO_PAYMENTS_WEBHOOK_SECRET=your-webhook-secret (if using webhooks)
-```
-
 ```sh
 npx convex dashboard
 ```
