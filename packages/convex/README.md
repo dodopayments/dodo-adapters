@@ -62,19 +62,20 @@ Set the following variables:
 
 ### 3. Create Internal Query
 
-First, create an internal query to fetch users from your database. This will be used in the payment functions to identify customers.
+First, create an internal query to fetch customers from your database. This will be used in the payment functions to identify customers.
 
 ```typescript
-// convex/users.ts
+// convex/customers.ts
 import { internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
-// Internal query to fetch user by auth ID
+// Internal query to fetch customer by auth ID
+// Customize this based on your database schema and authentication provider
 export const getByAuthId = internalQuery({
   args: { authId: v.string() },
   handler: async (ctx, { authId }) => {
     return await ctx.db
-      .query("users")
+      .query("customers")
       .withIndex("by_auth_id", (q) => q.eq("authId", authId))
       .first();
   },
@@ -85,38 +86,38 @@ export const getByAuthId = internalQuery({
 
 ```typescript
 // convex/dodo.ts
-import { DodoPayments } from "@dodopayments/convex";
+import { DodoPayments, DodoPaymentsClientConfig } from "@dodopayments/convex";
 import { components } from "./_generated/api";
 import { internal } from "./_generated/api";
 
 export const dodo = new DodoPayments(components.dodopayments, {
-  // This function maps your Convex user to a Dodo Payments customer
-  // Customize it based on your authentication provider and user database
+  // This function maps your Convex customer to a Dodo Payments customer
+  // Customize it based on your authentication provider and customer database
 
   identify: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      return null; // User is not logged in
+      return null; // Customer is not logged in
     }
 
-    // Use ctx.runQuery() to lookup user from your database
-    const user = await ctx.runQuery(internal.users.getByAuthId, {
+    // Use ctx.runQuery() to lookup customer from your database
+    const customer = await ctx.runQuery(internal.customers.getByAuthId, {
       authId: identity.subject,
     });
 
-    if (!user) {
-      return null; // User not found in database
+    if (!customer) {
+      return null; // Customer not found in database
     }
 
     return {
-      dodoCustomerId: user.dodoCustomerId, // Replace user.dodoCustomerId with your field storing Dodo Payments customer ID
+      dodoCustomerId: customer.dodoCustomerId, // Replace customer.dodoCustomerId with your field storing Dodo Payments customer ID
     };
   },
   apiKey: process.env.DODO_PAYMENTS_API_KEY!,
   environment: process.env.DODO_PAYMENTS_ENVIRONMENT as
     | "test_mode"
     | "live_mode",
-});
+} as DodoPaymentsClientConfig);
 
 // Export the API methods for use in your app
 export const { checkout, customerPortal } = dodo.api();
@@ -284,18 +285,19 @@ Then add the required environment variables (e.g., DODO_PAYMENTS_API_KEY, DODO_P
 DODO_PAYMENTS_API_KEY=your-api-key
 DODO_PAYMENTS_ENVIRONMENT=test_mode
 
-Step 3: Create an internal query to fetch users from your database.
+Step 3: Create an internal query to fetch customers from your database.
 
-// convex/users.ts
+// convex/customers.ts
 import { internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
-// Internal query to fetch user by auth ID
+// Internal query to fetch customer by auth ID
+// Customize this based on your database schema and authentication provider
 export const getByAuthId = internalQuery({
   args: { authId: v.string() },
   handler: async (ctx, { authId }) => {
     return await ctx.db
-      .query("users")
+      .query("customers")
       .withIndex("by_auth_id", (q) => q.eq("authId", authId))
       .first();
   },
@@ -304,13 +306,13 @@ export const getByAuthId = internalQuery({
 Step 4: Create your payment functions file.
 
 // convex/dodo.ts
-import { DodoPayments } from "@dodopayments/convex";
+import { DodoPayments, DodoPaymentsClientConfig } from "@dodopayments/convex";
 import { components } from "./_generated/api";
 import { internal } from "./_generated/api";
 
 export const dodo = new DodoPayments(components.dodopayments, {
   // This function maps your Convex user to a Dodo Payments customer
-  // Customize it based on your authentication provider and user database
+  // Customize it based on your authentication provider and customer database
 
   identify: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -318,22 +320,22 @@ export const dodo = new DodoPayments(components.dodopayments, {
       return null; // User is not logged in
     }
 
-    // Use ctx.runQuery() to lookup user from your database
-    const user = await ctx.runQuery(internal.users.getByAuthId, {
+    // Use ctx.runQuery() to lookup customer from your database
+    const customer = await ctx.runQuery(internal.customers.getByAuthId, {
       authId: identity.subject,
     });
 
-    if (!user) {
-      return null; // User not found in database
+    if (!customer) {
+      return null; // Customer not found in database
     }
 
     return {
-      dodoCustomerId: user.dodoCustomerId, // Replace user.dodoCustomerId with your field storing Dodo Payments customer ID
+      dodoCustomerId: customer.dodoCustomerId, // Replace customer.dodoCustomerId with your field storing Dodo Payments customer ID
     };
   },
   apiKey: process.env.DODO_PAYMENTS_API_KEY!,
   environment: process.env.DODO_PAYMENTS_ENVIRONMENT as "test_mode" | "live_mode",
-});
+} as DodoPaymentsClientConfig);
 
 // Export the API methods for use in your app
 export const { checkout, customerPortal } = dodo.api();
