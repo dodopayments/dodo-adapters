@@ -10,6 +10,9 @@ jobs:
   ci:
     name: CI Checks
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
