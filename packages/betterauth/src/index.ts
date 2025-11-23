@@ -21,6 +21,7 @@ export { dodopaymentsClient } from "./client";
 export { portal } from "./plugins/portal";
 export { checkout, CheckoutOptions } from "./plugins/checkout";
 export { webhooks } from "./plugins/webhooks";
+export { usage } from "./plugins/usage";
 
 export const dodopayments = (options: DodoPaymentsOptions) => {
   const plugins = options.use
