@@ -14,7 +14,17 @@ const EventInputSchema = z.object({
     .record(z.union([z.string(), z.number(), z.boolean()]))
     .nullable()
     .optional(),
-  timestamp: z.string().datetime().optional(),
+  timestamp: z
+    // NOTE: coerce because the date object gets converted to a string over network requests
+    // but we still want to enforce that it's a Date type
+    .date({ coerce: true })
+    .transform((d) => d.toISOString())
+    .optional()
+    .describe(
+      "Custom Timestamp. Defaults to current timestamp in UTC.\
+      Timestamps that are older that 1 hour or after 5 mins from\
+      current timestamp will be rejected.",
+    ),
 });
 
 export const usage = () => (dodopayments: DodoPayments) => {
@@ -62,8 +72,8 @@ export const usage = () => (dodopayments: DodoPayments) => {
                 event_id: ctx.body.event_id,
                 customer_id: customer.customer_id,
                 event_name: ctx.body.event_name,
-                timestamp: ctx.body.timestamp ?? new Date().toISOString(),
-                metadata: ctx.body.metadata ?? {},
+                timestamp: ctx.body.timestamp,
+                metadata: ctx.body.metadata,
               },
             ],
           });

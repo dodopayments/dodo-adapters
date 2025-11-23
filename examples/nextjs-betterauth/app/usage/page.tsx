@@ -50,6 +50,7 @@ export default function UsagePage() {
           route: "/usage-demo",
           method: "GET",
         },
+        timestamp: new Date(),
       });
 
       await loadUsage();
@@ -224,7 +225,10 @@ function renderMetadata(metadata: Record<string, unknown> | null | undefined) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
       {Object.entries(metadata).map(([key, value]) => (
-        <span key={key} style={{ fontFamily: "monospace", fontSize: "0.85rem" }}>
+        <span
+          key={key}
+          style={{ fontFamily: "monospace", fontSize: "0.85rem" }}
+        >
           {key}: {String(value)}
         </span>
       ))}
