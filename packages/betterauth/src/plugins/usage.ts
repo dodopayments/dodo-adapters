@@ -4,10 +4,7 @@ import {
   sessionMiddleware,
 } from "better-auth/api";
 import type { DodoPayments } from "dodopayments";
-import {
-  UsageEventIngestResponse,
-  EventsDefaultPageNumberPagination,
-} from "dodopayments/resources/usage-events.mjs";
+import { Event } from "dodopayments/resources/usage-events.mjs";
 import { z } from "zod/v3";
 
 const EventInputSchema = z.object({
@@ -27,10 +24,10 @@ export const usage = () => (dodopayments: DodoPayments) => {
       "/dodopayments/usage/ingest",
       {
         method: "POST",
-        body:EventInputSchema,
+        body: EventInputSchema,
         use: [sessionMiddleware],
       },
-      async (ctx): Promise<UsageEventIngestResponse> => {
+      async (ctx): Promise<{ ingested_count: number }> => {
         if (!ctx.context.session?.user?.id) {
           throw new APIError("BAD_REQUEST", {
             message: "User not found",
@@ -71,7 +68,7 @@ export const usage = () => (dodopayments: DodoPayments) => {
             ],
           });
 
-          return result;
+          return ctx.json({ ingested_count: result.ingested_count });
         } catch (e: unknown) {
           if (e instanceof Error) {
             ctx.context.logger.error(
@@ -103,7 +100,7 @@ export const usage = () => (dodopayments: DodoPayments) => {
           .optional(),
         use: [sessionMiddleware],
       },
-      async (ctx): Promise<EventsDefaultPageNumberPagination> => {
+      async (ctx): Promise<{ items: Event[] }> => {
         if (!ctx.context.session?.user?.id) {
           throw new APIError("BAD_REQUEST", {
             message: "User not found",
@@ -137,7 +134,7 @@ export const usage = () => (dodopayments: DodoPayments) => {
             ...ctx.query,
           });
 
-          return meters;
+          return ctx.json({ items: meters.items });
         } catch (e: unknown) {
           if (e instanceof Error) {
             ctx.context.logger.error(
