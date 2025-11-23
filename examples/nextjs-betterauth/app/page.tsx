@@ -48,7 +48,9 @@ export default function Home() {
           </p>
           <p>
             These endpoints redirect authenticated users to the Dodo Payments
-            checkout page. Use the product slug "example-product" or productId.
+            checkout page. Use the usage-plan slug "builder-usage" (or the
+            productId) to map directly to the Builder Usage Plan created in
+            DodoPayments.
           </p>
         </div>
 
@@ -77,6 +79,23 @@ export default function Home() {
           <p>
             These endpoints return the customer's subscription and payment
             history.
+          </p>
+        </div>
+
+        <div style={{ marginBottom: "1.5rem" }}>
+          <h3>⚙️ Usage Tracking (Dodo Payments)</h3>
+          <p>
+            <strong>Ingest Usage (POST):</strong>{" "}
+            <code>/api/auth/dodopayments/usage/ingest</code>
+          </p>
+          <p>
+            <strong>List Usage (GET):</strong>{" "}
+            <code>/api/auth/dodopayments/usage/meters/list</code>
+          </p>
+          <p>
+            The BetterAuth usage plugin records metered events (like API
+            requests) and lets customers inspect recent usage for the meters
+            attached to their subscription.
           </p>
         </div>
 
@@ -133,14 +152,26 @@ export default function Home() {
           }}
         >
           <pre style={{ margin: 0, overflow: "auto" }}>
-            {`// Example: Creating a checkout
-const checkout = await authClient.dodopayments.checkout.mutate({
-  slug: "example-product",
+{`// Example: Creating a checkout
+const checkout = await authClient.dodopayments.checkout({
+  slug: "builder-usage",
 });
 
 if (checkout.redirect) {
   window.location.href = checkout.url;
 }
+
+// Example: Recording metered usage
+await authClient.dodopayments.usage.ingest({
+  event_id: crypto.randomUUID(),
+  event_name: "api_request",
+  metadata: { route: "/api/reports" },
+});
+
+// Example: Listing usage for the current customer
+const usage = await authClient.dodopayments.usage.meters.list({
+  query: { page_size: 5 },
+});
 
 // Example: Accessing customer portal
 const portal = await authClient.dodopayments.portal.query();
