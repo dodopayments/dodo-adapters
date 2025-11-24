@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2025-11-21
+
+### Added
+
+- Exposed the new `usage` plugin for ingesting and listing DodoPayments usage events via BetterAuth endpoints.
+
 ## [1.3.5] - 2025-11-15
 
 ### Fixed

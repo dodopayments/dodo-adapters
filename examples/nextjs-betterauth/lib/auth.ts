@@ -5,6 +5,7 @@ import {
   checkout,
   portal,
   webhooks,
+  usage,
 } from "@dodopayments/better-auth";
 import DodoPayments from "dodopayments";
 
@@ -28,8 +29,8 @@ export const auth = betterAuth({
         checkout({
           products: [
             {
-              productId: "pdt_nZuwz45WAs64n3l07zpQR",
-              slug: "the-alchemist",
+              productId: "pdt_apn1sTGe7EDL7Fvr3DFc7",
+              slug: "builder-usage",
             },
           ],
           successUrl: process.env.RETURN_URL || "/dashboard",
@@ -45,6 +46,7 @@ export const auth = betterAuth({
             console.log("Payment succeeded:", payload);
           },
         }),
+        usage(),
       ],
     }),
   ],
