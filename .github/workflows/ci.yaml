@@ -9,6 +9,9 @@ on:
 jobs:
   ci:
     name: CI Checks
+    env:
+      DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY }}
+      DODO_PAYMENTS_WEBHOOK_SECRET: ${{ secrets.DODO_PAYMENTS_WEBHOOK_SECRET }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -26,7 +29,7 @@ jobs:
           cache: "npm"
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run CI
         run: npm run ci
