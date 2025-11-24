@@ -9,7 +9,7 @@ import {
 import DodoPayments from "dodopayments";
 
 export const dodoPayments = new DodoPayments({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY || "",
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
   environment:
     process.env.NODE_ENV === "production" ? "live_mode" : "test_mode",
 });
@@ -37,7 +37,7 @@ export const auth = betterAuth({
         }),
         portal(),
         webhooks({
-          webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET || "dGhpc19pc19hX3BsYWNlaG9sZGVyX3ZhbHVl", // placeholder value for build
+          webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
           onPayload: async (payload) => {
             console.log("Webhook payload received:", payload);
           },
