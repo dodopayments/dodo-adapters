@@ -1,5 +1,9 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "globalPassThroughEnv": [
+    "DODO_PAYMENTS_API_KEY",
+    "DODO_PAYMENTS_WEBHOOK_SECRET"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -34,7 +38,11 @@
       "dependsOn": ["build", "^check-types"]
     },
     "ci": {
-      "dependsOn": ["check-format", "check-types", "build", "test"]
+      "dependsOn": ["check-format", "check-types", "build", "test"],
+      "passThroughEnv": [
+        "DODO_PAYMENTS_API_KEY",
+        "DODO_PAYMENTS_WEBHOOK_SECRET"
+      ]
     }
   }
 }
