@@ -1,6 +1,6 @@
 import type { DodoPayments } from "dodopayments";
 
-import type { UnionToIntersection } from "better-auth";
+import type { GenericEndpointContext, UnionToIntersection, User } from "better-auth";
 import type { checkout } from "./plugins/checkout";
 import type { portal } from "./plugins/portal";
 import type { webhooks } from "./plugins/webhooks";
@@ -38,6 +38,36 @@ export interface DodoPaymentsOptions {
    * Enable customer creation when a user signs up
    */
   createCustomerOnSignUp?: boolean;
+  /**
+	 * A callback to run after a customer has been created
+	 * @param customer - Customer Data
+	 * @param DodoCustomer - DodoPayments Customer Data
+	 * @returns
+	 */
+  onCustomerCreate?:
+		| ((
+				data: {
+					DodoCustomer: DodoPayments.Customer;
+					user: User & { DodoPaymentsCustomerId: string };
+				},
+				ctx: GenericEndpointContext,
+		  ) => Promise<void>)
+		| undefined;
+  /**
+	 * A callback to run after a customer has been updated
+	 * @param customer - Customer Data
+	 * @param DodoCustomer - DodoPayments Customer Data
+	 * @returns
+	 */
+  onCustomerUpdate?:
+		| ((
+				data: {
+					DodoCustomer: DodoPayments.Customer;
+					user: User & { DodoPaymentsCustomerId: string };
+				},
+				ctx: GenericEndpointContext,
+		  ) => Promise<void>)
+		| undefined;
   /**
    * Use DodoPayments plugins
    */

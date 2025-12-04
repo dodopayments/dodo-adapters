@@ -1,6 +1,7 @@
 import type { GenericEndpointContext, User } from "better-auth";
 import { APIError } from "better-auth/api";
 import type { DodoPaymentsOptions } from "../types";
+import { DodoPayments } from 'dodopayments';
 
 export const onUserCreate =
   (options: DodoPaymentsOptions) =>
@@ -12,23 +13,40 @@ export const onUserCreate =
         });
         const existingCustomer = customers.items[0];
 
+        let dodoCustomer: DodoPayments.Customer | undefined;
         if (existingCustomer) {
           if (existingCustomer.email !== user.email) {
-            await options.client.customers.update(
+            dodoCustomer = await options.client.customers.update(
               existingCustomer.customer_id,
               {
                 name: user.name,
               },
             );
+          } else {
+            dodoCustomer = existingCustomer;
           }
         } else {
           // TODO: Add metadata to customer object via
           // getCustomerCreateParams option when it becomes
           // available in the API
-          await options.client.customers.create({
+          dodoCustomer = await options.client.customers.create({
             email: user.email,
             name: user.name,
           });
+        }
+
+        // Call the onCustomerCreate callback if provided
+        if (options.onCustomerCreate && dodoCustomer) {
+          await options.onCustomerCreate(
+            {
+              DodoCustomer: dodoCustomer,
+              user: {
+                ...user,
+                DodoPaymentsCustomerId: dodoCustomer.customer_id,
+              },
+            },
+            ctx,
+          );
         }
       } catch (e: unknown) {
         if (e instanceof Error) {
@@ -58,9 +76,26 @@ export const onUserUpdate =
           // TODO: Add metadata to customer object via
           // getCustomerCreateParams option when it becomes
           // available in the API
-          await options.client.customers.update(existingCustomer.customer_id, {
-            name: user.name,
-          });
+          const updatedCustomer = await options.client.customers.update(
+            existingCustomer.customer_id,
+            {
+              name: user.name,
+            },
+          );
+
+          // Call the onCustomerUpdate callback if provided
+          if (options.onCustomerUpdate && updatedCustomer) {
+            await options.onCustomerUpdate(
+              {
+                DodoCustomer: updatedCustomer,
+                user: {
+                  ...user,
+                  DodoPaymentsCustomerId: updatedCustomer.customer_id,
+                },
+              },
+              ctx,
+            );
+          }
         }
       } catch (e: unknown) {
         if (e instanceof Error) {
