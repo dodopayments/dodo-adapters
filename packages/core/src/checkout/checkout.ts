@@ -378,7 +378,13 @@ export const buildCheckoutUrl = async ({
       throw new Error("sessionPayload is required when type is 'session'");
     }
 
-    const session = await createCheckoutSession(sessionPayload, {
+    // Use sessionPayload.return_url if provided, otherwise fall back to config's returnUrl
+    const finalPayload = {
+      ...sessionPayload,
+      return_url: sessionPayload.return_url ?? returnUrl,
+    };
+
+    const session = await createCheckoutSession(finalPayload, {
       bearerToken,
       environment,
     });
