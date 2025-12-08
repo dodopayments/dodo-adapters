@@ -173,6 +173,13 @@ export const checkoutSessionCustomizationSchema = z
 export const checkoutSessionFeatureFlagsSchema = z
   .object({
     allow_currency_selection: z.boolean().optional(),
+    allow_customer_editing_city: z.boolean().optional(),
+    allow_customer_editing_country: z.boolean().optional(),
+    allow_customer_editing_email: z.boolean().optional(),
+    allow_customer_editing_name: z.boolean().optional(),
+    allow_customer_editing_state: z.boolean().optional(),
+    allow_customer_editing_street: z.boolean().optional(),
+    allow_customer_editing_zipcode: z.boolean().optional(),
     allow_discount_code: z.boolean().optional(),
     allow_phone_number_collection: z.boolean().optional(),
     allow_tax_id: z.boolean().optional(),
