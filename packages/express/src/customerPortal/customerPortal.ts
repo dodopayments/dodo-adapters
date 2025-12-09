@@ -16,7 +16,9 @@ export const CustomerPortal = ({
 
     const params: { send_email?: boolean } = {};
     if (send_email !== undefined) {
-      params.send_email = send_email === "true" || send_email === "1";
+      // Normalize to string (handle array case)
+      const sendEmailValue = Array.isArray(send_email) ? send_email[0] : send_email;
+      params.send_email = sendEmailValue === "true" || sendEmailValue === "1";
     }
 
     if (!customerId) {
