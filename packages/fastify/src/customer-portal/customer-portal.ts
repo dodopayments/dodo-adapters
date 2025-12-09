@@ -17,12 +17,9 @@ export const CustomerPortal = ({
       string
     >;
 
-    const params = {
-      send_email: false,
-    };
-    const sendEmail = Boolean(send_email);
-    if (sendEmail) {
-      params.send_email = sendEmail;
+    const params: { send_email?: boolean } = {};
+    if (send_email !== undefined) {
+      params.send_email = send_email === "true" || send_email === "1";
     }
 
     if (!customerId) {
