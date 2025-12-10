@@ -93,7 +93,7 @@ POST body:
 Environment:
 
 - DODO_PAYMENTS_API_KEY
-- DODO_ENVIRONMENT ("test_mode" | "live_mode")
+- DODO_PAYMENTS_ENVIRONMENT ("test_mode" | "live_mode")
 
 ---
 

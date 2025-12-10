@@ -4,7 +4,7 @@ import { changeSubscriptionPlan } from "@dodopayments/core/subscriptions";
 
 const envSchema = z.object({
   DODO_PAYMENTS_API_KEY: z.string().min(1),
-  DODO_ENVIRONMENT: z.enum(["test_mode", "live_mode"]),
+  DODO_PAYMENTS_ENVIRONMENT: z.enum(["test_mode", "live_mode"]),
 });
 
 const bodySchema = z.object({
@@ -25,16 +25,20 @@ const bodySchema = z.object({
 export async function POST(req: NextRequest) {
   const envInput = {
     DODO_PAYMENTS_API_KEY: process.env.DODO_PAYMENTS_API_KEY,
-    DODO_ENVIRONMENT:
-      (process.env.DODO_ENVIRONMENT as any) ??
-      (process.env.DODO_PAYMENTS_ENVIRONMENT as any),
+    DODO_PAYMENTS_ENVIRONMENT: process.env.DODO_PAYMENTS_ENVIRONMENT as any,
   };
   let env: z.infer<typeof envSchema>;
   try {
     env = envSchema.parse(envInput);
   } catch (e: unknown) {
     const desc = e instanceof Error ? e.message : "Invalid environment configuration";
-    console.error("Change-plan env parse failed", { error: desc, envInput: { DODO_ENVIRONMENT: envInput.DODO_ENVIRONMENT ? "[set]" : undefined, DODO_PAYMENTS_API_KEY: envInput.DODO_PAYMENTS_API_KEY ? "[set]" : undefined } });
+    console.error("Change-plan env parse failed", {
+      error: desc,
+      envInput: {
+        DODO_PAYMENTS_ENVIRONMENT: envInput.DODO_PAYMENTS_ENVIRONMENT ? "[set]" : undefined,
+        DODO_PAYMENTS_API_KEY: envInput.DODO_PAYMENTS_API_KEY ? "[set]" : undefined,
+      },
+    });
     return NextResponse.json(
       { error: `Missing or invalid environment variables: ${desc}` },
       { status: 500 },
@@ -55,7 +59,7 @@ export async function POST(req: NextRequest) {
   try {
     const result = await changeSubscriptionPlan(subscription_id, payload, {
       bearerToken: env.DODO_PAYMENTS_API_KEY,
-      environment: env.DODO_ENVIRONMENT,
+      environment: env.DODO_PAYMENTS_ENVIRONMENT,
     });
     // Some endpoints return empty body on success; normalize response
     return NextResponse.json(result ?? { success: true });

@@ -59,7 +59,7 @@ export default function Home() {
             <code>DODO_PAYMENTS_API_KEY</code> - Your Dodo Payments API key
           </li>
           <li>
-            <code>DODO_ENVIRONMENT</code> - <code>test_mode</code> or <code>live_mode</code>
+            <code>DODO_PAYMENTS_ENVIRONMENT</code> - <code>test_mode</code> or <code>live_mode</code>
           </li>
           <li>
             <code>RETURN_URL</code> - URL to redirect after successful checkout
