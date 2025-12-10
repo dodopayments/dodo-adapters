@@ -75,7 +75,7 @@ Returns 400 if `customer_id` is missing.
 
 ```typescript
 // app/api/change-plan/route.ts
-export { POST } from "@dodopayments/nextjs/customer-portal/change-plan";
+export { POST } from "@dodopayments/nextjs";
 ```
 
 POST body:
