@@ -17,6 +17,13 @@ export const CustomerPortal = ({
       string | string[]
     >;
 
+    // Normalize customer_id to string (handle array case)
+    const customerIdValue: string | undefined = customerId
+      ? Array.isArray(customerId)
+        ? customerId[0]
+        : customerId
+      : undefined;
+
     const params: { send_email?: boolean } = {};
     if (send_email !== undefined) {
       // Normalize to string (handle array case)
@@ -24,7 +31,7 @@ export const CustomerPortal = ({
       params.send_email = sendEmailValue === "true";
     }
 
-    if (!customerId) {
+    if (!customerIdValue) {
       return reply.status(400).send("Missing customerId in query parameters");
     }
 
@@ -35,7 +42,7 @@ export const CustomerPortal = ({
 
     try {
       const session = await dodopayments.customers.customerPortal.create(
-        customerId,
+        customerIdValue,
         params,
       );
       return reply.redirect(session.link);
