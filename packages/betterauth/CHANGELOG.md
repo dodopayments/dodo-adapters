@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.4.1] - 2024-12-12
+## [1.4.1] - 2025-12-12
 
 ### Fixed
 - Fixed Next.js 16+ Turbopack build error by separating client and server exports
