@@ -35,7 +35,8 @@
     }
   },
   "dependencies": {
-    "dodopayments": "^2.4.6"
+    "dodopayments": "^2.4.6",
+    "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
     "zod": "^3.25.0 || ^4.0.0"
