@@ -17,7 +17,7 @@ export const CustomerPortal = ({
     const params: { send_email?: boolean } = {};
     if (sendEmailParam !== null) {
       // searchParams.get() already returns a single string or null
-      params.send_email = sendEmailParam === "true" || sendEmailParam === "1";
+      params.send_email = sendEmailParam === "true";
     }
     if (!customerId) {
       return new Response("Missing customerId in query parameters", {
