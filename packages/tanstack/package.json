@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/tanstack",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.5",
+    "@dodopayments/core": "^0.3.7",
     "@tanstack/react-start": "^1.129.8"
   },
   "keywords": [

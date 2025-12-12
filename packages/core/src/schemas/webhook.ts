@@ -359,6 +359,13 @@ export const SubscriptionExpiredPayloadSchema = z.object({
   data: SubscriptionSchema,
 });
 
+export const SubscriptionUpdatedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("subscription.updated"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: SubscriptionSchema,
+});
+
 export const LicenseKeyCreatedPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("license_key.created"),
@@ -388,6 +395,7 @@ export const WebhookPayloadSchema = z.discriminatedUnion("type", [
   SubscriptionCancelledPayloadSchema,
   SubscriptionFailedPayloadSchema,
   SubscriptionExpiredPayloadSchema,
+  SubscriptionUpdatedPayloadSchema,
   LicenseKeyCreatedPayloadSchema,
 ]);
 
@@ -490,6 +498,10 @@ export type WebhookEventHandlers<TContext = void> = {
   onSubscriptionExpired?: HandlerWithContext<
     TContext,
     z.infer<typeof SubscriptionExpiredPayloadSchema>
+  >;
+  onSubscriptionUpdated?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionUpdatedPayloadSchema>
   >;
   onLicenseKeyCreated?: HandlerWithContext<
     TContext,
