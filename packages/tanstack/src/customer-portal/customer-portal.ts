@@ -17,12 +17,11 @@ export function CustomerPortal({
     // Extract customerId from query parameters
     const { searchParams } = new URL(request.url);
     const customerId = searchParams.get("customer_id");
-    const params = {
-      send_email: false,
-    };
-    const sendEmail = Boolean(searchParams.get("send_email"));
-    if (sendEmail) {
-      params.send_email = sendEmail;
+    const sendEmailParam = searchParams.get("send_email");
+    const params: { send_email?: boolean } = {};
+    if (sendEmailParam !== null) {
+      // searchParams.get() already returns a single string or null
+      params.send_email = sendEmailParam === "true";
     }
 
     if (!customerId) {
