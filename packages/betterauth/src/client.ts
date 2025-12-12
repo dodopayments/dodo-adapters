@@ -7,3 +7,14 @@ export const dodopaymentsClient = () => {
     $InferServerPlugin: {} as ReturnType<typeof dodopayments>,
   } satisfies BetterAuthClientPlugin;
 };
+
+export type {
+  Product,
+  DodoPaymentsEndpoints,
+  DodoPaymentsOptions,
+  PaymentItems,
+  SubscriptionItems,
+  CustomerPortalResponse,
+  CreateCheckoutResponse,
+  WebhookResponse,
+} from "./types";

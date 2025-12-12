@@ -4,74 +4,74 @@ import type { DodoPaymentsOptions } from "../types";
 
 export const onUserCreate =
   (options: DodoPaymentsOptions) =>
-  async (user: User, ctx?: GenericEndpointContext) => {
-    if (ctx && options.createCustomerOnSignUp) {
-      try {
-        const customers = await options.client.customers.list({
-          email: user.email,
-        });
-        const existingCustomer = customers.items[0];
-
-        if (existingCustomer) {
-          if (existingCustomer.email !== user.email) {
-            await options.client.customers.update(
-              existingCustomer.customer_id,
-              {
-                name: user.name,
-              },
-            );
-          }
-        } else {
-          // TODO: Add metadata to customer object via
-          // getCustomerCreateParams option when it becomes
-          // available in the API
-          await options.client.customers.create({
+    async (user: User & Record<string, unknown>, context: GenericEndpointContext | null) => {
+      if (context && options.createCustomerOnSignUp) {
+        try {
+          const customers = await options.client.customers.list({
             email: user.email,
-            name: user.name,
           });
-        }
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          throw new APIError("INTERNAL_SERVER_ERROR", {
-            message: `DodoPayments customer creation failed. Error: ${e.message}`,
-          });
-        }
+          const existingCustomer = customers.items[0];
 
-        throw new APIError("INTERNAL_SERVER_ERROR", {
-          message: `DodoPayments customer creation failed. Error: ${e}`,
-        });
+          if (existingCustomer) {
+            if (existingCustomer.email !== user.email) {
+              await options.client.customers.update(
+                existingCustomer.customer_id,
+                {
+                  name: user.name,
+                },
+              );
+            }
+          } else {
+            // TODO: Add metadata to customer object via
+            // getCustomerCreateParams option when it becomes
+            // available in the API
+            await options.client.customers.create({
+              email: user.email,
+              name: user.name,
+            });
+          }
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            throw new APIError("INTERNAL_SERVER_ERROR", {
+              message: `DodoPayments customer creation failed. Error: ${e.message}`,
+            });
+          }
+
+          throw new APIError("INTERNAL_SERVER_ERROR", {
+            message: `DodoPayments customer creation failed. Error: ${e}`,
+          });
+        }
       }
-    }
-  };
+    };
 
 export const onUserUpdate =
   (options: DodoPaymentsOptions) =>
-  async (user: User, ctx?: GenericEndpointContext) => {
-    if (ctx && options.createCustomerOnSignUp) {
-      try {
-        const customers = await options.client.customers.list({
-          email: user.email,
-        });
-        const existingCustomer = customers.items[0];
-
-        if (existingCustomer) {
-          // TODO: Add metadata to customer object via
-          // getCustomerCreateParams option when it becomes
-          // available in the API
-          await options.client.customers.update(existingCustomer.customer_id, {
-            name: user.name,
+    async (user: User & Record<string, unknown>, context: GenericEndpointContext | null) => {
+      if (context && options.createCustomerOnSignUp) {
+        try {
+          const customers = await options.client.customers.list({
+            email: user.email,
           });
-        }
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          ctx.context.logger.error(
-            `DodoPayments customer update failed. Error: ${e.message}`,
-          );
-        } else {
-          ctx.context.logger.error(
-            `DodoPayments customer update failed. Error: ${e}`,
-          );
+          const existingCustomer = customers.items[0];
+
+          if (existingCustomer) {
+            // TODO: Add metadata to customer object via
+            // getCustomerCreateParams option when it becomes
+            // available in the API
+            await options.client.customers.update(existingCustomer.customer_id, {
+              name: user.name,
+            });
+          }
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            context.context.logger.error(
+              `DodoPayments customer update failed. Error: ${e.message}`,
+            );
+          } else {
+            context.context.logger.error(
+              `DodoPayments customer update failed. Error: ${e}`,
+            );
+          }
         }
       }
-    }
-  };
+    };
