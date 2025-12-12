@@ -1,4 +1,4 @@
-import type { BetterAuthClientPlugin } from "better-auth";
+import type { BetterAuthClientPlugin } from "better-auth/types";
 import type { dodopayments } from "./index";
 
 export const dodopaymentsClient = () => {
@@ -7,3 +7,14 @@ export const dodopaymentsClient = () => {
     $InferServerPlugin: {} as ReturnType<typeof dodopayments>,
   } satisfies BetterAuthClientPlugin;
 };
+
+export type {
+  Product,
+  DodoPaymentsEndpoints,
+  DodoPaymentsOptions,
+  PaymentItems,
+  SubscriptionItems,
+  CustomerPortalResponse,
+  CreateCheckoutResponse,
+  WebhookResponse,
+} from "./types";

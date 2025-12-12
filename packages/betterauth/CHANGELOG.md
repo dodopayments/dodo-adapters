@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.1] - 2024-12-12
+
+### Fixed
+- Fixed Next.js 16+ Turbopack build error by separating client and server exports
+- Client code now uses `/client` import path to avoid bundling Node.js dependencies
+- Server-side code continues to use the main entry point
+
+### Changed
+- **BREAKING**: Client code must now import from `@dodopayments/better-auth/client` instead of `@dodopayments/better-auth`
+- Example: `import { dodopaymentsClient } from "@dodopayments/better-auth/client"`
+
 All notable changes to this project will be documented in this file.
 
 ## [1.4.0] - 2025-11-21
