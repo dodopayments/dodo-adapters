@@ -1,4 +1,4 @@
-import type { BetterAuthClientPlugin } from "better-auth/types";
+import type { BetterAuthClientPlugin } from "better-auth";
 import type { dodopayments } from "./index";
 
 export const dodopaymentsClient = () => {

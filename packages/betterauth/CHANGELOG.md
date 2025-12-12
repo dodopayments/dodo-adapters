@@ -3,15 +3,15 @@
 ## [1.4.1] - 2025-12-12
 
 ### Fixed
-- Fixed Next.js 16+ Turbopack build error by separating client and server exports
-- Client code now uses `/client` import path to avoid bundling Node.js dependencies
-- Server-side code continues to use the main entry point
+
+- Fixed Next.js 16+ Turbopack build error by vendoring standardwebhooks package logic into @dodopayments/core
+- Removed external dependency on standardwebhooks package to prevent Node.js crypto module from being bundled in client-side code
 
 ### Changed
-- **BREAKING**: Client code must now import from `@dodopayments/better-auth/client` instead of `@dodopayments/better-auth`
-- Example: `import { dodopaymentsClient } from "@dodopayments/better-auth/client"`
 
-All notable changes to this project will be documented in this file.
+- Webhook verification now uses vendored implementation with Node.js built-in crypto module
+- Package exports now support browser-specific resolution for improved compatibility
+- Optional `/client` export path available for explicit client-side imports (backwards compatible)
 
 ## [1.4.0] - 2025-11-21
 

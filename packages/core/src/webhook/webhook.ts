@@ -8,7 +8,7 @@ import {
 import {
   Webhook as StandardWebhook,
   WebhookVerificationError,
-} from "standardwebhooks";
+} from "./vendor/standardwebhook";
 
 export type WebhookHandlerConfig<TContext = void> = Resolve<
   {

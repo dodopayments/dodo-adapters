@@ -90,15 +90,13 @@ Initialize the client in your application to interact with the payment endpoints
 ```typescript
 // src/lib/auth-client.ts
 import { createAuthClient } from "better-auth/react";
-import { dodopaymentsClient } from "@dodopayments/better-auth/client";
+import { dodopaymentsClient } from "@dodopayments/better-auth";
 
 export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
   plugins: [dodopaymentsClient()],
 });
 ```
-
-> **Note:** Use the `/client` import path for client-side code to avoid bundling server-side dependencies. This is especially important for Next.js 16+ with Turbopack.
 
 ## Usage
 
@@ -266,14 +264,12 @@ STEP 4: Client Configuration
 Create or update your auth client file (src/lib/auth-client.ts):
 
 import { createAuthClient } from "better-auth/react";
-import { dodopaymentsClient } from "@dodopayments/better-auth/client";
+import { dodopaymentsClient } from "@dodopayments/better-auth";
 
 export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
   plugins: [dodopaymentsClient()],
 });
-
-Note: Use the /client import path for client-side code to avoid bundling server-side dependencies. This is especially important for Next.js 16+ with Turbopack.
 
 STAGE 2: PLUGIN IMPLEMENTATION
 

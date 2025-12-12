@@ -10,5 +10,6 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   skipNodeModulesBundle: true,
-  external: ["better-auth"],
+  external: ["better-auth", "@dodopayments/core"],
+  noExternal: [],
 });

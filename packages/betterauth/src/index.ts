@@ -16,6 +16,8 @@ export type {
   WebhookResponse,
 } from "./types";
 
+export { dodopaymentsClient } from "./client";
+
 export { portal } from "./plugins/portal";
 export { checkout, CheckoutOptions } from "./plugins/checkout";
 export { webhooks } from "./plugins/webhooks";
