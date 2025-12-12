@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Server-only webhook verification implementation.
+ * @description Vendored from standardwebhooks package to avoid bundling issues.
+ * Uses Node.js crypto module - DO NOT import in client/browser code.
+ * @internal
+ */
+
 import { createHmac, timingSafeEqual as cryptoTimingSafeEqual } from "crypto";
 
 const WEBHOOK_TOLERANCE_IN_SECONDS = 5 * 60; // 5 minutes
@@ -61,12 +68,25 @@ export class Webhook {
 
   verify(
     payload: string | Buffer,
-    headers_: WebhookUnbrandedRequiredHeaders | Record<string, string>,
+    headers_:
+      | WebhookUnbrandedRequiredHeaders
+      | Headers
+      | Record<string, string | string[] | undefined>,
   ): unknown {
-    // Normalize headers to lowercase
+    // Normalize headers to lowercase, handling Headers object and string arrays
     const headers: Record<string, string> = {};
-    for (const key of Object.keys(headers_)) {
-      headers[key.toLowerCase()] = (headers_ as Record<string, string>)[key];
+    const entries =
+      headers_ instanceof Headers
+        ? Array.from(headers_.entries())
+        : Object.entries(
+          headers_ as Record<string, string | string[] | undefined>,
+        );
+
+    for (const [key, value] of entries) {
+      if (value == null) continue;
+      headers[key.toLowerCase()] = Array.isArray(value)
+        ? value.join(",")
+        : value;
     }
 
     const msgId = headers["webhook-id"];
@@ -81,10 +101,13 @@ export class Webhook {
     const computedSignature = this.sign(msgId, timestamp, payload);
     const expectedSignature = computedSignature.split(",")[1];
 
-    const passedSignatures = msgSignature.split(" ");
+    // Handle multiple spaces and trim whitespace
+    const passedSignatures = msgSignature.trim().split(/\s+/);
 
     for (const versionedSignature of passedSignatures) {
-      const [version, signature] = versionedSignature.split(",");
+      const [version, signature] = versionedSignature
+        .split(",", 2)
+        .map((s) => s.trim());
 
       if (version !== "v1") {
         continue;
@@ -96,7 +119,11 @@ export class Webhook {
         expectedSignature &&
         timingSafeEqual(signature, expectedSignature)
       ) {
-        return JSON.parse(payload.toString());
+        try {
+          return JSON.parse(payload.toString("utf-8"));
+        } catch {
+          throw new WebhookVerificationError("Payload is not valid JSON");
+        }
       }
     }
 

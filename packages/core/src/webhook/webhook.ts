@@ -1,3 +1,10 @@
+/**
+ * @module webhook
+ * @description Server-only webhook verification utilities.
+ * This module uses Node.js crypto and should only be imported in server contexts.
+ * @see https://github.com/dodopayments/dodo-adapters for usage examples
+ */
+
 import {
   WebhookEventHandlers,
   WebhookPayload,
