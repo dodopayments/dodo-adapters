@@ -57,7 +57,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/core
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-nextjs:
     name: Release @dodopayments/nextjs
@@ -106,7 +106,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/nextjs
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-betterauth:
     name: Release @dodopayments/better-auth
@@ -153,7 +153,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/betterauth
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-nuxt:
     name: Release @dodopayments/nuxt
@@ -202,7 +202,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/nuxt
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-express:
     name: Release @dodopayments/express
@@ -251,7 +251,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/express
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-astro:
     name: Release @dodopayments/astro
@@ -300,7 +300,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/astro
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-remix:
     name: Release @dodopayments/remix
@@ -349,7 +349,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/remix
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-sveltekit:
     name: Release @dodopayments/sveltekit
@@ -398,7 +398,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/sveltekit
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-tanstack:
     name: Release @dodopayments/tanstack
@@ -447,7 +447,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/tanstack
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-fastify:
     name: Release @dodopayments/fastify
@@ -496,7 +496,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/fastify
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-hono:
     name: Release @dodopayments/hono
@@ -545,7 +545,7 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/hono
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-convex:
     name: Release @dodopayments/convex
@@ -594,4 +594,4 @@ jobs:
         run: npm publish --provenance --access public
         working-directory: packages/convex
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
