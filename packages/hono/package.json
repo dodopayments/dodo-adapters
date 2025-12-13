@@ -49,5 +49,9 @@
   "files": [
     "dist",
     "llm-prompt.txt"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dodopayments/dodo-adapters.git"
+  }
 }

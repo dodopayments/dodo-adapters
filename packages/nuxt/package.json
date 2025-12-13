@@ -50,5 +50,9 @@
     "email": "support@dodopayments.com",
     "url": "https://dodopayments.com"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dodopayments/dodo-adapters.git"
+  }
 }
