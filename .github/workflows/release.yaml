@@ -4,6 +4,10 @@ on:
     types:
       - published
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   release-core:
     name: Release @dodopayments/core
@@ -47,10 +51,8 @@ jobs:
 
       - name: Publish core to NPM
         if: steps.version_check_core.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/core
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-nextjs:
     name: Release @dodopayments/nextjs
@@ -96,10 +98,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_nextjs.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/nextjs
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-betterauth:
     name: Release @dodopayments/better-auth
@@ -143,10 +143,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_betterauth.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/betterauth
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-nuxt:
     name: Release @dodopayments/nuxt
@@ -192,10 +190,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_nuxt.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/nuxt
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-express:
     name: Release @dodopayments/express
@@ -241,10 +237,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_express.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/express
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-astro:
     name: Release @dodopayments/astro
@@ -290,10 +284,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_astro.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/astro
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-remix:
     name: Release @dodopayments/remix
@@ -339,10 +331,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_remix.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/remix
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-sveltekit:
     name: Release @dodopayments/sveltekit
@@ -388,10 +378,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_sveltekit.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/sveltekit
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-tanstack:
     name: Release @dodopayments/tanstack
@@ -437,10 +425,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_tanstack.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/tanstack
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-fastify:
     name: Release @dodopayments/fastify
@@ -486,10 +472,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_fastify.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/fastify
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-hono:
     name: Release @dodopayments/hono
@@ -535,10 +519,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_hono.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/hono
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-convex:
     name: Release @dodopayments/convex
@@ -584,7 +566,5 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version_check_convex.outputs.should_publish == 'true'
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         working-directory: packages/convex
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
