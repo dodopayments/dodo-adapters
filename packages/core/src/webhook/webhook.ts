@@ -141,6 +141,10 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onSubscriptionExpired, payload);
   }
 
+  if (payload.type === "subscription.updated") {
+    await callHandler(config.onSubscriptionUpdated, payload);
+  }
+
   if (payload.type === "license_key.created") {
     await callHandler(config.onLicenseKeyCreated, payload);
   }

@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/nuxt",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Dodo Payments Nuxt integration",
   "type": "module",
   "publishConfig": {
@@ -20,7 +20,7 @@
     "dev": "rollup -c -w"
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.5",
+    "@dodopayments/core": "^0.3.7",
     "@nuxt/module-builder": "^1.0.1"
   },
   "devDependencies": {
@@ -50,5 +50,9 @@
     "email": "support@dodopayments.com",
     "url": "https://dodopayments.com"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dodopayments/dodo-adapters.git"
+  }
 }
