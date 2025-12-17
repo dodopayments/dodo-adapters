@@ -4,7 +4,7 @@ import type { DodoPaymentsOptions } from "../types";
 
 export const onUserCreate =
   (options: DodoPaymentsOptions) =>
-    async (user: User & Record<string, unknown>, context: GenericEndpointContext | null) => {
+    async (user: User, context: GenericEndpointContext | null) => {
       if (context && options.createCustomerOnSignUp) {
         try {
           const customers = await options.client.customers.list({
@@ -46,7 +46,7 @@ export const onUserCreate =
 
 export const onUserUpdate =
   (options: DodoPaymentsOptions) =>
-    async (user: User & Record<string, unknown>, context: GenericEndpointContext | null) => {
+    async (user: User, context: GenericEndpointContext | null) => {
       if (context && options.createCustomerOnSignUp) {
         try {
           const customers = await options.client.customers.list({
