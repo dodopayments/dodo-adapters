@@ -13,14 +13,12 @@ export const onUserCreate =
           const existingCustomer = customers.items[0];
 
           if (existingCustomer) {
-            if (existingCustomer.email !== user.email) {
-              await options.client.customers.update(
-                existingCustomer.customer_id,
-                {
-                  name: user.name,
-                },
-              );
-            }
+            await options.client.customers.update(
+              existingCustomer.customer_id,
+              {
+                name: user.name,
+              },
+            );
           } else {
             // TODO: Add metadata to customer object via
             // getCustomerCreateParams option when it becomes
