@@ -1,15 +1,11 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: {
-    index: "src/index.ts",
-    client: "src/client.ts",
-  },
+  entry: ["src/"],
   format: ["cjs", "esm"],
   dts: true,
   sourcemap: true,
   clean: true,
   skipNodeModulesBundle: true,
-  external: ["better-auth", "@dodopayments/core"],
-  noExternal: [],
+  external: ["better-auth"],
 });

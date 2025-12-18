@@ -10,8 +10,6 @@ A Better Auth plugin for integrating Dodo Payments into your authentication flow
 - **Webhook Event Handling** - Real-time payment event processing with signature verification
 - **TypeScript Support** - Full type safety with TypeScript definitions
 
-> **⚠️ Server-Only Modules:** Webhook verification uses Node.js crypto and must only be imported in server contexts. Client-side code should import from the main package (the browser export automatically provides safe bundles) or explicitly from `@dodopayments/better-auth/client` to avoid bundling server dependencies.
-
 ## Installation
 
 ```bash

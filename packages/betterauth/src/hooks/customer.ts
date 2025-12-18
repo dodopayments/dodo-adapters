@@ -4,8 +4,8 @@ import type { DodoPaymentsOptions } from "../types";
 
 export const onUserCreate =
   (options: DodoPaymentsOptions) =>
-  async (user: User, context: GenericEndpointContext | null) => {
-    if (context && options.createCustomerOnSignUp) {
+  async (user: User, ctx: GenericEndpointContext | null) => {
+    if (ctx && options.createCustomerOnSignUp) {
       try {
         const customers = await options.client.customers.list({
           email: user.email,
@@ -41,8 +41,8 @@ export const onUserCreate =
 
 export const onUserUpdate =
   (options: DodoPaymentsOptions) =>
-  async (user: User, context: GenericEndpointContext | null) => {
-    if (context && options.createCustomerOnSignUp) {
+  async (user: User, ctx: GenericEndpointContext | null) => {
+    if (ctx && options.createCustomerOnSignUp) {
       try {
         const customers = await options.client.customers.list({
           email: user.email,
@@ -59,11 +59,11 @@ export const onUserUpdate =
         }
       } catch (e: unknown) {
         if (e instanceof Error) {
-          context.context.logger.error(
+          ctx.context.logger.error(
             `DodoPayments customer update failed. Error: ${e.message}`,
           );
         } else {
-          context.context.logger.error(
+          ctx.context.logger.error(
             `DodoPayments customer update failed. Error: ${e}`,
           );
         }
