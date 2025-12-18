@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/remix",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.7"
+    "@dodopayments/core": "^0.3.8"
   },
   "keywords": [
     "payments",
