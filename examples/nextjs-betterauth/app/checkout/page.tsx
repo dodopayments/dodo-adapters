@@ -164,8 +164,8 @@ export default function CheckoutPage() {
           Usage-Based Plans
         </h2>
         <p style={{ color: "#4b5563", textAlign: "center" }}>
-          These plans use the API Requests meter to bill beyond the included request
-          allowance.
+          These plans use the API Requests meter to bill beyond the included
+          request allowance.
         </p>
       </div>
 
