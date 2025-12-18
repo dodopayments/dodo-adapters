@@ -2,30 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.4.1] - 2025-12-12
+## [1.4.2] - 2025-12-12
 
 ### Fixed
 
 - Fixed Next.js 16+ Turbopack build error by vendoring standardwebhooks package logic into @dodopayments/core
-- Prevented Node.js crypto module from being bundled in client-side code through vendored webhook implementation
 
-### Changed
+## [1.4.1] - 2025-12-11
 
-- Webhook verification now uses vendored implementation with Node.js built-in crypto module
-- Package exports now support browser-specific resolution for improved compatibility
-  - Browser environments automatically receive client-safe bundles without server dependencies
-  - Server environments receive full functionality including webhook verification
-- Optional `/client` export path available for explicit client-side imports (backwards compatible)
-- Updated hook signatures for better-auth 1.4.6 compatibility
-- Added documentation clarifying server-only modules and conditional export behavior
+### Fixed
 
-### Technical Notes
-
-- Webhook utilities in `@dodopayments/core/webhook` are server-only and use Node.js crypto
-- Conditional package.json exports ensure browser contexts receive client-safe code automatically
-- TypeScript declarations may show webhook types in both exports, but runtime JS correctly separates client/server code
-- Webhook verification now handles Headers objects, string arrays, and undefined header values robustly
-- JSON parsing errors are now properly wrapped in WebhookVerificationError for consistent error handling
+- make type changes so the package builds with better-auth@1.4.6 or higher
 
 ## [1.4.0] - 2025-11-21
 
