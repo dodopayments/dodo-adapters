@@ -152,7 +152,7 @@ export default function Home() {
           }}
         >
           <pre style={{ margin: 0, overflow: "auto" }}>
-{`// Example: Creating a checkout
+            {`// Example: Creating a checkout
 const checkout = await authClient.dodopayments.checkout({
   slug: "builder-usage",
 });

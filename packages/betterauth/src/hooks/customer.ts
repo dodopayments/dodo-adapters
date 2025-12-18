@@ -4,7 +4,7 @@ import type { DodoPaymentsOptions } from "../types";
 
 export const onUserCreate =
   (options: DodoPaymentsOptions) =>
-  async (user: User, ctx?: GenericEndpointContext) => {
+  async (user: User, ctx: GenericEndpointContext | null) => {
     if (ctx && options.createCustomerOnSignUp) {
       try {
         const customers = await options.client.customers.list({
@@ -13,14 +13,9 @@ export const onUserCreate =
         const existingCustomer = customers.items[0];
 
         if (existingCustomer) {
-          if (existingCustomer.email !== user.email) {
-            await options.client.customers.update(
-              existingCustomer.customer_id,
-              {
-                name: user.name,
-              },
-            );
-          }
+          await options.client.customers.update(existingCustomer.customer_id, {
+            name: user.name,
+          });
         } else {
           // TODO: Add metadata to customer object via
           // getCustomerCreateParams option when it becomes
@@ -46,7 +41,7 @@ export const onUserCreate =
 
 export const onUserUpdate =
   (options: DodoPaymentsOptions) =>
-  async (user: User, ctx?: GenericEndpointContext) => {
+  async (user: User, ctx: GenericEndpointContext | null) => {
     if (ctx && options.createCustomerOnSignUp) {
       try {
         const customers = await options.client.customers.list({

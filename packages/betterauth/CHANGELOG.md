@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.2] - 2025-12-12
+
+### Fixed
+
+- Fixed Next.js 16+ Turbopack build error by vendoring standardwebhooks package logic into @dodopayments/core
+
+## [1.4.1] - 2025-12-11
+
+### Fixed
+
+- make type changes so the package builds with better-auth@1.4.6 or higher
+
 ## [1.4.0] - 2025-11-21
 
 ### Added
