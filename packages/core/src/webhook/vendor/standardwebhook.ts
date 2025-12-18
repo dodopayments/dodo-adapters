@@ -1,16 +1,41 @@
 /**
+ * The MIT License
+ *
+ * Copyright (c) 2023 Svix (https://www.svix.com)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
  * @fileoverview Server-only webhook verification implementation.
  * @description Vendored from standardwebhooks package to avoid bundling issues.
  * Uses Node.js crypto module - DO NOT import in client/browser code.
+ * @license MIT
  * @internal
  */
 
-import { createHmac, timingSafeEqual as cryptoTimingSafeEqual } from "crypto";
+import { timingSafeEqual } from "./timing_safe_equal";
+import * as base64 from "@stablelib/base64";
+import * as sha256 from "fast-sha256";
 
 const WEBHOOK_TOLERANCE_IN_SECONDS = 5 * 60; // 5 minutes
 
 class ExtendableError extends Error {
-  constructor(message: string) {
+  constructor(message: any) {
     super(message);
     Object.setPrototypeOf(this, ExtendableError.prototype);
     this.name = "ExtendableError";
@@ -37,56 +62,37 @@ export interface WebhookOptions {
 }
 
 export class Webhook {
-  private static readonly prefix = "whsec_";
-  private readonly key: Buffer;
+  private static prefix = "whsec_";
+  private readonly key: Uint8Array;
 
   constructor(secret: string | Uint8Array, options?: WebhookOptions) {
     if (!secret) {
       throw new Error("Secret can't be empty.");
     }
-
     if (options?.format === "raw") {
       if (secret instanceof Uint8Array) {
-        this.key = Buffer.from(secret);
+        this.key = secret;
       } else {
-        this.key = Buffer.from(secret, "utf-8");
+        this.key = Uint8Array.from(secret, (c) => c.charCodeAt(0));
       }
     } else {
       if (typeof secret !== "string") {
         throw new Error("Expected secret to be of type string");
       }
-
-      // Remove prefix if present
       if (secret.startsWith(Webhook.prefix)) {
         secret = secret.substring(Webhook.prefix.length);
       }
-
-      // Decode base64 secret
-      this.key = Buffer.from(secret, "base64");
+      this.key = base64.decode(secret);
     }
   }
 
-  verify(
+  public verify(
     payload: string | Buffer,
-    headers_:
-      | WebhookUnbrandedRequiredHeaders
-      | Headers
-      | Record<string, string | string[] | undefined>,
+    headers_: WebhookUnbrandedRequiredHeaders | Record<string, string>,
   ): unknown {
-    // Normalize headers to lowercase, handling Headers object and string arrays
     const headers: Record<string, string> = {};
-    const entries =
-      headers_ instanceof Headers
-        ? Array.from(headers_.entries())
-        : Object.entries(
-          headers_ as Record<string, string | string[] | undefined>,
-        );
-
-    for (const [key, value] of entries) {
-      if (value == null) continue;
-      headers[key.toLowerCase()] = Array.isArray(value)
-        ? value.join(",")
-        : value;
+    for (const key of Object.keys(headers_)) {
+      headers[key.toLowerCase()] = (headers_ as Record<string, string>)[key];
     }
 
     const msgId = headers["webhook-id"];
@@ -98,64 +104,54 @@ export class Webhook {
     }
 
     const timestamp = this.verifyTimestamp(msgTimestamp);
+
     const computedSignature = this.sign(msgId, timestamp, payload);
     const expectedSignature = computedSignature.split(",")[1];
 
-    // Handle multiple spaces and trim whitespace
-    const passedSignatures = msgSignature.trim().split(/\s+/);
+    const passedSignatures = msgSignature.split(" ");
 
+    const encoder = new globalThis.TextEncoder();
     for (const versionedSignature of passedSignatures) {
-      const [version, signature] = versionedSignature
-        .split(",", 2)
-        .map((s) => s.trim());
-
+      const [version, signature] = versionedSignature.split(",");
       if (version !== "v1") {
         continue;
       }
 
-      // Use timing-safe comparison
       if (
-        signature &&
-        expectedSignature &&
-        timingSafeEqual(signature, expectedSignature)
+        timingSafeEqual(
+          encoder.encode(signature),
+          encoder.encode(expectedSignature),
+        )
       ) {
-        try {
-          return JSON.parse(payload.toString("utf-8"));
-        } catch {
-          throw new WebhookVerificationError("Payload is not valid JSON");
-        }
+        return JSON.parse(payload.toString());
       }
     }
-
     throw new WebhookVerificationError("No matching signature found");
   }
 
-  sign(msgId: string, timestamp: Date, payload: string | Buffer): string {
-    let payloadStr: string;
-
+  public sign(
+    msgId: string,
+    timestamp: Date,
+    payload: string | Buffer,
+  ): string {
     if (typeof payload === "string") {
-      payloadStr = payload;
-    } else if (Buffer.isBuffer(payload)) {
-      payloadStr = payload.toString("utf-8");
+      // Do nothing, already a string
+    } else if (payload.constructor.name === "Buffer") {
+      payload = payload.toString();
     } else {
       throw new Error("Expected payload to be of type string or Buffer.");
     }
 
+    const encoder = new TextEncoder();
     const timestampNumber = Math.floor(timestamp.getTime() / 1000);
-    const toSign = `${msgId}.${timestampNumber}.${payloadStr}`;
-
-    // Create HMAC-SHA256 signature
-    const hmac = createHmac("sha256", this.key);
-    hmac.update(toSign);
-    const expectedSignature = hmac.digest("base64");
-
+    const toSign = encoder.encode(`${msgId}.${timestampNumber}.${payload}`);
+    const expectedSignature = base64.encode(sha256.hmac(this.key, toSign));
     return `v1,${expectedSignature}`;
   }
 
   private verifyTimestamp(timestampHeader: string): Date {
     const now = Math.floor(Date.now() / 1000);
     const timestamp = parseInt(timestampHeader, 10);
-
     if (isNaN(timestamp)) {
       throw new WebhookVerificationError("Invalid Signature Headers");
     }
@@ -163,25 +159,9 @@ export class Webhook {
     if (now - timestamp > WEBHOOK_TOLERANCE_IN_SECONDS) {
       throw new WebhookVerificationError("Message timestamp too old");
     }
-
     if (timestamp > now + WEBHOOK_TOLERANCE_IN_SECONDS) {
       throw new WebhookVerificationError("Message timestamp too new");
     }
-
     return new Date(timestamp * 1000);
   }
-}
-
-/**
- * Timing-safe string comparison using Node.js crypto.timingSafeEqual
- */
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  const bufA = Buffer.from(a, "utf-8");
-  const bufB = Buffer.from(b, "utf-8");
-
-  return cryptoTimingSafeEqual(bufA, bufB);
 }
