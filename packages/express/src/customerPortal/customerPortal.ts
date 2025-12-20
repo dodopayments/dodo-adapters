@@ -17,8 +17,8 @@ export const CustomerPortal = ({
     // Normalize customer_id to string (handle array case)
     const customerIdValue: string | undefined = customerId
       ? Array.isArray(customerId)
-        ? customerId[0]
-        : customerId
+        ? String(customerId[0])
+        : String(customerId)
       : undefined;
 
     const params: { send_email?: boolean } = {};
