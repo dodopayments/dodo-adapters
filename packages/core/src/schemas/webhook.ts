@@ -125,6 +125,15 @@ export const SubscriptionSchema = z.object({
   }),
   discount_id: z.string().nullable(),
   metadata: z.record(z.any()).nullable(),
+  meters: z.array(z.object({
+      currency: z.string(),
+      description: z.string().nullable(),
+      free_threshold: z.number(),
+      measurement_unit: z.string(),
+      meter_id: z.string(),
+      name: z.string(),
+      price_per_unit: z.string(),
+    })),
   next_billing_date: z
     .string()
     .transform((d) => new Date(d))
