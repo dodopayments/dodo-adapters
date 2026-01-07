@@ -1,10 +1,24 @@
 import { Request, Response } from "express";
 import DodoPayments, { ClientOptions } from "dodopayments";
+import type { ParsedQs } from "qs";
 
 export type CustomerPortalConfig = Pick<
   ClientOptions,
   "environment" | "bearerToken"
 >;
+
+// Helper to extract a string value from Express query params
+const getQueryString = (
+  value: string | ParsedQs | (string | ParsedQs)[] | undefined,
+): string | undefined => {
+  if (value === undefined) return undefined;
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) {
+    const first = value[0];
+    return typeof first === "string" ? first : undefined;
+  }
+  return undefined;
+};
 
 export const CustomerPortal = ({
   bearerToken,
@@ -14,17 +28,15 @@ export const CustomerPortal = ({
     // Extract customerId from query parameters
     const { customer_id: customerId, send_email } = req.query;
 
-    // Normalize customer_id to string (handle array case)
-    const customerIdValue: string | undefined = customerId
-      ? Array.isArray(customerId)
-        ? String(customerId[0])
-        : String(customerId)
-      : undefined;
+    // Normalize customer_id to string
+    const customerIdValue = getQueryString(customerId);
 
     const params: { send_email?: boolean } = {};
     if (send_email !== undefined) {
-      // Normalize to string (handle array case)
-      const sendEmailValue = Array.isArray(send_email) ? send_email[0] : send_email;
+      // Normalize to string
+      const sendEmailValue = Array.isArray(send_email)
+        ? send_email[0]
+        : send_email;
       params.send_email = sendEmailValue === "true";
     }
 
