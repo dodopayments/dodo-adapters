@@ -1,0 +1,11 @@
+{
+  "extends": "@dodo/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "ES2020",
+    "lib": ["es6", "DOM"],
+    "types": ["bun-types"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
