@@ -37,11 +37,18 @@ export const Webhooks = ({
       return new Response("Error while verifying webhook", { status: 500 });
     }
 
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(rawBody);
+    } catch {
+      return new Response("Invalid JSON payload", { status: 400 });
+    }
+
     const {
       success,
       data: payload,
       error,
-    } = WebhookPayloadSchema.safeParse(JSON.parse(rawBody));
+    } = WebhookPayloadSchema.safeParse(parsed);
 
     if (!success) {
       console.error("Error parsing webhook payload", error.issues);
