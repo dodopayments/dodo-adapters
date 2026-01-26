@@ -15,12 +15,10 @@ export const CustomerPortal = ({
     const customerId = url.searchParams.get("customer_id");
     const sendEmail = url.searchParams.get("send_email");
 
-    const params = {
-      send_email: false,
-    };
+    const params: { send_email?: boolean } = {};
 
-    if (sendEmail === "true") {
-      params.send_email = true;
+    if (sendEmail !== null) {
+      params.send_email = sendEmail === "true";
     }
 
     if (!customerId) {
@@ -42,10 +40,9 @@ export const CustomerPortal = ({
       return Response.redirect(session.link);
     } catch (error: any) {
       console.error("Error creating customer portal session:", error);
-      return new Response(
-        `Failed to create customer portal session: ${error.message}`,
-        { status: 500 }
-      );
+      return new Response("Failed to create customer portal session", {
+        status: 500,
+      });
     }
   };
 
