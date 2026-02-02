@@ -33,6 +33,7 @@ Which packages are affected by this change:
 - [ ] `@dodopayments/nuxt`
 - [ ] `@dodopayments/betterauth`
 - [ ] `@dodopayments/convex`
+- [ ] `@dodopayments/bun`
 - [ ] Examples
 - [ ] Documentation
 

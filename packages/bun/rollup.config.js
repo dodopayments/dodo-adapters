@@ -39,7 +39,7 @@ const config = [
         emitDeclarationOnly: false,
       }),
     ],
-    external: ["bun", "zod", "@dodopayments/core"],
+    external: ["zod", "@dodopayments/core"],
   },
   // Type Declarations
   {
