@@ -595,3 +595,52 @@ jobs:
         working-directory: packages/convex
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
+
+  release-bun:
+    name: Release @dodopayments/bun
+    runs-on: ubuntu-latest
+    needs: release-core
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+      - name: Install dependencies
+        run: npm install
+      - name: Install dependency - Rollup
+        run: npm install -D @rollup/rollup-linux-x64-gnu
+      - name: Build core (ensure up-to-date)
+        run: npm run build
+        working-directory: packages/core
+      - name: Build
+        run: npm run build
+        working-directory: packages/bun
+      - name: Verify package
+        run: npm pack
+        working-directory: packages/bun
+
+      - name: Check if version is newer
+        id: version_check_bun
+        working-directory: packages/bun
+        run: |
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view @dodopayments/bun version || echo "0.0.0")
+          echo "Local version: $LOCAL_VERSION"
+          echo "Published version: $PUBLISHED_VERSION"
+          if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" = "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to NPM
+        if: steps.version_check_bun.outputs.should_publish == 'true'
+        run: npm publish --provenance --access public
+        working-directory: packages/bun
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
