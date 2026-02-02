@@ -69,7 +69,7 @@ import { CustomerPortal } from "@dodopayments/bun";
 
 const customerPortalHandler = CustomerPortal({
   bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  environment: "test_mode",
+  environment: process.env.DODO_PAYMENTS_ENVIRONMENT,
 });
 
 Bun.serve({
