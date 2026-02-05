@@ -24,7 +24,7 @@ export const CustomerPortal = ({
 
       if (!customerId) {
         set.status = 400;
-        return { error: "Missing customerId in query parameters" };
+        return { error: "Missing customer_id in query parameters" };
       }
 
       const dodopayments = new DodoPayments({

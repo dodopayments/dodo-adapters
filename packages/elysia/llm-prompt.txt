@@ -48,15 +48,25 @@ Config Options:
 - environment: "test_mode" or "live_mode"
 - type: "static" (GET), "dynamic" (POST), or "session" (POST)
 
-GET (static checkout) expects query parameters:
+GET (type: "static") expects query parameters:
 - productId (required)
-- quantity, customer fields (fullName, email, etc.), metadata (metadata_*) are optional
+- quantity (optional)
+- Customer fields (optional): fullName, email, phoneNumber
+- Metadata fields (optional): metadata_* (e.g., metadata_userId=123)
 - Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}
 
-POST (dynamic/session checkout) expects JSON body:
-- For dynamic: payment details (one-time or subscription)
-- For session: product_cart array with customer details (recommended)
+POST (type: "dynamic") expects JSON body with payment details:
+- For one-time payments: See https://docs.dodopayments.com/api-reference/payments/post-payments
+- For subscriptions: See https://docs.dodopayments.com/api-reference/subscriptions/post-subscriptions
+- Uses nested objects: customer.name, customer.email, billing.city, billing.country, etc.
 - Returns: {"checkout_url": "https://checkout.dodopayments.com/..."}
+
+POST (type: "session") expects JSON body (RECOMMENDED):
+- product_cart (required): Array of {product_id, quantity}
+- customer (optional): {name, email}
+- billing (optional): {city, country, state, street, zipcode}
+- See https://docs.dodopayments.com/api-reference/checkout-sessions
+- Returns: {"checkout_url": "https://checkout.dodopayments.com/session/..."}
 
 CUSTOMER PORTAL PLUGIN:
 - Purpose: Allows customers to manage subscriptions
@@ -122,7 +132,7 @@ Supported Webhook Event Handlers:
 - onPayload, onPaymentSucceeded, onPaymentFailed, onPaymentProcessing, onPaymentCancelled
 - onRefundSucceeded, onRefundFailed
 - onDisputeOpened, onDisputeExpired, onDisputeAccepted, onDisputeCancelled, onDisputeChallenged, onDisputeWon, onDisputeLost
-- onSubscriptionActive, onSubscriptionOnHold, onSubscriptionRenewed, onSubscriptionPaused, onSubscriptionPlanChanged, onSubscriptionCancelled, onSubscriptionFailed, onSubscriptionExpired
+- onSubscriptionActive, onSubscriptionOnHold, onSubscriptionRenewed, onSubscriptionUpdated, onSubscriptionPaused, onSubscriptionPlanChanged, onSubscriptionCancelled, onSubscriptionFailed, onSubscriptionExpired
 - onLicenseKeyCreated
 
 ENVIRONMENT VARIABLES:

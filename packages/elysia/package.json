@@ -17,7 +17,8 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.8"
+    "@dodopayments/core": "^0.3.8",
+    "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
     "elysia": "^1.0.0 || ^2.0.0",

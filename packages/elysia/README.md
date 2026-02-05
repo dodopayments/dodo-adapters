@@ -94,7 +94,7 @@ const app = new Elysia()
 
 ## Prompt for LLM
 
-```
+```text
 You are an expert Elysia.js developer assistant. Your task is to guide a user through integrating the @dodopayments/elysia adapter into their existing Elysia.js project.
 
 The @dodopayments/elysia adapter provides plugin-based handlers for Dodo Payments' Checkout, Customer Portal, and Webhook functionalities, designed to work seamlessly with Elysia's plugin system.
