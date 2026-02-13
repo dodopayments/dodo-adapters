@@ -1,6 +1,7 @@
 {
   "name": "@dodopayments/koa",
   "version": "0.1.0",
+  "license": "GPL-3.0",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +18,8 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.8"
+    "@dodopayments/core": "^0.3.8",
+    "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
     "koa": "^2.0.0",

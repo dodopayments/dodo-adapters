@@ -50,9 +50,15 @@ export const CustomerPortal = ({
         customerIdValue,
         params
       );
+
+      if (!session.link) {
+        ctx.status = 500;
+        ctx.body = { error: "Failed to create customer portal session" };
+        return;
+      }
+
       ctx.redirect(session.link);
-    } catch (error: any) {
-      console.error("Error creating customer portal session:", error);
+    } catch (error: unknown) {
       ctx.status = 500;
       ctx.body = { error: "Failed to create customer portal session" };
     }

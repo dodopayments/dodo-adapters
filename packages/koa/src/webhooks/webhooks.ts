@@ -20,6 +20,14 @@ export const rawBodyMiddleware = () => {
         ctx.req.on("end", () => {
           const rawBody = Buffer.concat(chunks).toString("utf8");
           (ctx.request as any).rawBody = rawBody;
+          
+          // Also parse and set body for downstream middleware
+          try {
+            (ctx.request as any).body = JSON.parse(rawBody);
+          } catch {
+            // Leave body undefined if JSON parsing fails
+          }
+          
           resolve();
         });
         ctx.req.on("error", reject);

@@ -97,11 +97,11 @@ export function Checkout(config: CheckoutHandlerConfig) {
   };
 
   return async (ctx: Context) => {
-    if (ctx.method === "POST") {
+    if (ctx.method === "POST" && (config.type === "dynamic" || config.type === "session")) {
       return postHandler(ctx);
     }
 
-    if (ctx.method === "GET") {
+    if (ctx.method === "GET" && (!config.type || config.type === "static")) {
       return getHandler(ctx);
     }
 
