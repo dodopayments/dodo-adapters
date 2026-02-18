@@ -11,16 +11,28 @@ export const PaymentSchema = z.object({
   }),
   brand_id: z.string(),
   business_id: z.string(),
+  card_holder_name: z.string().nullable(),
   card_issuing_country: z.string().nullable(),
   card_last_four: z.string().nullable(),
   card_network: z.string().nullable(),
   card_type: z.string().nullable(),
+  checkout_session_id: z.string().nullable(),
   created_at: z.string().transform((d) => new Date(d)),
   currency: z.string(),
+  custom_field_responses: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      }),
+    )
+    .nullable(),
   customer: z.object({
     customer_id: z.string(),
     email: z.string(),
+    metadata: z.record(z.any()).nullable(),
     name: z.string().nullable(),
+    phone_number: z.string().nullable(),
   }),
   digital_products_delivered: z.boolean(),
   discount_id: z.string().nullable(),
@@ -53,6 +65,8 @@ export const PaymentSchema = z.object({
     .nullable(),
   error_code: z.string().nullable(),
   error_message: z.string().nullable(),
+  invoice_id: z.string().nullable(),
+  invoice_url: z.string().nullable(),
   metadata: z.record(z.any()).nullable(),
   payment_id: z.string(),
   payment_link: z.string().nullable(),
@@ -81,6 +95,7 @@ export const PaymentSchema = z.object({
       }),
     )
     .nullable(),
+  refund_status: z.string().nullable(),
   settlement_amount: z.number(),
   settlement_currency: z.string(),
   settlement_tax: z.number().nullable(),
@@ -121,9 +136,37 @@ export const SubscriptionSchema = z.object({
   customer: z.object({
     customer_id: z.string(),
     email: z.string(),
+    metadata: z.record(z.any()).nullable(),
     name: z.string().nullable(),
+    phone_number: z.string().nullable(),
   }),
+  custom_field_responses: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      }),
+    )
+    .nullable(),
+  discount_cycles_remaining: z.number().nullable(),
   discount_id: z.string().nullable(),
+  expires_at: z
+    .string()
+    .transform((d) => new Date(d))
+    .nullable(),
+  meters: z
+    .array(
+      z.object({
+        currency: z.string(),
+        description: z.string().nullable(),
+        free_threshold: z.number(),
+        measurement_unit: z.string(),
+        meter_id: z.string(),
+        name: z.string(),
+        price_per_unit: z.string(),
+      }),
+    )
+    .nullable(),
   metadata: z.record(z.any()).nullable(),
   next_billing_date: z
     .string()
@@ -132,6 +175,7 @@ export const SubscriptionSchema = z.object({
   on_demand: z.boolean(),
   payment_frequency_count: z.number(),
   payment_frequency_interval: z.enum(["Day", "Week", "Month", "Year"]),
+  payment_method_id: z.string().nullable(),
   previous_billing_date: z
     .string()
     .transform((d) => new Date(d))
@@ -151,6 +195,7 @@ export const SubscriptionSchema = z.object({
   subscription_id: z.string(),
   subscription_period_count: z.number(),
   subscription_period_interval: z.enum(["Day", "Week", "Month", "Year"]),
+  tax_id: z.string().nullable(),
   tax_inclusive: z.boolean(),
   trial_period_days: z.number(),
 });
@@ -160,8 +205,16 @@ export const RefundSchema = z.object({
   amount: z.number(),
   business_id: z.string(),
   created_at: z.string().transform((d) => new Date(d)),
+  customer: z.object({
+    customer_id: z.string(),
+    email: z.string(),
+    metadata: z.record(z.any()).nullable(),
+    name: z.string().nullable(),
+    phone_number: z.string().nullable(),
+  }),
   currency: z.string(),
   is_partial: z.boolean(),
+  metadata: z.record(z.any()).nullable(),
   payment_id: z.string(),
   reason: z.string().nullable(),
   refund_id: z.string(),
