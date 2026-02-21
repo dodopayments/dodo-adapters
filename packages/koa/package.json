@@ -1,0 +1,63 @@
+{
+  "name": "@dodopayments/koa",
+  "version": "0.1.0",
+  "license": "GPL-3.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "dependencies": {
+    "@dodopayments/core": "^0.3.8",
+    "standardwebhooks": "^1.0.0"
+  },
+  "peerDependencies": {
+    "koa": "^2.0.0",
+    "zod": "^3.25.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@dodo/typescript-config": "*",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/koa": "^2.15.0",
+    "@types/node": "^20.0.0",
+    "koa": "^2.15.3",
+    "rimraf": "^5.0.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-dts": "^6.1.0"
+  },
+  "keywords": [
+    "payments",
+    "koa",
+    "koajs",
+    "webhooks",
+    "checkout",
+    "api",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dodo Payments",
+    "email": "support@dodopayments.com",
+    "url": "https://dodopayments.com"
+  },
+  "type": "module",
+  "files": [
+    "dist",
+    "llm-prompt.txt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dodopayments/dodo-adapters.git"
+  }
+}
