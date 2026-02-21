@@ -157,6 +157,24 @@ npm run format
 
 See [Contributing Guide](./CONTRIBUTING.md) for detailed instructions on adding new framework adapters.
 
+## 🔄 How It Works
+
+```mermaid
+flowchart LR
+  A[Your Frontend] -->|Create Checkout| B[/Adapter Route/]
+  B -->|Calls| C[Dodo Payments API]
+  C -->|Redirects User| D[Hosted Checkout Page]
+  D -->|Payment Completed| C
+  C -->|Webhook Event| E[/Webhook Adapter/]
+  E -->|Verify + Parse| F[Your App Logic]
+```
+
+- Frontend creates a checkout by calling your API route  
+- User completes payment on Dodo’s secure hosted page  
+- Dodo notifies your backend through webhooks  
+- You update your DB, unlock services, etc.
+
+
 ## 🤝 Contributors
 
 Thanks to all our amazing contributors for their support and code!
