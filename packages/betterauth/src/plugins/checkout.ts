@@ -1,6 +1,5 @@
 import type DodoPayments from "dodopayments";
-import { APIError, getSessionFromCtx } from "better-auth/api";
-import { createAuthEndpoint } from "better-auth/plugins";
+import { APIError, createAuthEndpoint, getSessionFromCtx } from "better-auth/api";
 import { z } from "zod/v3";
 import type { CreateCheckoutResponse, Product } from "../types";
 import {

@@ -1,7 +1,5 @@
 import type { DodoPayments } from "dodopayments";
-import { APIError } from "better-auth/api";
-import { sessionMiddleware } from "better-auth/api";
-import { createAuthEndpoint } from "better-auth/plugins";
+import { APIError, createAuthEndpoint, sessionMiddleware } from "better-auth/api";
 import { z } from "zod/v3";
 import {
   CustomerPortalResponse,
