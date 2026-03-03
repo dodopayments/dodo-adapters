@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/better-auth",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "publishConfig": {
     "access": "public"
   },
@@ -42,6 +42,7 @@
     "rimraf": "^5.0.0"
   },
   "peerDependencies": {
+    "better-auth": "^1.4.0",
     "zod": "^3.25.0 || ^4.0.0"
   },
   "type": "module",
