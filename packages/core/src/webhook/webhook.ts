@@ -121,10 +121,6 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onSubscriptionRenewed, payload);
   }
 
-  if (payload.type === "subscription.paused") {
-    await callHandler(config.onSubscriptionPaused, payload);
-  }
-
   if (payload.type === "subscription.plan_changed") {
     await callHandler(config.onSubscriptionPlanChanged, payload);
   }
@@ -147,6 +143,38 @@ export async function handleWebhookPayload<TContext = void>(
 
   if (payload.type === "license_key.created") {
     await callHandler(config.onLicenseKeyCreated, payload);
+  }
+
+  if (payload.type === "credit.added") {
+    await callHandler(config.onCreditAdded, payload);
+  }
+
+  if (payload.type === "credit.deducted") {
+    await callHandler(config.onCreditDeducted, payload);
+  }
+
+  if (payload.type === "credit.expired") {
+    await callHandler(config.onCreditExpired, payload);
+  }
+
+  if (payload.type === "credit.rolled_over") {
+    await callHandler(config.onCreditRolledOver, payload);
+  }
+
+  if (payload.type === "credit.rollover_forfeited") {
+    await callHandler(config.onCreditRolloverForfeited, payload);
+  }
+
+  if (payload.type === "credit.overage_charged") {
+    await callHandler(config.onCreditOverageCharged, payload);
+  }
+
+  if (payload.type === "credit.manual_adjustment") {
+    await callHandler(config.onCreditManualAdjustment, payload);
+  }
+
+  if (payload.type === "credit.balance_low") {
+    await callHandler(config.onCreditBalanceLow, payload);
   }
 }
 

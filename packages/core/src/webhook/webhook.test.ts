@@ -34,12 +34,20 @@ describe("handleWebhookPayload", () => {
     ["subscription.active", "onSubscriptionActive"],
     ["subscription.on_hold", "onSubscriptionOnHold"],
     ["subscription.renewed", "onSubscriptionRenewed"],
-    ["subscription.paused", "onSubscriptionPaused"],
     ["subscription.plan_changed", "onSubscriptionPlanChanged"],
     ["subscription.cancelled", "onSubscriptionCancelled"],
     ["subscription.failed", "onSubscriptionFailed"],
     ["subscription.expired", "onSubscriptionExpired"],
+    ["subscription.updated", "onSubscriptionUpdated"],
     ["license_key.created", "onLicenseKeyCreated"],
+    ["credit.added", "onCreditAdded"],
+    ["credit.deducted", "onCreditDeducted"],
+    ["credit.expired", "onCreditExpired"],
+    ["credit.rolled_over", "onCreditRolledOver"],
+    ["credit.rollover_forfeited", "onCreditRolloverForfeited"],
+    ["credit.overage_charged", "onCreditOverageCharged"],
+    ["credit.manual_adjustment", "onCreditManualAdjustment"],
+    ["credit.balance_low", "onCreditBalanceLow"],
   ];
 
   it.each(eventHandlerMap)(

@@ -4,7 +4,7 @@ export const PaymentSchema = z.object({
   payload_type: z.literal("Payment"),
   billing: z.object({
     city: z.string().nullable(),
-    country: z.string().nullable(),
+    country: z.string(),
     state: z.string().nullable(),
     street: z.string().nullable(),
     zipcode: z.string().nullable(),
@@ -26,12 +26,13 @@ export const PaymentSchema = z.object({
         value: z.string(),
       }),
     )
-    .nullable(),
+    .nullable()
+    ,
   customer: z.object({
     customer_id: z.string(),
     email: z.string(),
-    metadata: z.record(z.any()).nullable(),
-    name: z.string().nullable(),
+    metadata: z.record(z.any()),
+    name: z.string(),
     phone_number: z.string().nullable(),
   }),
   digital_products_delivered: z.boolean(),
@@ -44,30 +45,26 @@ export const PaymentSchema = z.object({
         created_at: z.string().transform((d) => new Date(d)),
         currency: z.string(),
         dispute_id: z.string(),
-        dispute_stage: z.enum([
-          "pre_dispute",
-          "dispute_opened",
-          "dispute_won",
-          "dispute_lost",
-        ]),
+        dispute_stage: z.enum(["pre_dispute", "dispute", "pre_arbitration"]),
         dispute_status: z.enum([
           "dispute_opened",
-          "dispute_won",
-          "dispute_lost",
+          "dispute_expired",
           "dispute_accepted",
           "dispute_cancelled",
           "dispute_challenged",
+          "dispute_won",
+          "dispute_lost",
         ]),
         payment_id: z.string(),
         remarks: z.string().nullable(),
       }),
     )
-    .nullable(),
+    .default([]),
   error_code: z.string().nullable(),
   error_message: z.string().nullable(),
   invoice_id: z.string().nullable(),
   invoice_url: z.string().nullable(),
-  metadata: z.record(z.any()).nullable(),
+  metadata: z.record(z.any()),
   payment_id: z.string(),
   payment_link: z.string().nullable(),
   payment_method: z.string().nullable(),
@@ -79,49 +76,62 @@ export const PaymentSchema = z.object({
         quantity: z.number(),
       }),
     )
-    .nullable(),
-  refunds: z
-    .array(
-      z.object({
-        amount: z.number(),
-        business_id: z.string(),
-        created_at: z.string().transform((d) => new Date(d)),
-        currency: z.string(),
-        is_partial: z.boolean(),
-        payment_id: z.string(),
-        reason: z.string().nullable(),
-        refund_id: z.string(),
-        status: z.enum(["succeeded", "failed", "pending"]),
-      }),
-    )
-    .nullable(),
-  refund_status: z.string().nullable(),
+    .nullable()
+    ,
+  refunds: z.array(
+    z.object({
+      amount: z.number().nullable(),
+      business_id: z.string(),
+      created_at: z.string().transform((d) => new Date(d)),
+      currency: z.string().nullable(),
+      is_partial: z.boolean(),
+      payment_id: z.string(),
+      reason: z.string().nullable(),
+      refund_id: z.string(),
+      status: z.enum(["succeeded", "failed", "pending", "review"]),
+    }),
+  ),
+  refund_status: z.enum(["partial", "full"]).nullable(),
   settlement_amount: z.number(),
   settlement_currency: z.string(),
   settlement_tax: z.number().nullable(),
-  status: z.enum(["succeeded", "failed", "pending", "processing", "cancelled"]),
+  status: z
+    .enum([
+      "succeeded",
+      "failed",
+      "cancelled",
+      "processing",
+      "requires_customer_action",
+      "requires_merchant_action",
+      "requires_payment_method",
+      "requires_confirmation",
+      "requires_capture",
+      "partially_captured",
+      "partially_captured_and_capturable",
+    ])
+    .nullable()
+    ,
   subscription_id: z.string().nullable(),
   tax: z.number().nullable(),
   total_amount: z.number(),
   updated_at: z
     .string()
     .transform((d) => new Date(d))
-    .nullable(),
+    .nullable()
+    ,
 });
 
 export const SubscriptionSchema = z.object({
   payload_type: z.literal("Subscription"),
-  addons: z
-    .array(
-      z.object({
-        addon_id: z.string(),
-        quantity: z.number(),
-      }),
-    )
-    .nullable(),
+  addons: z.array(
+    z.object({
+      addon_id: z.string(),
+      quantity: z.number(),
+    }),
+  ),
   billing: z.object({
     city: z.string().nullable(),
-    country: z.string().nullable(),
+    country: z.string(),
     state: z.string().nullable(),
     street: z.string().nullable(),
     zipcode: z.string().nullable(),
@@ -130,14 +140,15 @@ export const SubscriptionSchema = z.object({
   cancelled_at: z
     .string()
     .transform((d) => new Date(d))
-    .nullable(),
+    .nullable()
+    ,
   created_at: z.string().transform((d) => new Date(d)),
   currency: z.string(),
   customer: z.object({
     customer_id: z.string(),
     email: z.string(),
-    metadata: z.record(z.any()).nullable(),
-    name: z.string().nullable(),
+    metadata: z.record(z.any()),
+    name: z.string(),
     phone_number: z.string().nullable(),
   }),
   custom_field_responses: z
@@ -147,39 +158,75 @@ export const SubscriptionSchema = z.object({
         value: z.string(),
       }),
     )
-    .nullable(),
+    .nullable()
+    ,
   discount_cycles_remaining: z.number().nullable(),
   discount_id: z.string().nullable(),
   expires_at: z
     .string()
     .transform((d) => new Date(d))
-    .nullable(),
-  meters: z
-    .array(
-      z.object({
-        currency: z.string(),
-        description: z.string().nullable(),
-        free_threshold: z.number(),
-        measurement_unit: z.string(),
-        meter_id: z.string(),
-        name: z.string(),
-        price_per_unit: z.string(),
-      }),
-    )
-    .nullable(),
-  metadata: z.record(z.any()).nullable(),
+    .nullable()
+    ,
+  credit_entitlement_cart: z.array(
+    z.object({
+      credit_entitlement_id: z.string(),
+      credit_entitlement_name: z.string(),
+      credits_amount: z.string(),
+      overage_balance: z.string(),
+      overage_behavior: z.enum([
+        "forgive_at_reset",
+        "invoice_at_billing",
+        "carry_deficit",
+        "carry_deficit_auto_repay",
+      ]),
+      overage_enabled: z.boolean(),
+      product_id: z.string(),
+      remaining_balance: z.string(),
+      rollover_enabled: z.boolean(),
+      unit: z.string(),
+      expires_after_days: z.number().nullable(),
+      low_balance_threshold_percent: z.number().nullable(),
+      max_rollover_count: z.number().nullable(),
+      overage_limit: z.string().nullable(),
+      rollover_percentage: z.number().nullable(),
+      rollover_timeframe_count: z.number().nullable(),
+      rollover_timeframe_interval: z
+        .enum(["Day", "Week", "Month", "Year"])
+        .nullable()
+        ,
+    }),
+  ),
+  meter_credit_entitlement_cart: z.array(
+    z.object({
+      credit_entitlement_id: z.string(),
+      meter_id: z.string(),
+      meter_name: z.string(),
+      meter_units_per_credit: z.string(),
+      product_id: z.string(),
+    }),
+  ),
+  meters: z.array(
+    z.object({
+      currency: z.string(),
+      description: z.string().nullable(),
+      free_threshold: z.number(),
+      measurement_unit: z.string(),
+      meter_id: z.string(),
+      name: z.string(),
+      price_per_unit: z.string().nullable(),
+    }),
+  ),
+  metadata: z.record(z.any()),
   next_billing_date: z
     .string()
-    .transform((d) => new Date(d))
-    .nullable(),
+    .transform((d) => new Date(d)),
   on_demand: z.boolean(),
   payment_frequency_count: z.number(),
   payment_frequency_interval: z.enum(["Day", "Week", "Month", "Year"]),
   payment_method_id: z.string().nullable(),
   previous_billing_date: z
     .string()
-    .transform((d) => new Date(d))
-    .nullable(),
+    .transform((d) => new Date(d)),
   product_id: z.string(),
   quantity: z.number(),
   recurring_pre_tax_amount: z.number(),
@@ -187,7 +234,6 @@ export const SubscriptionSchema = z.object({
     "pending",
     "active",
     "on_hold",
-    "paused",
     "cancelled",
     "expired",
     "failed",
@@ -202,23 +248,23 @@ export const SubscriptionSchema = z.object({
 
 export const RefundSchema = z.object({
   payload_type: z.literal("Refund"),
-  amount: z.number(),
+  amount: z.number().nullable(),
   business_id: z.string(),
   created_at: z.string().transform((d) => new Date(d)),
   customer: z.object({
     customer_id: z.string(),
     email: z.string(),
-    metadata: z.record(z.any()).nullable(),
-    name: z.string().nullable(),
+    metadata: z.record(z.any()),
+    name: z.string(),
     phone_number: z.string().nullable(),
   }),
-  currency: z.string(),
+  currency: z.string().nullable(),
   is_partial: z.boolean(),
-  metadata: z.record(z.any()).nullable(),
+  metadata: z.record(z.any()),
   payment_id: z.string(),
   reason: z.string().nullable(),
   refund_id: z.string(),
-  status: z.enum(["succeeded", "failed", "pending"]),
+  status: z.enum(["succeeded", "failed", "pending", "review"]),
 });
 
 export const DisputeSchema = z.object({
@@ -227,41 +273,46 @@ export const DisputeSchema = z.object({
   business_id: z.string(),
   created_at: z.string().transform((d) => new Date(d)),
   currency: z.string(),
+  customer: z.object({
+    customer_id: z.string(),
+    email: z.string(),
+    metadata: z.record(z.any()),
+    name: z.string(),
+    phone_number: z.string().nullable(),
+  }),
   dispute_id: z.string(),
-  dispute_stage: z.enum([
-    "pre_dispute",
-    "dispute_opened",
-    "dispute_won",
-    "dispute_lost",
-  ]),
+  dispute_stage: z.enum(["pre_dispute", "dispute", "pre_arbitration"]),
   dispute_status: z.enum([
     "dispute_opened",
-    "dispute_won",
-    "dispute_lost",
+    "dispute_expired",
     "dispute_accepted",
     "dispute_cancelled",
     "dispute_challenged",
+    "dispute_won",
+    "dispute_lost",
   ]),
   payment_id: z.string(),
+  reason: z.string().nullable(),
   remarks: z.string().nullable(),
 });
 
 export const LicenseKeySchema = z.object({
   payload_type: z.literal("LicenseKey"),
-  activations_limit: z.number(),
+  activations_limit: z.number().nullable(),
   business_id: z.string(),
   created_at: z.string().transform((d) => new Date(d)),
   customer_id: z.string(),
   expires_at: z
     .string()
     .transform((d) => new Date(d))
-    .nullable(),
+    .nullable()
+    ,
   id: z.string(),
   instances_count: z.number(),
   key: z.string(),
   payment_id: z.string(),
   product_id: z.string(),
-  status: z.enum(["active", "inactive", "expired"]),
+  status: z.enum(["active", "expired", "disabled"]),
   subscription_id: z.string().nullable(),
 });
 
@@ -377,13 +428,6 @@ export const SubscriptionRenewedPayloadSchema = z.object({
   data: SubscriptionSchema,
 });
 
-export const SubscriptionPausedPayloadSchema = z.object({
-  business_id: z.string(),
-  type: z.literal("subscription.paused"),
-  timestamp: z.string().transform((d) => new Date(d)),
-  data: SubscriptionSchema,
-});
-
 export const SubscriptionPlanChangedPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("subscription.plan_changed"),
@@ -426,6 +470,104 @@ export const LicenseKeyCreatedPayloadSchema = z.object({
   data: LicenseKeySchema,
 });
 
+export const CreditLedgerEntrySchema = z.object({
+  payload_type: z.literal("CreditLedgerEntry"),
+  id: z.string(),
+  amount: z.string(),
+  balance_after: z.string(),
+  balance_before: z.string(),
+  business_id: z.string(),
+  created_at: z.string().transform((d) => new Date(d)),
+  credit_entitlement_id: z.string(),
+  customer_id: z.string(),
+  is_credit: z.boolean(),
+  overage_after: z.string(),
+  overage_before: z.string(),
+  transaction_type: z.enum([
+    "credit_added",
+    "credit_deducted",
+    "credit_expired",
+    "credit_rolled_over",
+    "rollover_forfeited",
+    "overage_charged",
+    "auto_top_up",
+    "manual_adjustment",
+    "refund",
+  ]),
+  description: z.string().nullable(),
+  grant_id: z.string().nullable(),
+  reference_id: z.string().nullable(),
+  reference_type: z.string().nullable(),
+});
+
+export const CreditBalanceLowSchema = z.object({
+  payload_type: z.literal("CreditBalanceLow"),
+  customer_id: z.string(),
+  subscription_id: z.string(),
+  credit_entitlement_id: z.string(),
+  credit_entitlement_name: z.string(),
+  available_balance: z.string(),
+  subscription_credits_amount: z.string(),
+  threshold_percent: z.number(),
+  threshold_amount: z.string(),
+});
+
+export const CreditAddedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("credit.added"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: CreditLedgerEntrySchema,
+});
+
+export const CreditDeductedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("credit.deducted"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: CreditLedgerEntrySchema,
+});
+
+export const CreditExpiredPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("credit.expired"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: CreditLedgerEntrySchema,
+});
+
+export const CreditRolledOverPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("credit.rolled_over"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: CreditLedgerEntrySchema,
+});
+
+export const CreditRolloverForfeitedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("credit.rollover_forfeited"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: CreditLedgerEntrySchema,
+});
+
+export const CreditOverageChargedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("credit.overage_charged"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: CreditLedgerEntrySchema,
+});
+
+export const CreditManualAdjustmentPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("credit.manual_adjustment"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: CreditLedgerEntrySchema,
+});
+
+export const CreditBalanceLowPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("credit.balance_low"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: CreditBalanceLowSchema,
+});
+
 export const WebhookPayloadSchema = z.discriminatedUnion("type", [
   PaymentSucceededPayloadSchema,
   PaymentFailedPayloadSchema,
@@ -443,13 +585,20 @@ export const WebhookPayloadSchema = z.discriminatedUnion("type", [
   SubscriptionActivePayloadSchema,
   SubscriptionOnHoldPayloadSchema,
   SubscriptionRenewedPayloadSchema,
-  SubscriptionPausedPayloadSchema,
   SubscriptionPlanChangedPayloadSchema,
   SubscriptionCancelledPayloadSchema,
   SubscriptionFailedPayloadSchema,
   SubscriptionExpiredPayloadSchema,
   SubscriptionUpdatedPayloadSchema,
   LicenseKeyCreatedPayloadSchema,
+  CreditAddedPayloadSchema,
+  CreditDeductedPayloadSchema,
+  CreditExpiredPayloadSchema,
+  CreditRolledOverPayloadSchema,
+  CreditRolloverForfeitedPayloadSchema,
+  CreditOverageChargedPayloadSchema,
+  CreditManualAdjustmentPayloadSchema,
+  CreditBalanceLowPayloadSchema,
 ]);
 
 // expands the type, improves readability for type users
@@ -460,6 +609,8 @@ export type Subscription = z.infer<typeof SubscriptionSchema>;
 export type Refund = z.infer<typeof RefundSchema>;
 export type Dispute = z.infer<typeof DisputeSchema>;
 export type LicenseKey = z.infer<typeof LicenseKeySchema>;
+export type CreditLedgerEntry = z.infer<typeof CreditLedgerEntrySchema>;
+export type CreditBalanceLow = z.infer<typeof CreditBalanceLowSchema>;
 export type WebhookPayload = z.infer<typeof WebhookPayloadSchema>;
 
 // Helper type for handlers with context
@@ -532,10 +683,6 @@ export type WebhookEventHandlers<TContext = void> = {
     TContext,
     z.infer<typeof SubscriptionRenewedPayloadSchema>
   >;
-  onSubscriptionPaused?: HandlerWithContext<
-    TContext,
-    z.infer<typeof SubscriptionPausedPayloadSchema>
-  >;
   onSubscriptionPlanChanged?: HandlerWithContext<
     TContext,
     z.infer<typeof SubscriptionPlanChangedPayloadSchema>
@@ -559,5 +706,37 @@ export type WebhookEventHandlers<TContext = void> = {
   onLicenseKeyCreated?: HandlerWithContext<
     TContext,
     z.infer<typeof LicenseKeyCreatedPayloadSchema>
+  >;
+  onCreditAdded?: HandlerWithContext<
+    TContext,
+    z.infer<typeof CreditAddedPayloadSchema>
+  >;
+  onCreditDeducted?: HandlerWithContext<
+    TContext,
+    z.infer<typeof CreditDeductedPayloadSchema>
+  >;
+  onCreditExpired?: HandlerWithContext<
+    TContext,
+    z.infer<typeof CreditExpiredPayloadSchema>
+  >;
+  onCreditRolledOver?: HandlerWithContext<
+    TContext,
+    z.infer<typeof CreditRolledOverPayloadSchema>
+  >;
+  onCreditRolloverForfeited?: HandlerWithContext<
+    TContext,
+    z.infer<typeof CreditRolloverForfeitedPayloadSchema>
+  >;
+  onCreditOverageCharged?: HandlerWithContext<
+    TContext,
+    z.infer<typeof CreditOverageChargedPayloadSchema>
+  >;
+  onCreditManualAdjustment?: HandlerWithContext<
+    TContext,
+    z.infer<typeof CreditManualAdjustmentPayloadSchema>
+  >;
+  onCreditBalanceLow?: HandlerWithContext<
+    TContext,
+    z.infer<typeof CreditBalanceLowPayloadSchema>
   >;
 };
