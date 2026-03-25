@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/express",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.8",
+    "@dodopayments/core": "^0.3.10",
     "express": "^5.1.0"
   },
   "keywords": [
