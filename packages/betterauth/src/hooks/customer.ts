@@ -26,13 +26,17 @@ export const onUserCreate =
           const newCustomer = await options.client.customers.create({
             email: user.email,
             name: user.name,
-          });
+          }, { idempotencyKey: user.id });
           customerId = newCustomer.customer_id;
         }
 
         ctx.context.internalAdapter.updateUser(user.id, {
           dodoCustomerId: customerId,
-        }).catch(() => {});
+        }).catch((e: unknown) => {
+          ctx.context.logger.warn(
+            `DodoPayments: failed to store dodoCustomerId for user ${user.id}. Error: ${e instanceof Error ? e.message : e}`,
+          );
+        });
       } catch (e: unknown) {
         if (e instanceof Error) {
           throw new APIError("INTERNAL_SERVER_ERROR", {
@@ -69,7 +73,11 @@ export const onUserUpdate =
           if (!(user as User & { dodoCustomerId?: string }).dodoCustomerId) {
             ctx.context.internalAdapter.updateUser(user.id, {
               dodoCustomerId: existingCustomer.customer_id,
-            }).catch(() => {});
+            }).catch((e: unknown) => {
+              ctx.context.logger.warn(
+                `DodoPayments: failed to backfill dodoCustomerId for user ${user.id}. Error: ${e instanceof Error ? e.message : e}`,
+              );
+            });
           }
         }
       } catch (e: unknown) {

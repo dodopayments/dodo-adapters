@@ -18,7 +18,7 @@ export async function getOrCreateCustomerId(
     customer = await dodopayments.customers.create({
       email: session.user.email,
       name: session.user.name,
-    });
+    }, { idempotencyKey: session.user.id });
   }
 
   internalAdapter
