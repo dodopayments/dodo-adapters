@@ -33,6 +33,17 @@ export const dodopayments = (options: DodoPaymentsOptions) => {
 
   return {
     id: "dodopayments",
+    schema: {
+      user: {
+        fields: {
+          dodoCustomerId: {
+            type: "string",
+            required: false,
+            input: false,
+          },
+        },
+      },
+    },
     endpoints: {
       ...plugins,
     },

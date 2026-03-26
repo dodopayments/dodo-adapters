@@ -12,19 +12,27 @@ export const onUserCreate =
         });
         const existingCustomer = customers.items[0];
 
+        let customerId: string;
+
         if (existingCustomer) {
           await options.client.customers.update(existingCustomer.customer_id, {
             name: user.name,
           });
+          customerId = existingCustomer.customer_id;
         } else {
           // TODO: Add metadata to customer object via
           // getCustomerCreateParams option when it becomes
           // available in the API
-          await options.client.customers.create({
+          const newCustomer = await options.client.customers.create({
             email: user.email,
             name: user.name,
           });
+          customerId = newCustomer.customer_id;
         }
+
+        ctx.context.internalAdapter.updateUser(user.id, {
+          dodoCustomerId: customerId,
+        }).catch(() => {});
       } catch (e: unknown) {
         if (e instanceof Error) {
           throw new APIError("INTERNAL_SERVER_ERROR", {
@@ -56,6 +64,13 @@ export const onUserUpdate =
           await options.client.customers.update(existingCustomer.customer_id, {
             name: user.name,
           });
+
+          // Backfill dodoCustomerId if it doesn't exist
+          if (!(user as User & { dodoCustomerId?: string }).dodoCustomerId) {
+            ctx.context.internalAdapter.updateUser(user.id, {
+              dodoCustomerId: existingCustomer.customer_id,
+            }).catch(() => {});
+          }
         }
       } catch (e: unknown) {
         if (e instanceof Error) {

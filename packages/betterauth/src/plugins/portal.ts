@@ -6,6 +6,7 @@ import {
   PaymentItems,
   SubscriptionItems,
 } from "../types";
+import { getOrCreateCustomerId } from "../utils";
 
 export const portal = () => (dodopayments: DodoPayments) => {
   return {
@@ -29,24 +30,14 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          const customers = await dodopayments.customers.list({
-            email: ctx.context.session?.user.email,
-          });
-          let customer = customers.items[0];
-
-          if (!customer) {
-            // upsert the customer, if they don't exist in DodoPayments
-            customer = await createCustomer(
-              dodopayments,
-              ctx.context.session.user.email,
-              ctx.context.session.user.name,
-            );
-          }
+          const customerId = await getOrCreateCustomerId(
+            dodopayments,
+            ctx.context.session,
+            ctx.context.internalAdapter,
+          );
 
           const customerSession =
-            await dodopayments.customers.customerPortal.create(
-              customer.customer_id,
-            );
+            await dodopayments.customers.customerPortal.create(customerId);
 
           return ctx.json({
             url: customerSession.link,
@@ -101,22 +92,14 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          const customers = await dodopayments.customers.list({
-            email: ctx.context.session?.user.email,
-          });
-          let customer = customers.items[0];
-
-          if (!customer) {
-            // upsert the customer, if they don't exist in DodoPayments
-            customer = await createCustomer(
-              dodopayments,
-              ctx.context.session.user.email,
-              ctx.context.session.user.name,
-            );
-          }
+          const customerId = await getOrCreateCustomerId(
+            dodopayments,
+            ctx.context.session,
+            ctx.context.internalAdapter,
+          );
 
           const subscriptions = await dodopayments.subscriptions.list({
-            customer_id: customer.customer_id,
+            customer_id: customerId,
             // page number is 0-indexed
             page_number: ctx.query?.page ? ctx.query.page - 1 : undefined,
             page_size: ctx.query?.limit,
@@ -178,22 +161,14 @@ export const portal = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          const customers = await dodopayments.customers.list({
-            email: ctx.context.session?.user.email,
-          });
-          let customer = customers.items[0];
-
-          if (!customer) {
-            // upsert the customer, if they don't exist in DodoPayments
-            customer = await createCustomer(
-              dodopayments,
-              ctx.context.session.user.email,
-              ctx.context.session.user.name,
-            );
-          }
+          const customerId = await getOrCreateCustomerId(
+            dodopayments,
+            ctx.context.session,
+            ctx.context.internalAdapter,
+          );
 
           const payments = await dodopayments.payments.list({
-            customer_id: customer.customer_id,
+            customer_id: customerId,
             // page number is 0-indexed
             page_number: ctx.query?.page ? ctx.query.page - 1 : undefined,
             page_size: ctx.query?.limit,
@@ -217,15 +192,3 @@ export const portal = () => (dodopayments: DodoPayments) => {
   };
 };
 
-async function createCustomer(
-  dodopayments: DodoPayments,
-  email: string,
-  name: string,
-) {
-  const customer = await dodopayments.customers.create({
-    email,
-    name,
-  });
-
-  return customer;
-}

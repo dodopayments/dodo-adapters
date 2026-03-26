@@ -6,6 +6,7 @@ import {
 import type { DodoPayments } from "dodopayments";
 import { Event } from "dodopayments/resources/usage-events.mjs";
 import { z } from "zod/v3";
+import { getOrCreateCustomerId } from "../utils";
 
 const EventInputSchema = z.object({
   event_id: z.string(),
@@ -51,26 +52,17 @@ export const usage = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          const customers = await dodopayments.customers.list({
-            email: ctx.context.session.user.email,
-          });
-
-          let customer = customers.items[0];
-
-          // upsert the customer, if they don't exist in DodoPayments
-          if (!customer) {
-            customer = await createCustomer(
-              dodopayments,
-              ctx.context.session.user.email,
-              ctx.context.session.user.name,
-            );
-          }
+          const customerId = await getOrCreateCustomerId(
+            dodopayments,
+            ctx.context.session,
+            ctx.context.internalAdapter,
+          );
 
           const result = await dodopayments.usageEvents.ingest({
             events: [
               {
                 event_id: ctx.body.event_id,
-                customer_id: customer.customer_id,
+                customer_id: customerId,
                 event_name: ctx.body.event_name,
                 timestamp: ctx.body.timestamp,
                 metadata: ctx.body.metadata,
@@ -124,23 +116,14 @@ export const usage = () => (dodopayments: DodoPayments) => {
         }
 
         try {
-          const customers = await dodopayments.customers.list({
-            email: ctx.context.session.user.email,
-          });
-
-          let customer = customers.items[0];
-
-          // upsert the customer, if they don't exist in DodoPayments
-          if (!customer) {
-            customer = await createCustomer(
-              dodopayments,
-              ctx.context.session.user.email,
-              ctx.context.session.user.name,
-            );
-          }
+          const customerId = await getOrCreateCustomerId(
+            dodopayments,
+            ctx.context.session,
+            ctx.context.internalAdapter,
+          );
 
           const meters = await dodopayments.usageEvents.list({
-            customer_id: customer.customer_id,
+            customer_id: customerId,
             ...ctx.query,
           });
 
@@ -161,15 +144,3 @@ export const usage = () => (dodopayments: DodoPayments) => {
   };
 };
 
-async function createCustomer(
-  dodopayments: DodoPayments,
-  email: string,
-  name: string,
-) {
-  const customer = await dodopayments.customers.create({
-    email,
-    name,
-  });
-
-  return customer;
-}

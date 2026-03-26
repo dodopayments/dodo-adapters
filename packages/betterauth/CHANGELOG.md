@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2026-03-27
+
+### Added
+
+- Added `dodoCustomerId` field to the better-auth user schema. The DodoPayments customer ID is now stored on the user record and read from the session on every request, eliminating repeated API calls on every portal and usage endpoint. A database migration is required to enable this optimization.
+
 ## [1.4.2] - 2025-12-12
 
 ### Fixed
