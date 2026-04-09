@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/core",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -35,7 +35,7 @@
     }
   },
   "dependencies": {
-    "dodopayments": "^2.23.2",
+    "dodopayments": "^2.27.0",
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {

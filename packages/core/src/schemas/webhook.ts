@@ -568,6 +568,54 @@ export const CreditBalanceLowPayloadSchema = z.object({
   data: CreditBalanceLowSchema,
 });
 
+export const AbandonedCheckoutSchema = z.object({
+  payload_type: z.literal("AbandonedCheckout"),
+  abandoned_at: z.string().transform((d) => new Date(d)),
+  abandonment_reason: z.enum(["payment_failed", "checkout_incomplete"]),
+  customer_id: z.string(),
+  payment_id: z.string(),
+  status: z.enum(["abandoned", "recovering", "recovered", "exhausted", "opted_out"]),
+  recovered_payment_id: z.string().nullable().optional(),
+});
+
+export const DunningAttemptSchema = z.object({
+  payload_type: z.literal("DunningAttempt"),
+  created_at: z.string().transform((d) => new Date(d)),
+  customer_id: z.string(),
+  status: z.enum(["recovering", "recovered", "exhausted"]),
+  subscription_id: z.string(),
+  trigger_state: z.enum(["on_hold", "cancelled"]),
+  payment_id: z.string().nullable().optional(),
+});
+
+export const AbandonedCheckoutDetectedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("abandoned_checkout.detected"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: AbandonedCheckoutSchema,
+});
+
+export const AbandonedCheckoutRecoveredPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("abandoned_checkout.recovered"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: AbandonedCheckoutSchema,
+});
+
+export const DunningStartedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("dunning.started"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: DunningAttemptSchema,
+});
+
+export const DunningRecoveredPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("dunning.recovered"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: DunningAttemptSchema,
+});
+
 export const WebhookPayloadSchema = z.discriminatedUnion("type", [
   PaymentSucceededPayloadSchema,
   PaymentFailedPayloadSchema,
@@ -591,6 +639,10 @@ export const WebhookPayloadSchema = z.discriminatedUnion("type", [
   SubscriptionExpiredPayloadSchema,
   SubscriptionUpdatedPayloadSchema,
   LicenseKeyCreatedPayloadSchema,
+  AbandonedCheckoutDetectedPayloadSchema,
+  AbandonedCheckoutRecoveredPayloadSchema,
+  DunningStartedPayloadSchema,
+  DunningRecoveredPayloadSchema,
   CreditAddedPayloadSchema,
   CreditDeductedPayloadSchema,
   CreditExpiredPayloadSchema,
@@ -611,6 +663,8 @@ export type Dispute = z.infer<typeof DisputeSchema>;
 export type LicenseKey = z.infer<typeof LicenseKeySchema>;
 export type CreditLedgerEntry = z.infer<typeof CreditLedgerEntrySchema>;
 export type CreditBalanceLow = z.infer<typeof CreditBalanceLowSchema>;
+export type AbandonedCheckout = z.infer<typeof AbandonedCheckoutSchema>;
+export type DunningAttempt = z.infer<typeof DunningAttemptSchema>;
 export type WebhookPayload = z.infer<typeof WebhookPayloadSchema>;
 
 // Helper type for handlers with context
@@ -706,6 +760,22 @@ export type WebhookEventHandlers<TContext = void> = {
   onLicenseKeyCreated?: HandlerWithContext<
     TContext,
     z.infer<typeof LicenseKeyCreatedPayloadSchema>
+  >;
+  onAbandonedCheckoutDetected?: HandlerWithContext<
+    TContext,
+    z.infer<typeof AbandonedCheckoutDetectedPayloadSchema>
+  >;
+  onAbandonedCheckoutRecovered?: HandlerWithContext<
+    TContext,
+    z.infer<typeof AbandonedCheckoutRecoveredPayloadSchema>
+  >;
+  onDunningStarted?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DunningStartedPayloadSchema>
+  >;
+  onDunningRecovered?: HandlerWithContext<
+    TContext,
+    z.infer<typeof DunningRecoveredPayloadSchema>
   >;
   onCreditAdded?: HandlerWithContext<
     TContext,
