@@ -145,6 +145,22 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onLicenseKeyCreated, payload);
   }
 
+  if (payload.type === "abandoned_checkout.detected") {
+    await callHandler(config.onAbandonedCheckoutDetected, payload);
+  }
+
+  if (payload.type === "abandoned_checkout.recovered") {
+    await callHandler(config.onAbandonedCheckoutRecovered, payload);
+  }
+
+  if (payload.type === "dunning.started") {
+    await callHandler(config.onDunningStarted, payload);
+  }
+
+  if (payload.type === "dunning.recovered") {
+    await callHandler(config.onDunningRecovered, payload);
+  }
+
   if (payload.type === "credit.added") {
     await callHandler(config.onCreditAdded, payload);
   }
