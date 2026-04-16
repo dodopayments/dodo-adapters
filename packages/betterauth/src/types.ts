@@ -1,6 +1,6 @@
 import type { DodoPayments } from "dodopayments";
 
-import type { UnionToIntersection } from "better-auth";
+import type { UnionToIntersection, User } from "better-auth";
 import type { checkout } from "./plugins/checkout";
 import type { portal } from "./plugins/portal";
 import type { webhooks } from "./plugins/webhooks";
@@ -42,6 +42,11 @@ export interface DodoPaymentsOptions {
    * Use DodoPayments plugins
    */
   use: DodoPaymentsPlugins;
+  /**
+   * Optionally provide additional fields (e.g. metadata, phone_number) to include when creating
+   * or updating a DodoPayments customer.
+   */
+  getCustomerParams?: (user: User) => { metadata?: Record<string, string>; phone_number?: string | null } | Promise<{ metadata?: Record<string, string>; phone_number?: string | null }>;
 }
 
 type PaymentsList = Awaited<ReturnType<DodoPayments["payments"]["list"]>>;

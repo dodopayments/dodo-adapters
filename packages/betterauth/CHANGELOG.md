@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0] - 2026-04-17
+
+### Added
+
+- Added `getCustomerParams` option to `DodoPaymentsOptions`. Pass a function that receives the BetterAuth `User` and returns `{ metadata, phone_number }` to attach extra fields to DodoPayments customer records on creation and update.
+
 ## [1.5.0] - 2026-03-27
 
 ### Added

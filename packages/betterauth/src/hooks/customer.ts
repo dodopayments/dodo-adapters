@@ -14,18 +14,21 @@ export const onUserCreate =
 
         let customerId: string;
 
+        const additionalParams = options.getCustomerParams
+          ? await options.getCustomerParams(user)
+          : {};
+
         if (existingCustomer) {
           await options.client.customers.update(existingCustomer.customer_id, {
             name: user.name,
+            ...additionalParams,
           });
           customerId = existingCustomer.customer_id;
         } else {
-          // TODO: Add metadata to customer object via
-          // getCustomerCreateParams option when it becomes
-          // available in the API
           const newCustomer = await options.client.customers.create({
             email: user.email,
             name: user.name,
+            ...additionalParams,
           }, { idempotencyKey: user.id });
           customerId = newCustomer.customer_id;
         }
@@ -62,11 +65,13 @@ export const onUserUpdate =
         const existingCustomer = customers.items[0];
 
         if (existingCustomer) {
-          // TODO: Add metadata to customer object via
-          // getCustomerCreateParams option when it becomes
-          // available in the API
+          const additionalParams = options.getCustomerParams
+            ? await options.getCustomerParams(user)
+            : {};
+
           await options.client.customers.update(existingCustomer.customer_id, {
             name: user.name,
+            ...additionalParams,
           });
 
           // Backfill dodoCustomerId if it doesn't exist
