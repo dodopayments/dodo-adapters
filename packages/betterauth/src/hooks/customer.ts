@@ -16,19 +16,21 @@ export const onUserCreate =
 
         const additionalParams = options.getCustomerParams
           ? await options.getCustomerParams(user)
-          : {};
+          : undefined;
 
         if (existingCustomer) {
           await options.client.customers.update(existingCustomer.customer_id, {
             name: user.name,
-            ...additionalParams,
+            metadata: additionalParams?.metadata,
+            phone_number: additionalParams?.phone_number,
           });
           customerId = existingCustomer.customer_id;
         } else {
           const newCustomer = await options.client.customers.create({
             email: user.email,
             name: user.name,
-            ...additionalParams,
+            metadata: additionalParams?.metadata,
+            phone_number: additionalParams?.phone_number,
           }, { idempotencyKey: user.id });
           customerId = newCustomer.customer_id;
         }
@@ -67,11 +69,12 @@ export const onUserUpdate =
         if (existingCustomer) {
           const additionalParams = options.getCustomerParams
             ? await options.getCustomerParams(user)
-            : {};
+            : undefined;
 
           await options.client.customers.update(existingCustomer.customer_id, {
             name: user.name,
-            ...additionalParams,
+            metadata: additionalParams?.metadata,
+            phone_number: additionalParams?.phone_number,
           });
 
           // Backfill dodoCustomerId if it doesn't exist
