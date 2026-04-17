@@ -61,33 +61,38 @@ export const onUserUpdate =
   async (user: User, ctx: GenericEndpointContext | null) => {
     if (ctx && options.createCustomerOnSignUp) {
       try {
-        const customers = await options.client.customers.list({
-          email: user.email,
-        });
-        const existingCustomer = customers.items[0];
+        let customerId = (user as User & { dodoCustomerId?: string }).dodoCustomerId;
 
-        if (existingCustomer) {
-          const additionalParams = options.getCustomerParams
-            ? await options.getCustomerParams(user)
-            : undefined;
-
-          await options.client.customers.update(existingCustomer.customer_id, {
-            name: user.name,
-            metadata: additionalParams?.metadata,
-            phone_number: additionalParams?.phone_number,
+        if (!customerId) {
+          // Fallback to email lookup if dodoCustomerId is not stored yet
+          const customers = await options.client.customers.list({
+            email: user.email,
           });
+          const existingCustomer = customers.items[0];
 
-          // Backfill dodoCustomerId if it doesn't exist
-          if (!(user as User & { dodoCustomerId?: string }).dodoCustomerId) {
-            ctx.context.internalAdapter.updateUser(user.id, {
-              dodoCustomerId: existingCustomer.customer_id,
-            }).catch((e: unknown) => {
-              ctx.context.logger.warn(
-                `DodoPayments: failed to backfill dodoCustomerId for user ${user.id}. Error: ${e instanceof Error ? e.message : e}`,
-              );
-            });
-          }
+          if (!existingCustomer) return;
+
+          customerId = existingCustomer.customer_id;
+
+          // Backfill dodoCustomerId
+          ctx.context.internalAdapter.updateUser(user.id, {
+            dodoCustomerId: customerId,
+          }).catch((e: unknown) => {
+            ctx.context.logger.warn(
+              `DodoPayments: failed to backfill dodoCustomerId for user ${user.id}. Error: ${e instanceof Error ? e.message : e}`,
+            );
+          });
         }
+
+        const additionalParams = options.getCustomerParams
+          ? await options.getCustomerParams(user)
+          : undefined;
+
+        await options.client.customers.update(customerId, {
+          name: user.name,
+          metadata: additionalParams?.metadata,
+          phone_number: additionalParams?.phone_number,
+        });
       } catch (e: unknown) {
         if (e instanceof Error) {
           ctx.context.logger.error(
