@@ -502,6 +502,17 @@ http.route({
 
 export default http;
 
+Supported Webhook Event Handlers:
+- onPayload: Generic handler for all webhook events
+- onPaymentSucceeded, onPaymentFailed, onPaymentProcessing, onPaymentCancelled
+- onRefundSucceeded, onRefundFailed
+- onDisputeOpened, onDisputeExpired, onDisputeAccepted, onDisputeCancelled, onDisputeChallenged, onDisputeWon, onDisputeLost
+- onSubscriptionActive, onSubscriptionOnHold, onSubscriptionRenewed, onSubscriptionPlanChanged, onSubscriptionCancelled, onSubscriptionFailed, onSubscriptionExpired, onSubscriptionUpdated
+- onLicenseKeyCreated
+- onAbandonedCheckoutDetected, onAbandonedCheckoutRecovered
+- onDunningStarted, onDunningRecovered
+- onCreditAdded, onCreditDeducted, onCreditExpired, onCreditRolledOver, onCreditRolloverForfeited, onCreditOverageCharged, onCreditManualAdjustment, onCreditBalanceLow
+
 Note: Make sure to define the corresponding database mutations in your Convex backend for each webhook event you want to handle. For example, create a `createPayment` mutation to record successful payments or a `createSubscription` mutation to manage subscription state.
 
 Now, you can set the webhook endpoint URL in your Dodo Payments dashboard to `https://<your-convex-deployment-url>/dodopayments-webhook`.
