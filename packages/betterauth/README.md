@@ -188,6 +188,19 @@ webhooks({
 - **`client`** (required) - DodoPayments client instance
 - **`createCustomerOnSignUp`** (optional) - Auto-create customers on user signup
 - **`use`** (required) - Array of plugins to enable (checkout, portal, webhooks)
+- **`getCustomerParams`** (optional) - Function that receives the BetterAuth `User` and returns extra fields to attach to the DodoPayments customer on creation and update (e.g. `metadata`, `phone_number`)
+
+```typescript
+dodopayments({
+  client: dodoPayments,
+  createCustomerOnSignUp: true,
+  use: [portal()],
+  getCustomerParams: (user) => ({
+    metadata: { userId: user.id },
+    phone_number: user.phoneNumber ?? null,
+  }),
+})
+```
 
 ### Checkout Plugin Options
 
@@ -256,6 +269,11 @@ export const { auth, endpoints, client } = BetterAuth({
       client: dodoPayments,
       createCustomerOnSignUp: true, // Auto-create customers on signup
       use: [], // We'll add plugins here in Stage 2
+      // Optional: attach metadata or phone_number to DodoPayments customer records
+      // getCustomerParams: (user) => ({
+      //   metadata: { userId: user.id },
+      //   phone_number: user.phoneNumber ?? null,
+      // }),
     }),
   ],
 });
@@ -583,5 +601,6 @@ IMPORTANT NOTES:
 8. The webhook endpoint is automatically created and secured with signature verification (if webhooks plugin is selected)
 9. Customer portal and subscription listing require user authentication (if portal plugin is selected)
 10. Handle errors appropriately and test webhook functionality in development before going live
-11. Present all external setup tasks as clear TODO lists with specific environment variable names
+11. Use getCustomerParams to attach metadata or phone_number to DodoPayments customer records — the function receives the BetterAuth User object and runs on every customer creation and update
+12. Present all external setup tasks as clear TODO lists with specific environment variable names
 ```
