@@ -353,8 +353,6 @@ You may pass in any of the following handlers:
 
     onSubscriptionRenewed?: (payload: WebhookPayload) => Promise<void>
 
-    onSubscriptionPaused?: (payload: WebhookPayload) => Promise<void>
-
     onSubscriptionPlanChanged?: (payload: WebhookPayload) => Promise<void>
 
     onSubscriptionCancelled?: (payload: WebhookPayload) => Promise<void>
@@ -363,7 +361,33 @@ You may pass in any of the following handlers:
 
     onSubscriptionExpired?: (payload: WebhookPayload) => Promise<void>
 
+    onSubscriptionUpdated?: (payload: WebhookPayload) => Promise<void>
+
     onLicenseKeyCreated?: (payload: WebhookPayload) => Promise<void>
+
+    onAbandonedCheckoutDetected?: (payload: WebhookPayload) => Promise<void>
+
+    onAbandonedCheckoutRecovered?: (payload: WebhookPayload) => Promise<void>
+
+    onDunningStarted?: (payload: WebhookPayload) => Promise<void>
+
+    onDunningRecovered?: (payload: WebhookPayload) => Promise<void>
+
+    onCreditAdded?: (payload: WebhookPayload) => Promise<void>
+
+    onCreditDeducted?: (payload: WebhookPayload) => Promise<void>
+
+    onCreditExpired?: (payload: WebhookPayload) => Promise<void>
+
+    onCreditRolledOver?: (payload: WebhookPayload) => Promise<void>
+
+    onCreditRolloverForfeited?: (payload: WebhookPayload) => Promise<void>
+
+    onCreditOverageCharged?: (payload: WebhookPayload) => Promise<void>
+
+    onCreditManualAdjustment?: (payload: WebhookPayload) => Promise<void>
+
+    onCreditBalanceLow?: (payload: WebhookPayload) => Promise<void>
 
 Environment Variable Setup:
 
