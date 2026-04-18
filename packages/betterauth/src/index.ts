@@ -25,7 +25,7 @@ export { usage } from "./plugins/usage";
 
 export const dodopayments = (options: DodoPaymentsOptions) => {
   const plugins = options.use
-    .map((use) => use(options.client))
+    .map((use) => use(options))
     .reduce((acc, plugin) => {
       Object.assign(acc, plugin);
       return acc;

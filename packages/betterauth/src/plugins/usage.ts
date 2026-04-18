@@ -3,7 +3,7 @@ import {
   createAuthEndpoint,
   sessionMiddleware,
 } from "better-auth/api";
-import type { DodoPayments } from "dodopayments";
+import type { DodoPaymentsOptions } from "../types";
 import { Event } from "dodopayments/resources/usage-events.mjs";
 import { z } from "zod/v3";
 import { getOrCreateCustomerId } from "../utils";
@@ -28,7 +28,7 @@ const EventInputSchema = z.object({
     ),
 });
 
-export const usage = () => (dodopayments: DodoPayments) => {
+export const usage = () => (options: DodoPaymentsOptions) => {
   return {
     // Ingest usage data
     dodoUsageIngest: createAuthEndpoint(
@@ -53,12 +53,13 @@ export const usage = () => (dodopayments: DodoPayments) => {
 
         try {
           const customerId = await getOrCreateCustomerId(
-            dodopayments,
+            options.client,
             ctx.context.session,
             ctx.context.internalAdapter,
+            options.getCustomerParams,
           );
 
-          const result = await dodopayments.usageEvents.ingest({
+          const result = await options.client.usageEvents.ingest({
             events: [
               {
                 event_id: ctx.body.event_id,
@@ -117,12 +118,13 @@ export const usage = () => (dodopayments: DodoPayments) => {
 
         try {
           const customerId = await getOrCreateCustomerId(
-            dodopayments,
+            options.client,
             ctx.context.session,
             ctx.context.internalAdapter,
+            options.getCustomerParams,
           );
 
-          const meters = await dodopayments.usageEvents.list({
+          const meters = await options.client.usageEvents.list({
             customer_id: customerId,
             ...ctx.query,
           });
