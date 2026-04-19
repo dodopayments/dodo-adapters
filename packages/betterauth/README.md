@@ -503,9 +503,6 @@ use: [
     onSubscriptionRenewed: async (payload) => {
       console.log("Subscription renewed:", payload);
     },
-    onSubscriptionPaused: async (payload) => {
-      console.log("Subscription paused:", payload);
-    },
     onSubscriptionPlanChanged: async (payload) => {
       console.log("Subscription plan changed:", payload);
     },
@@ -518,9 +515,51 @@ use: [
     onSubscriptionExpired: async (payload) => {
       console.log("Subscription expired:", payload);
     },
+    onSubscriptionUpdated: async (payload) => {
+      console.log("Subscription updated:", payload);
+    },
     // License key event handlers
     onLicenseKeyCreated: async (payload) => {
       console.log("License key created:", payload);
+    },
+    // Abandoned checkout event handlers
+    onAbandonedCheckoutDetected: async (payload) => {
+      console.log("Abandoned checkout detected:", payload);
+    },
+    onAbandonedCheckoutRecovered: async (payload) => {
+      console.log("Abandoned checkout recovered:", payload);
+    },
+    // Dunning event handlers
+    onDunningStarted: async (payload) => {
+      console.log("Dunning started:", payload);
+    },
+    onDunningRecovered: async (payload) => {
+      console.log("Dunning recovered:", payload);
+    },
+    // Credit event handlers
+    onCreditAdded: async (payload) => {
+      console.log("Credit added:", payload);
+    },
+    onCreditDeducted: async (payload) => {
+      console.log("Credit deducted:", payload);
+    },
+    onCreditExpired: async (payload) => {
+      console.log("Credit expired:", payload);
+    },
+    onCreditRolledOver: async (payload) => {
+      console.log("Credit rolled over:", payload);
+    },
+    onCreditRolloverForfeited: async (payload) => {
+      console.log("Credit rollover forfeited:", payload);
+    },
+    onCreditOverageCharged: async (payload) => {
+      console.log("Credit overage charged:", payload);
+    },
+    onCreditManualAdjustment: async (payload) => {
+      console.log("Credit manual adjustment:", payload);
+    },
+    onCreditBalanceLow: async (payload) => {
+      console.log("Credit balance low:", payload);
     },
   }),
 ],
@@ -543,12 +582,24 @@ Supported Webhook Event Handlers:
 - onSubscriptionActive: Subscription became active
 - onSubscriptionOnHold: Subscription was put on hold
 - onSubscriptionRenewed: Subscription was renewed
-- onSubscriptionPaused: Subscription was paused
 - onSubscriptionPlanChanged: Subscription plan was changed
 - onSubscriptionCancelled: Subscription was cancelled
 - onSubscriptionFailed: Subscription failed
 - onSubscriptionExpired: Subscription expired
+- onSubscriptionUpdated: Subscription was updated
 - onLicenseKeyCreated: License key was created
+- onAbandonedCheckoutDetected: Abandoned checkout was detected
+- onAbandonedCheckoutRecovered: Abandoned checkout was recovered
+- onDunningStarted: Dunning process started
+- onDunningRecovered: Dunning process recovered
+- onCreditAdded: Credit was added
+- onCreditDeducted: Credit was deducted
+- onCreditExpired: Credit expired
+- onCreditRolledOver: Credit was rolled over
+- onCreditRolloverForfeited: Credit rollover was forfeited
+- onCreditOverageCharged: Credit overage was charged
+- onCreditManualAdjustment: Credit manual adjustment was made
+- onCreditBalanceLow: Credit balance is low
 
 COMBINING SELECTED PLUGINS:
 

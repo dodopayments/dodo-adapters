@@ -301,7 +301,20 @@ Event Routing: Calls the appropriate event handler based on the payload type. Su
 - onSubscriptionCancelled?: (payload: WebhookPayload) => Promise<void>
 - onSubscriptionFailed?: (payload: WebhookPayload) => Promise<void>
 - onSubscriptionExpired?: (payload: WebhookPayload) => Promise<void>
+- onSubscriptionUpdated?: (payload: WebhookPayload) => Promise<void>
 - onLicenseKeyCreated?: (payload: WebhookPayload) => Promise<void>
+- onAbandonedCheckoutDetected?: (payload: WebhookPayload) => Promise<void>
+- onAbandonedCheckoutRecovered?: (payload: WebhookPayload) => Promise<void>
+- onDunningStarted?: (payload: WebhookPayload) => Promise<void>
+- onDunningRecovered?: (payload: WebhookPayload) => Promise<void>
+- onCreditAdded?: (payload: WebhookPayload) => Promise<void>
+- onCreditDeducted?: (payload: WebhookPayload) => Promise<void>
+- onCreditExpired?: (payload: WebhookPayload) => Promise<void>
+- onCreditRolledOver?: (payload: WebhookPayload) => Promise<void>
+- onCreditRolloverForfeited?: (payload: WebhookPayload) => Promise<void>
+- onCreditOverageCharged?: (payload: WebhookPayload) => Promise<void>
+- onCreditManualAdjustment?: (payload: WebhookPayload) => Promise<void>
+- onCreditBalanceLow?: (payload: WebhookPayload) => Promise<void>
 
 Environment Variable Setup:
 To ensure the module functions correctly, set up the following environment variables in your Nuxt project's deployment environment (e.g., Vercel, Netlify, AWS, etc.):

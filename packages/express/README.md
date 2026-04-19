@@ -267,9 +267,15 @@ You may pass in any of the following handlers:
 
     onDisputeOpened, onDisputeExpired, onDisputeAccepted, onDisputeCancelled, onDisputeChallenged, onDisputeWon, onDisputeLost
 
-    onSubscriptionActive, onSubscriptionOnHold, onSubscriptionRenewed, onSubscriptionPlanChanged, onSubscriptionCancelled, onSubscriptionFailed, onSubscriptionExpired
+    onSubscriptionActive, onSubscriptionOnHold, onSubscriptionRenewed, onSubscriptionPlanChanged, onSubscriptionCancelled, onSubscriptionFailed, onSubscriptionExpired, onSubscriptionUpdated
 
     onLicenseKeyCreated
+
+    onAbandonedCheckoutDetected, onAbandonedCheckoutRecovered
+
+    onDunningStarted, onDunningRecovered
+
+    onCreditAdded, onCreditDeducted, onCreditExpired, onCreditRolledOver, onCreditRolloverForfeited, onCreditOverageCharged, onCreditManualAdjustment, onCreditBalanceLow
 
 Environment Variable Setup:
 
