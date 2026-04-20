@@ -6,6 +6,7 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "build:codegen": "npx convex codegen --component-dir src/component && npm run build",
     "dev": "rollup -c -w",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
