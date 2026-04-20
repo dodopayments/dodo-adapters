@@ -1,9 +1,11 @@
 import type { DodoPayments } from "dodopayments";
+import type { User } from "better-auth";
 
 export async function getOrCreateCustomerId(
   dodopayments: DodoPayments,
   session: { user: { id: string; email: string; name: string } & Record<string, unknown> },
   internalAdapter: { updateUser: (id: string, data: Record<string, unknown>) => Promise<unknown> },
+  getCustomerParams?: (user: User) => { metadata?: Record<string, string>; phone_number?: string | null } | Promise<{ metadata?: Record<string, string>; phone_number?: string | null }>,
 ): Promise<string> {
   const dodoCustomerId = session.user["dodoCustomerId"] as string | undefined;
   if (dodoCustomerId) return dodoCustomerId;
@@ -15,9 +17,15 @@ export async function getOrCreateCustomerId(
   let customer = customers.items[0];
 
   if (!customer) {
+    const additionalParams = getCustomerParams
+      ? await getCustomerParams(session.user as User)
+      : undefined;
+
     customer = await dodopayments.customers.create({
       email: session.user.email,
       name: session.user.name,
+      metadata: additionalParams?.metadata,
+      phone_number: additionalParams?.phone_number,
     }, { idempotencyKey: session.user.id });
   }
 

@@ -1,14 +1,14 @@
-import type { DodoPayments } from "dodopayments";
 import { APIError, createAuthEndpoint, sessionMiddleware } from "better-auth/api";
 import { z } from "zod/v3";
-import {
+import type {
   CustomerPortalResponse,
+  DodoPaymentsOptions,
   PaymentItems,
   SubscriptionItems,
 } from "../types";
 import { getOrCreateCustomerId } from "../utils";
 
-export const portal = () => (dodopayments: DodoPayments) => {
+export const portal = () => (options: DodoPaymentsOptions) => {
   return {
     dodoPortal: createAuthEndpoint(
       "/dodopayments/customer/portal",
@@ -31,13 +31,14 @@ export const portal = () => (dodopayments: DodoPayments) => {
 
         try {
           const customerId = await getOrCreateCustomerId(
-            dodopayments,
+            options.client,
             ctx.context.session,
             ctx.context.internalAdapter,
+            options.getCustomerParams,
           );
 
           const customerSession =
-            await dodopayments.customers.customerPortal.create(customerId);
+            await options.client.customers.customerPortal.create(customerId);
 
           return ctx.json({
             url: customerSession.link,
@@ -93,12 +94,13 @@ export const portal = () => (dodopayments: DodoPayments) => {
 
         try {
           const customerId = await getOrCreateCustomerId(
-            dodopayments,
+            options.client,
             ctx.context.session,
             ctx.context.internalAdapter,
+            options.getCustomerParams,
           );
 
-          const subscriptions = await dodopayments.subscriptions.list({
+          const subscriptions = await options.client.subscriptions.list({
             customer_id: customerId,
             // page number is 0-indexed
             page_number: ctx.query?.page ? ctx.query.page - 1 : undefined,
@@ -162,12 +164,13 @@ export const portal = () => (dodopayments: DodoPayments) => {
 
         try {
           const customerId = await getOrCreateCustomerId(
-            dodopayments,
+            options.client,
             ctx.context.session,
             ctx.context.internalAdapter,
+            options.getCustomerParams,
           );
 
-          const payments = await dodopayments.payments.list({
+          const payments = await options.client.payments.list({
             customer_id: customerId,
             // page number is 0-indexed
             page_number: ctx.query?.page ? ctx.query.page - 1 : undefined,
