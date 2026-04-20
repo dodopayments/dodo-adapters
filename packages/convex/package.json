@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/convex",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "publishConfig": {
     "access": "public"
   },
@@ -21,6 +21,17 @@
       "types": "./dist/component/convex.config.d.ts",
       "import": "./dist/component/convex.config.js",
       "require": "./dist/component/convex.config.cjs"
+    },
+    "./convex.config.js": {
+      "types": "./dist/component/convex.config.d.ts",
+      "import": "./dist/component/convex.config.js",
+      "require": "./dist/component/convex.config.cjs"
+    },
+    "./_generated/component.js": {
+      "types": "./dist/component/_generated/component.d.ts"
+    },
+    "./_generated/component": {
+      "types": "./dist/component/_generated/component.d.ts"
     }
   },
   "dependencies": {
