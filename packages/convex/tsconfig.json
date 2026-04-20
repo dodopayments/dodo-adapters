@@ -2,6 +2,7 @@
   "extends": "../typescript-config/base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
     "declarationDir": "dist",
     "target": "ES2020",
     "declarationMap": false
