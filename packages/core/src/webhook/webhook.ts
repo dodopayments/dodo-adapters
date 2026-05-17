@@ -129,6 +129,18 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onSubscriptionCancelled, payload);
   }
 
+  if (payload.type === "subscription.cancellation_scheduled") {
+    await callHandler(config.onSubscriptionCancellationScheduled, payload);
+  }
+
+  if (payload.type === "subscription.trial_ending") {
+    await callHandler(config.onSubscriptionTrialEnding, payload);
+  }
+
+  if (payload.type === "subscription.upcoming_renewal") {
+    await callHandler(config.onSubscriptionUpcomingRenewal, payload);
+  }
+
   if (payload.type === "subscription.failed") {
     await callHandler(config.onSubscriptionFailed, payload);
   }

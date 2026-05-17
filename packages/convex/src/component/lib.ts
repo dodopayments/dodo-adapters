@@ -20,6 +20,17 @@ const checkoutSessionPayloadValidator = v.object({
         ),
       ),
       amount: v.optional(v.number()),
+      // Per-checkout-session credit entitlement overrides. Each entry
+      // overrides the `credits_amount` granted by the referenced credit
+      // entitlement when this checkout session is fulfilled.
+      credit_entitlements: v.optional(
+        v.array(
+          v.object({
+            credit_entitlement_id: v.string(),
+            credits_amount: v.string(),
+          }),
+        ),
+      ),
     }),
   ),
   customer: v.optional(
@@ -48,7 +59,11 @@ const checkoutSessionPayloadValidator = v.object({
   billing_currency: v.optional(v.string()),
   show_saved_payment_methods: v.optional(v.boolean()),
   confirm: v.optional(v.boolean()),
+  // `discount_code` (singular) is deprecated but still supported for
+  // backward compatibility. Prefer `discount_codes` (stacked, max 20).
+  // The two cannot be combined in the same request.
   discount_code: v.optional(v.string()),
+  discount_codes: v.optional(v.array(v.string())),
   metadata: v.optional(v.record(v.string(), v.string())),
   customization: v.optional(
     v.object({

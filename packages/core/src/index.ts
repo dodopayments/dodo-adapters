@@ -2,6 +2,7 @@ export {
   checkoutQuerySchema,
   dynamicCheckoutBodySchema,
   checkoutSessionProductCartItemSchema,
+  checkoutSessionCreditEntitlementOverrideSchema,
   checkoutSessionCustomerSchema,
   checkoutSessionBillingAddressSchema,
   paymentMethodTypeSchema,
@@ -10,6 +11,9 @@ export {
   checkoutSessionSubscriptionDataSchema,
   checkoutSessionPayloadSchema,
   checkoutSessionResponseSchema,
+  discountCodesSchema,
+  MAX_STACKED_DISCOUNT_CODES,
+  assertDiscountFieldsExclusive,
   createCheckoutSession,
   buildCheckoutUrl,
 } from "./checkout/checkout";
@@ -19,6 +23,7 @@ export type {
   CheckoutSessionPayload,
   CheckoutSessionResponse,
   CheckoutSessionProductCartItem,
+  CheckoutSessionCreditEntitlementOverride,
   CheckoutSessionCustomer,
   CheckoutSessionBillingAddress,
   CheckoutSessionCustomization,
@@ -26,6 +31,7 @@ export type {
   CheckoutSessionSubscriptionData,
   PaymentMethodType,
   CheckoutSessionHandlerConfig,
+  DiscountCodes,
 } from "./checkout/checkout";
 
 export {
@@ -52,6 +58,9 @@ export {
   SubscriptionRenewedPayloadSchema,
   SubscriptionPlanChangedPayloadSchema,
   SubscriptionCancelledPayloadSchema,
+  SubscriptionCancellationScheduledPayloadSchema,
+  SubscriptionTrialEndingPayloadSchema,
+  SubscriptionUpcomingRenewalPayloadSchema,
   SubscriptionFailedPayloadSchema,
   SubscriptionExpiredPayloadSchema,
   SubscriptionUpdatedPayloadSchema,

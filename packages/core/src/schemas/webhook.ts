@@ -36,7 +36,16 @@ export const PaymentSchema = z.object({
     phone_number: z.string().nullable(),
   }),
   digital_products_delivered: z.boolean(),
+  /**
+   * @deprecated Use `discount_ids` instead. Still populated for backward
+   * compatibility with the singular discount_code flow.
+   */
   discount_id: z.string().nullable(),
+  /**
+   * Flat list of all stacked discount IDs applied to the payment, in order
+   * of application. Always present on v1.98.0+ webhook payloads.
+   */
+  discount_ids: z.array(z.string()).nullable().optional(),
   disputes: z
     .array(
       z.object({
@@ -160,8 +169,41 @@ export const SubscriptionSchema = z.object({
     )
     .nullable()
     ,
+  /**
+   * @deprecated Use `discounts[].discount_cycles_remaining` instead. Still
+   * populated for backward compatibility with the singular discount_code
+   * flow.
+   */
   discount_cycles_remaining: z.number().nullable(),
+  /**
+   * @deprecated Use `discounts` (full objects) or `discount_ids` (flat list)
+   * instead. Still populated for backward compatibility with the singular
+   * discount_code flow.
+   */
   discount_id: z.string().nullable(),
+  /**
+   * Flat list of all stacked discount IDs applied to the subscription, in
+   * order of application. Always present on v1.98.0+ webhook payloads.
+   */
+  discount_ids: z.array(z.string()).nullable().optional(),
+  /**
+   * All stacked discounts applied to the subscription, in order of
+   * application. Each entry contains the discount's position, remaining
+   * billing cycles, code, and metadata. Always present on v1.98.0+ webhook
+   * payloads.
+   */
+  discounts: z
+    .array(
+      z.object({
+        discount_id: z.string(),
+        code: z.string().nullable().optional(),
+        position: z.number().int().nonnegative(),
+        cycles_remaining: z.number().nullable().optional(),
+        metadata: z.record(z.any()).nullable().optional(),
+      }),
+    )
+    .nullable()
+    .optional(),
   expires_at: z
     .string()
     .transform((d) => new Date(d))
@@ -442,6 +484,42 @@ export const SubscriptionCancelledPayloadSchema = z.object({
   data: SubscriptionSchema,
 });
 
+/**
+ * Fired when a subscription cancellation has been scheduled for a future
+ * date (e.g. end of the current billing period) but has not yet taken
+ * effect. Introduced in API v1.98.0.
+ */
+export const SubscriptionCancellationScheduledPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("subscription.cancellation_scheduled"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: SubscriptionSchema,
+});
+
+/**
+ * Fired ahead of the end of a subscription's trial period so merchants can
+ * prompt the customer to add a payment method or convert. Introduced in
+ * API v1.98.0.
+ */
+export const SubscriptionTrialEndingPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("subscription.trial_ending"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: SubscriptionSchema,
+});
+
+/**
+ * Fired in advance of an upcoming subscription renewal so merchants can
+ * send pre-renewal notifications or update billing details. Introduced in
+ * API v1.98.0.
+ */
+export const SubscriptionUpcomingRenewalPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("subscription.upcoming_renewal"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: SubscriptionSchema,
+});
+
 export const SubscriptionFailedPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("subscription.failed"),
@@ -635,6 +713,9 @@ export const WebhookPayloadSchema = z.discriminatedUnion("type", [
   SubscriptionRenewedPayloadSchema,
   SubscriptionPlanChangedPayloadSchema,
   SubscriptionCancelledPayloadSchema,
+  SubscriptionCancellationScheduledPayloadSchema,
+  SubscriptionTrialEndingPayloadSchema,
+  SubscriptionUpcomingRenewalPayloadSchema,
   SubscriptionFailedPayloadSchema,
   SubscriptionExpiredPayloadSchema,
   SubscriptionUpdatedPayloadSchema,
@@ -744,6 +825,18 @@ export type WebhookEventHandlers<TContext = void> = {
   onSubscriptionCancelled?: HandlerWithContext<
     TContext,
     z.infer<typeof SubscriptionCancelledPayloadSchema>
+  >;
+  onSubscriptionCancellationScheduled?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionCancellationScheduledPayloadSchema>
+  >;
+  onSubscriptionTrialEnding?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionTrialEndingPayloadSchema>
+  >;
+  onSubscriptionUpcomingRenewal?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionUpcomingRenewalPayloadSchema>
   >;
   onSubscriptionFailed?: HandlerWithContext<
     TContext,
