@@ -51,6 +51,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
               theme?: string;
             };
             discount_code?: string;
+            discount_codes?: Array<string>;
             feature_flags?: {
               allow_currency_selection?: boolean;
               allow_discount_code?: boolean;
@@ -63,6 +64,10 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             product_cart: Array<{
               addons?: Array<{ addon_id: string; quantity: number }>;
               amount?: number;
+              credit_entitlements?: Array<{
+                credit_entitlement_id: string;
+                credits_amount: string;
+              }>;
               product_id: string;
               quantity: number;
             }>;
