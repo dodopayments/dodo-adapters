@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.3] - 2026-05-18
+
+### Added
+
+- Added `@dodopayments/better-auth/client` subpath export so client-only code can import `dodopaymentsClient` without pulling in server-side dependencies.
+
 ## [1.6.0] - 2026-04-17
 
 ### Added

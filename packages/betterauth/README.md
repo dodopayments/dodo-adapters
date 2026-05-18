@@ -90,7 +90,7 @@ Initialize the client in your application to interact with the payment endpoints
 ```typescript
 // src/lib/auth-client.ts
 import { createAuthClient } from "better-auth/react";
-import { dodopaymentsClient } from "@dodopayments/better-auth";
+import { dodopaymentsClient } from "@dodopayments/better-auth/client";
 
 export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
@@ -282,7 +282,7 @@ STEP 4: Client Configuration
 Create or update your auth client file (src/lib/auth-client.ts):
 
 import { createAuthClient } from "better-auth/react";
-import { dodopaymentsClient } from "@dodopayments/better-auth";
+import { dodopaymentsClient } from "@dodopayments/better-auth/client";
 
 export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
