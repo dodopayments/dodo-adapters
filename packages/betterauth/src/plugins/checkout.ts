@@ -1,6 +1,5 @@
-import type DodoPayments from "dodopayments";
-import { APIError, getSessionFromCtx } from "better-auth/api";
-import { createAuthEndpoint } from "better-auth/plugins";
+import type { DodoPaymentsOptions } from "../types";
+import { APIError, createAuthEndpoint, getSessionFromCtx } from "better-auth/api";
 import { z } from "zod/v3";
 import type { CreateCheckoutResponse, Product } from "../types";
 import {
@@ -26,7 +25,7 @@ export interface CheckoutOptions {
 
 export const checkout =
   (checkoutOptions: CheckoutOptions = {}) =>
-  (dodopayments: DodoPayments) => {
+  (options: DodoPaymentsOptions) => {
     return {
       /**
        * @deprecated
@@ -98,8 +97,8 @@ export const checkout =
                     }
                   : ctx.body.metadata,
               },
-              bearerToken: dodopayments.bearerToken,
-              environment: dodopayments.baseURL.includes("test")
+              bearerToken: options.client.bearerToken,
+              environment: options.client.baseURL.includes("test")
                 ? "test_mode"
                 : "live_mode",
               returnUrl: checkoutOptions.successUrl
@@ -209,8 +208,8 @@ export const checkout =
                     ).toString()
                   : undefined,
               },
-              bearerToken: dodopayments.bearerToken,
-              environment: dodopayments.baseURL.includes("test")
+              bearerToken: options.client.bearerToken,
+              environment: options.client.baseURL.includes("test")
                 ? "test_mode"
                 : "live_mode",
               type: "session",

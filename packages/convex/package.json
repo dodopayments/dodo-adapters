@@ -1,11 +1,12 @@
 {
   "name": "@dodopayments/convex",
-  "version": "0.2.8",
+  "version": "0.2.12",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "build": "rollup -c",
+    "build:codegen": "npx convex codegen --component-dir src/component && npm run build",
     "dev": "rollup -c -w",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
@@ -21,10 +22,21 @@
       "types": "./dist/component/convex.config.d.ts",
       "import": "./dist/component/convex.config.js",
       "require": "./dist/component/convex.config.cjs"
+    },
+    "./convex.config.js": {
+      "types": "./dist/component/convex.config.d.ts",
+      "import": "./dist/component/convex.config.js",
+      "require": "./dist/component/convex.config.cjs"
+    },
+    "./_generated/component.js": {
+      "types": "./dist/component/_generated/component.d.ts"
+    },
+    "./_generated/component": {
+      "types": "./dist/component/_generated/component.d.ts"
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.8"
+    "@dodopayments/core": "^0.3.10"
   },
   "peerDependencies": {
     "convex": "^1.26.0",

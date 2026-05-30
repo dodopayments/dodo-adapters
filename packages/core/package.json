@@ -1,6 +1,6 @@
 {
   "name": "@smarttimerapp/dodopayments-core",
-  "version": "0.3.8",
+  "version": "0.3.12",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsup src/ --format esm,cjs --dts --clean --sourcemap",
     "dev": "npm run build -- --watch",
-    "test": "vitest --run",
+    "test": "vitest --run --coverage",
     "test:watch": "vitest --watch",
     "check-types": "tsc --noEmit"
   },
@@ -36,7 +36,7 @@
     }
   },
   "dependencies": {
-    "dodopayments": "^2.4.6",
+    "dodopayments": "^2.31.2",
     "standardwebhooks": "^1.0.0"
   },
   "peerDependencies": {
@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@dodo/typescript-config": "*",
+    "@vitest/coverage-v8": "^2.0.4",
     "vitest": "^2.0.4"
   },
   "files": [

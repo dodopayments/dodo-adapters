@@ -90,7 +90,7 @@ Initialize the client in your application to interact with the payment endpoints
 ```typescript
 // src/lib/auth-client.ts
 import { createAuthClient } from "better-auth/react";
-import { dodopaymentsClient } from "@dodopayments/better-auth";
+import { dodopaymentsClient } from "@dodopayments/better-auth/client";
 
 export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
@@ -188,6 +188,19 @@ webhooks({
 - **`client`** (required) - DodoPayments client instance
 - **`createCustomerOnSignUp`** (optional) - Auto-create customers on user signup
 - **`use`** (required) - Array of plugins to enable (checkout, portal, webhooks)
+- **`getCustomerParams`** (optional) - Function that receives the BetterAuth `User` and returns extra fields to attach to the DodoPayments customer on creation and update (e.g. `metadata`, `phone_number`)
+
+```typescript
+dodopayments({
+  client: dodoPayments,
+  createCustomerOnSignUp: true,
+  use: [portal()],
+  getCustomerParams: (user) => ({
+    metadata: { userId: user.id },
+    phone_number: user.phoneNumber ?? null,
+  }),
+})
+```
 
 ### Checkout Plugin Options
 
@@ -256,6 +269,11 @@ export const { auth, endpoints, client } = BetterAuth({
       client: dodoPayments,
       createCustomerOnSignUp: true, // Auto-create customers on signup
       use: [], // We'll add plugins here in Stage 2
+      // Optional: attach metadata or phone_number to DodoPayments customer records
+      // getCustomerParams: (user) => ({
+      //   metadata: { userId: user.id },
+      //   phone_number: user.phoneNumber ?? null,
+      // }),
     }),
   ],
 });
@@ -264,7 +282,7 @@ STEP 4: Client Configuration
 Create or update your auth client file (src/lib/auth-client.ts):
 
 import { createAuthClient } from "better-auth/react";
-import { dodopaymentsClient } from "@dodopayments/better-auth";
+import { dodopaymentsClient } from "@dodopayments/better-auth/client";
 
 export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
@@ -485,9 +503,6 @@ use: [
     onSubscriptionRenewed: async (payload) => {
       console.log("Subscription renewed:", payload);
     },
-    onSubscriptionPaused: async (payload) => {
-      console.log("Subscription paused:", payload);
-    },
     onSubscriptionPlanChanged: async (payload) => {
       console.log("Subscription plan changed:", payload);
     },
@@ -500,9 +515,51 @@ use: [
     onSubscriptionExpired: async (payload) => {
       console.log("Subscription expired:", payload);
     },
+    onSubscriptionUpdated: async (payload) => {
+      console.log("Subscription updated:", payload);
+    },
     // License key event handlers
     onLicenseKeyCreated: async (payload) => {
       console.log("License key created:", payload);
+    },
+    // Abandoned checkout event handlers
+    onAbandonedCheckoutDetected: async (payload) => {
+      console.log("Abandoned checkout detected:", payload);
+    },
+    onAbandonedCheckoutRecovered: async (payload) => {
+      console.log("Abandoned checkout recovered:", payload);
+    },
+    // Dunning event handlers
+    onDunningStarted: async (payload) => {
+      console.log("Dunning started:", payload);
+    },
+    onDunningRecovered: async (payload) => {
+      console.log("Dunning recovered:", payload);
+    },
+    // Credit event handlers
+    onCreditAdded: async (payload) => {
+      console.log("Credit added:", payload);
+    },
+    onCreditDeducted: async (payload) => {
+      console.log("Credit deducted:", payload);
+    },
+    onCreditExpired: async (payload) => {
+      console.log("Credit expired:", payload);
+    },
+    onCreditRolledOver: async (payload) => {
+      console.log("Credit rolled over:", payload);
+    },
+    onCreditRolloverForfeited: async (payload) => {
+      console.log("Credit rollover forfeited:", payload);
+    },
+    onCreditOverageCharged: async (payload) => {
+      console.log("Credit overage charged:", payload);
+    },
+    onCreditManualAdjustment: async (payload) => {
+      console.log("Credit manual adjustment:", payload);
+    },
+    onCreditBalanceLow: async (payload) => {
+      console.log("Credit balance low:", payload);
     },
   }),
 ],
@@ -525,12 +582,24 @@ Supported Webhook Event Handlers:
 - onSubscriptionActive: Subscription became active
 - onSubscriptionOnHold: Subscription was put on hold
 - onSubscriptionRenewed: Subscription was renewed
-- onSubscriptionPaused: Subscription was paused
 - onSubscriptionPlanChanged: Subscription plan was changed
 - onSubscriptionCancelled: Subscription was cancelled
 - onSubscriptionFailed: Subscription failed
 - onSubscriptionExpired: Subscription expired
+- onSubscriptionUpdated: Subscription was updated
 - onLicenseKeyCreated: License key was created
+- onAbandonedCheckoutDetected: Abandoned checkout was detected
+- onAbandonedCheckoutRecovered: Abandoned checkout was recovered
+- onDunningStarted: Dunning process started
+- onDunningRecovered: Dunning process recovered
+- onCreditAdded: Credit was added
+- onCreditDeducted: Credit was deducted
+- onCreditExpired: Credit expired
+- onCreditRolledOver: Credit was rolled over
+- onCreditRolloverForfeited: Credit rollover was forfeited
+- onCreditOverageCharged: Credit overage was charged
+- onCreditManualAdjustment: Credit manual adjustment was made
+- onCreditBalanceLow: Credit balance is low
 
 COMBINING SELECTED PLUGINS:
 
@@ -583,5 +652,6 @@ IMPORTANT NOTES:
 8. The webhook endpoint is automatically created and secured with signature verification (if webhooks plugin is selected)
 9. Customer portal and subscription listing require user authentication (if portal plugin is selected)
 10. Handle errors appropriately and test webhook functionality in development before going live
-11. Present all external setup tasks as clear TODO lists with specific environment variable names
+11. Use getCustomerParams to attach metadata or phone_number to DodoPayments customer records — the function receives the BetterAuth User object and runs on every customer creation and update
+12. Present all external setup tasks as clear TODO lists with specific environment variable names
 ```

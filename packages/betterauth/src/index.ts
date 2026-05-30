@@ -25,7 +25,7 @@ export { usage } from "./plugins/usage";
 
 export const dodopayments = (options: DodoPaymentsOptions) => {
   const plugins = options.use
-    .map((use) => use(options.client))
+    .map((use) => use(options))
     .reduce((acc, plugin) => {
       Object.assign(acc, plugin);
       return acc;
@@ -33,6 +33,17 @@ export const dodopayments = (options: DodoPaymentsOptions) => {
 
   return {
     id: "dodopayments",
+    schema: {
+      user: {
+        fields: {
+          dodoCustomerId: {
+            type: "string",
+            required: false,
+            input: false,
+          },
+        },
+      },
+    },
     endpoints: {
       ...plugins,
     },

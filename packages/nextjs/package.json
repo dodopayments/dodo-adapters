@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/nextjs",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.8"
+    "@dodopayments/core": "^0.3.10"
   },
   "keywords": [
     "payments",
@@ -42,7 +42,7 @@
     "rollup-plugin-dts": "^6.1.0"
   },
   "peerDependencies": {
-    "next": "^15.3.4 || ^16.0.0",
+    "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
     "zod": "^3.25.0 || ^4.0.0"
   },
   "type": "module",

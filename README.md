@@ -26,6 +26,7 @@ npm install @dodopayments/tanstack   # TanStack
 npm install @dodopayments/nuxt       # Nuxt
 npm install @dodopayments/convex     # Convex
 npm install @dodopayments/better-auth # BetterAuth
+bun add @dodopayments/bun            # Bun
 ```
 
 ### Basic Setup
@@ -63,6 +64,7 @@ export const POST = Webhooks({
 | Nuxt       | `@dodopayments/nuxt`       | ✅     |
 | BetterAuth | `@dodopayments/betterauth` | ✅     |
 | Convex     | `@dodopayments/convex`     | ✅     |
+| Bun        | `@dodopayments/bun`        | ✅     |
 
 ## 🔧 Features
 
@@ -87,7 +89,8 @@ packages/
 ├── tanstack/              # TanStack Start adapter
 ├── convex/                # Convex backend component
 ├── nuxt/                  # Nuxt 3 server routes
-└── betterauth/            # BetterAuth plugin
+├── betterauth/            # BetterAuth plugin
+└── bun/                   # Bun server adapter
 
 examples/
 ├── nextjs-basic/          # Basic Next.js implementation

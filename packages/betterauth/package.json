@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/better-auth",
-  "version": "1.4.2",
+  "version": "1.6.3",
   "publishConfig": {
     "access": "public"
   },
@@ -14,11 +14,16 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "require": "./dist/client.cjs"
     }
   },
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@dodopayments/core": "^0.3.8"
+    "@dodopayments/core": "^0.3.10"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -42,6 +47,7 @@
     "rimraf": "^5.0.0"
   },
   "peerDependencies": {
+    "better-auth": "^1.4.0",
     "zod": "^3.25.0 || ^4.0.0"
   },
   "type": "module",

@@ -47,6 +47,7 @@ const config = [
       "component/convex.config": "src/component/convex.config.ts",
       "component/lib": "src/component/lib.ts",
       "component/schema": "src/component/schema.ts",
+      "component/_generated/component": "src/component/_generated/component.ts",
     },
     output: {
       dir: "dist",

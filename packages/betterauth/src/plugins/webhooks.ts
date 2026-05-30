@@ -1,4 +1,4 @@
-import type { DodoPayments } from "dodopayments";
+import type { DodoPaymentsOptions } from "../types";
 import {
   handleWebhookPayload,
   WebhookHandlerConfig,
@@ -9,7 +9,7 @@ import { verifyWebhookPayload } from "@dodopayments/core/webhook";
 import type { WebhookResponse } from "../types";
 
 export const webhooks =
-  (options: WebhookHandlerConfig) => (_dodopayments: DodoPayments) => {
+  (webhookOptions: WebhookHandlerConfig) => (_options: DodoPaymentsOptions) => {
     return {
       dodopaymentsWebhooks: createAuthEndpoint(
         "/dodopayments/webhooks",
@@ -21,7 +21,7 @@ export const webhooks =
           cloneRequest: true,
         },
         async (ctx): Promise<WebhookResponse> => {
-          const { webhookKey } = options;
+          const { webhookKey } = webhookOptions;
 
           if (!ctx.request?.body) {
             throw new APIError("INTERNAL_SERVER_ERROR");
@@ -64,7 +64,7 @@ export const webhooks =
           }
 
           try {
-            await handleWebhookPayload(event, options);
+            await handleWebhookPayload(event, webhookOptions);
           } catch (e: unknown) {
             if (e instanceof Error) {
               ctx.context.logger.error(

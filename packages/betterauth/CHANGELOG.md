@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.3] - 2026-05-18
+
+### Added
+
+- Added `@dodopayments/better-auth/client` subpath export so client-only code can import `dodopaymentsClient` without pulling in server-side dependencies.
+
+## [1.6.0] - 2026-04-17
+
+### Added
+
+- Added `getCustomerParams` option to `DodoPaymentsOptions`. Pass a function that receives the BetterAuth `User` and returns `{ metadata, phone_number }` to attach extra fields to DodoPayments customer records on creation and update.
+
+## [1.5.0] - 2026-03-27
+
+### Added
+
+- Added `dodoCustomerId` field to the better-auth user schema. The DodoPayments customer ID is now stored on the user record and read from the session on every request, eliminating repeated API calls on every portal and usage endpoint. A database migration is required to enable this optimization.
+
 ## [1.4.2] - 2025-12-12
 
 ### Fixed

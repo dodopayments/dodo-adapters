@@ -81,13 +81,63 @@ export const dynamicCheckoutBodySchema = z
       .optional(),
     metadata: z.record(z.string(), z.string()).optional(),
     currency: z.string().optional(),
+
+    // Discount codes (legacy + stacked).
+    // `discount_code` is deprecated but still supported for backward
+    // compatibility. `discount_codes` is the new stacked-discount field (max
+    // 20, applied in order). The two cannot be combined in the same request.
+    discount_code: z.string().optional(),
+    // Lazy-evaluated so we can share the schema definition below.
+    discount_codes: z
+      .array(z.string().min(1, "Discount code cannot be empty"))
+      .max(20, "At most 20 stacked discount codes are allowed")
+      .optional(),
     // Allow any additional fields (for future compatibility)
   })
   .catchall(z.unknown());
 
 // ========================================
+// SHARED DISCOUNT CODE HELPERS
+// ========================================
+
+/**
+ * Max number of stacked discount codes accepted by the Dodo Payments API.
+ * Mirrors the `discount_codes` array constraint on `/checkouts`, `/payments`,
+ * `/subscriptions`, and `/subscriptions/{id}/change-plan`.
+ */
+export const MAX_STACKED_DISCOUNT_CODES = 20;
+
+/**
+ * Stacked discount codes schema: max 20, applied in order.
+ * The Dodo API treats `discount_codes` and the legacy singular `discount_code`
+ * as mutually exclusive — combining them in the same request is a validation
+ * error. The legacy `discount_code` field remains fully supported.
+ */
+export const discountCodesSchema = z
+  .array(z.string().min(1, "Discount code cannot be empty"))
+  .max(
+    MAX_STACKED_DISCOUNT_CODES,
+    `At most ${MAX_STACKED_DISCOUNT_CODES} stacked discount codes are allowed`,
+  );
+
+
+
+// ========================================
 // CHECKOUT SESSIONS SCHEMAS & TYPES
 // ========================================
+
+// Per-checkout-session credit entitlement override.
+// Allows callers to override the product-level `credits_amount` for a single
+// session without cloning the underlying product. The referenced
+// `credit_entitlement_id` must already be attached to the product.
+export const checkoutSessionCreditEntitlementOverrideSchema = z.object({
+  credit_entitlement_id: z
+    .string()
+    .min(1, "credit_entitlement_id is required"),
+  credits_amount: z
+    .string()
+    .min(1, "credits_amount is required (string for precision)"),
+});
 
 // Product cart item schema for checkout sessions
 export const checkoutSessionProductCartItemSchema = z.object({
@@ -107,6 +157,13 @@ export const checkoutSessionProductCartItemSchema = z.object({
     .nonnegative(
       "Amount must be a non-negative integer (for pay-what-you-want products)",
     )
+    .optional(),
+  // Per-checkout-session credit entitlement overrides. Each entry overrides
+  // the `credits_amount` granted by the referenced credit entitlement when
+  // this checkout session is fulfilled. The credit_entitlement_id must
+  // already be attached to the product.
+  credit_entitlements: z
+    .array(checkoutSessionCreditEntitlementOverrideSchema)
     .optional(),
 });
 
@@ -207,6 +264,13 @@ export const checkoutSessionSubscriptionDataSchema = z
   .optional();
 
 // Main checkout session payload schema
+//
+// NOTE: The `discount_code` (deprecated, singular) and `discount_codes`
+// (stacked, max 20) fields are mutually exclusive — they cannot both be
+// provided in the same request. This is enforced at runtime by
+// `assertDiscountFieldsExclusive` (called from `createCheckoutSession` and
+// `buildCheckoutUrl`) rather than by a `.superRefine` on the schema, so
+// downstream consumers can still call `.extend()` on the base ZodObject.
 export const checkoutSessionPayloadSchema = z.object({
   // Required fields
   product_cart: z
@@ -224,13 +288,45 @@ export const checkoutSessionPayloadSchema = z.object({
     .optional(),
   show_saved_payment_methods: z.boolean().optional(),
   confirm: z.boolean().optional(),
+  /**
+   * @deprecated Use `discount_codes` instead. The singular `discount_code`
+   * field continues to work for backward compatibility but cannot be
+   * combined with the new `discount_codes` array in the same request.
+   */
   discount_code: z.string().optional(),
+  /**
+   * Stacked discount codes to apply, in order of application. Up to 20
+   * codes. Cannot be combined with the deprecated singular `discount_code`
+   * in the same request.
+   */
+  discount_codes: discountCodesSchema.optional(),
   metadata: z.record(z.string(), z.string()).optional(),
   customization: checkoutSessionCustomizationSchema,
   feature_flags: checkoutSessionFeatureFlagsSchema,
   subscription_data: checkoutSessionSubscriptionDataSchema,
   force_3ds: z.boolean().optional(),
 });
+
+/**
+ * Runtime check enforcing the API constraint that `discount_code` (legacy,
+ * singular) and `discount_codes` (stacked array) cannot both be provided in
+ * the same request. Throws a descriptive Error on conflict; no-ops otherwise.
+ */
+export function assertDiscountFieldsExclusive(input: {
+  discount_code?: string | null;
+  discount_codes?: string[] | null;
+}) {
+  if (
+    input.discount_code != null &&
+    input.discount_code !== "" &&
+    input.discount_codes != null &&
+    input.discount_codes.length > 0
+  ) {
+    throw new Error(
+      "Cannot use both `discount_code` and `discount_codes` in the same request. The singular `discount_code` is deprecated — prefer `discount_codes`.",
+    );
+  }
+}
 
 // Checkout session response schema
 export const checkoutSessionResponseSchema = z.object({
@@ -248,6 +344,10 @@ export type CheckoutSessionResponse = z.infer<
 export type CheckoutSessionProductCartItem = z.infer<
   typeof checkoutSessionProductCartItemSchema
 >;
+export type CheckoutSessionCreditEntitlementOverride = z.infer<
+  typeof checkoutSessionCreditEntitlementOverrideSchema
+>;
+export type DiscountCodes = z.infer<typeof discountCodesSchema>;
 export type CheckoutSessionCustomer = z.infer<
   typeof checkoutSessionCustomerSchema
 >;
@@ -310,6 +410,13 @@ export const createCheckoutSession = async (
         .join(", ")}`,
     );
   }
+
+  // Enforce the API-level constraint: the deprecated singular `discount_code`
+  // cannot be combined with the stacked `discount_codes` array. Doing this
+  // here (instead of via .superRefine on the schema) keeps the schema as a
+  // plain ZodObject so consumers like @dodopayments/better-auth can still
+  // call .extend() on it.
+  assertDiscountFieldsExclusive(validation.data);
 
   // Initialize the DodoPayments client
   const dodopayments = new DodoPayments({
@@ -520,6 +627,14 @@ export const buildCheckoutUrl = async ({
   // --- dynamic checkout logic ---
   // Use new schema field names
   const dyn = data as z.infer<typeof dynamicCheckoutBodySchema>;
+
+  // Enforce the API-level mutual-exclusion between `discount_code` and
+  // `discount_codes` (see comment on `assertDiscountFieldsExclusive`).
+  assertDiscountFieldsExclusive({
+    discount_code: dyn.discount_code,
+    discount_codes: dyn.discount_codes,
+  });
+
   const {
     product_id,
     product_cart,
@@ -531,6 +646,7 @@ export const buildCheckoutUrl = async ({
     allowed_payment_method_types,
     billing_currency,
     discount_code,
+    discount_codes,
     on_demand,
     return_url: bodyReturnUrl,
     show_saved_payment_methods,
@@ -577,7 +693,15 @@ export const buildCheckoutUrl = async ({
       quantity: quantity ? Number(quantity) : 1,
     };
     if (metadata) subscriptionPayload.metadata = metadata;
-    if (discount_code) subscriptionPayload.discount_code = discount_code;
+    // Discount codes — `discount_codes` (stacked, up to 20) is preferred.
+    // The deprecated singular `discount_code` is still supported for
+    // backward compatibility but cannot be combined with `discount_codes`
+    // in the same request (enforced at the schema layer).
+    if (discount_codes && discount_codes.length > 0) {
+      subscriptionPayload.discount_codes = discount_codes;
+    } else if (discount_code) {
+      subscriptionPayload.discount_code = discount_code;
+    }
     if (addons) subscriptionPayload.addons = addons;
     if (allowed_payment_method_types)
       subscriptionPayload.allowed_payment_method_types =
@@ -633,7 +757,15 @@ export const buildCheckoutUrl = async ({
       paymentPayload.allowed_payment_method_types =
         allowed_payment_method_types;
     if (billing_currency) paymentPayload.billing_currency = billing_currency;
-    if (discount_code) paymentPayload.discount_code = discount_code;
+    // Discount codes — `discount_codes` (stacked, up to 20) is preferred.
+    // The deprecated singular `discount_code` is still supported for
+    // backward compatibility but cannot be combined with `discount_codes`
+    // in the same request (enforced at the schema layer).
+    if (discount_codes && discount_codes.length > 0) {
+      paymentPayload.discount_codes = discount_codes;
+    } else if (discount_code) {
+      paymentPayload.discount_code = discount_code;
+    }
     // Use bodyReturnUrl if present, otherwise use top-level returnUrl
     if (bodyReturnUrl) {
       paymentPayload.return_url = bodyReturnUrl;
