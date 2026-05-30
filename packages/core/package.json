@@ -1,9 +1,10 @@
 {
-  "name": "@dodopayments/core",
+  "name": "@smarttimerapp/dodopayments-core",
   "version": "0.3.8",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "build": "tsup src/ --format esm,cjs --dts --clean --sourcemap",
@@ -64,6 +65,6 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dodopayments/dodo-adapters.git"
+    "url": "git+https://github.com/smarttimerapp/dodo-adapters.git"
   }
 }

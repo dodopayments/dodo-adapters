@@ -59,6 +59,12 @@ export {
   WebhookPayloadSchema,
 } from "./schemas/webhook";
 
+export {
+  Webhook,
+  WebhookVerificationError,
+} from "./webhook/vendor/standardwebhook";
+
+
 export type {
   Payment,
   Subscription,

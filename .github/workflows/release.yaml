@@ -13,6 +13,7 @@ env:
 
 jobs:
   release-core:
+    if: false  # Disables the workflow
     name: Release @dodopayments/core
     runs-on: ubuntu-latest
     steps:
@@ -58,8 +59,9 @@ jobs:
         working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
-
+ 
   release-nextjs:
+    if: false  # Disables the workflow
     name: Release @dodopayments/nextjs
     runs-on: ubuntu-latest
     needs: release-core
@@ -109,6 +111,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-betterauth:
+    if: false  # Disables the workflow
     name: Release @dodopayments/better-auth
     runs-on: ubuntu-latest
     needs: release-core
@@ -156,6 +159,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-nuxt:
+    if: false  # Disables the workflow
     name: Release @dodopayments/nuxt
     runs-on: ubuntu-latest
     needs: release-core
@@ -205,6 +209,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-express:
+    if: false  # Disables the workflow
     name: Release @dodopayments/express
     runs-on: ubuntu-latest
     needs: release-core
@@ -254,6 +259,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-astro:
+    if: false  # Disables the workflow
     name: Release @dodopayments/astro
     runs-on: ubuntu-latest
     needs: release-core
@@ -303,6 +309,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-remix:
+    if: false  # Disables the workflow
     name: Release @dodopayments/remix
     runs-on: ubuntu-latest
     needs: release-core
@@ -352,6 +359,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-sveltekit:
+    if: false  # Disables the workflow
     name: Release @dodopayments/sveltekit
     runs-on: ubuntu-latest
     needs: release-core
@@ -401,6 +409,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-tanstack:
+    if: false  # Disables the workflow
     name: Release @dodopayments/tanstack
     runs-on: ubuntu-latest
     needs: release-core
@@ -450,6 +459,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-fastify:
+    if: false  # Disables the workflow
     name: Release @dodopayments/fastify
     runs-on: ubuntu-latest
     needs: release-core
@@ -499,6 +509,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-hono:
+    if: false  # Disables the workflow
     name: Release @dodopayments/hono
     runs-on: ubuntu-latest
     needs: release-core
@@ -548,6 +559,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_SECRET }}
 
   release-convex:
+    if: false  # Disables the workflow
     name: Release @dodopayments/convex
     runs-on: ubuntu-latest
     needs: release-core

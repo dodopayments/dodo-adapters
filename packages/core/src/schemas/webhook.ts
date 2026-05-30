@@ -21,6 +21,7 @@ export const PaymentSchema = z.object({
     customer_id: z.string(),
     email: z.string(),
     name: z.string().nullable(),
+    metadata: z.record(z.any()).nullable(),
   }),
   digital_products_delivered: z.boolean(),
   discount_id: z.string().nullable(),

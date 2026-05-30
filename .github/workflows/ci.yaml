@@ -8,6 +8,7 @@ on:
 
 jobs:
   check:
+    if: false  # Disables the workflow
     name: Checks
     env:
       DODO_PAYMENTS_API_KEY: ${{ secrets.DODO_PAYMENTS_API_KEY || 'api-key' }}
