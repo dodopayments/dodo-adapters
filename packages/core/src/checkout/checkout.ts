@@ -148,6 +148,7 @@ export const checkoutSessionProductCartItemSchema = z.object({
         quantity: z.number().int().nonnegative(),
       }),
     )
+    .nullable()
     .optional(),
   amount: z
     .number()
@@ -155,6 +156,7 @@ export const checkoutSessionProductCartItemSchema = z.object({
     .nonnegative(
       "Amount must be a non-negative integer (for pay-what-you-want products)",
     )
+    .nullable()
     .optional(),
   // Per-checkout-session credit entitlement overrides. Each entry overrides
   // the `credits_amount` granted by the referenced credit entitlement when
@@ -162,6 +164,7 @@ export const checkoutSessionProductCartItemSchema = z.object({
   // already be attached to the product.
   credit_entitlements: z
     .array(checkoutSessionCreditEntitlementOverrideSchema)
+    .nullable()
     .optional(),
 });
 
@@ -171,24 +174,26 @@ export const checkoutSessionCustomerSchema = z
   .union([
     z.object({
       email: z.string().email(),
-      name: z.string().min(1).optional(),
-      phone_number: z.string().optional(),
+      name: z.string().min(1).nullable().optional(),
+      phone_number: z.string().nullable().optional(),
     }),
     z.object({
       customer_id: z.string(),
     }),
   ])
+  .nullable()
   .optional();
 
 // Billing address schema for checkout sessions
 export const checkoutSessionBillingAddressSchema = z
   .object({
-    street: z.string().optional(),
-    city: z.string().optional(),
-    state: z.string().optional(),
+    street: z.string().nullable().optional(),
+    city: z.string().nullable().optional(),
+    state: z.string().nullable().optional(),
     country: z.string().length(2, "Country must be a 2-letter ISO code"),
-    zipcode: z.string().optional(),
+    zipcode: z.string().nullable().optional(),
   })
+  .nullable()
   .optional();
 
 // Payment method types enum.
@@ -391,6 +396,7 @@ export const checkoutSessionSubscriptionDataSchema = z
     on_demand: checkoutSessionOnDemandSchema.nullable(),
     trial_period_days: z.number().int().nonnegative().nullable().optional(),
   })
+  .nullable()
   .optional();
 
 // Custom field definition schema for checkout sessions
