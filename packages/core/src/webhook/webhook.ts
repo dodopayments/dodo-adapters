@@ -153,6 +153,14 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onSubscriptionUpdated, payload);
   }
 
+  if (payload.type === "subscription.paused") {
+    await callHandler(config.onSubscriptionPaused, payload);
+  }
+
+  if (payload.type === "subscription.update_payment_method") {
+    await callHandler(config.onSubscriptionUpdatePaymentMethod, payload);
+  }
+
   if (payload.type === "license_key.created") {
     await callHandler(config.onLicenseKeyCreated, payload);
   }
@@ -197,12 +205,52 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onCreditOverageCharged, payload);
   }
 
+  if (payload.type === "credit.overage_reset") {
+    await callHandler(config.onCreditOverageReset, payload);
+  }
+
   if (payload.type === "credit.manual_adjustment") {
     await callHandler(config.onCreditManualAdjustment, payload);
   }
 
   if (payload.type === "credit.balance_low") {
     await callHandler(config.onCreditBalanceLow, payload);
+  }
+
+  if (payload.type === "entitlement_grant.created") {
+    await callHandler(config.onEntitlementGrantCreated, payload);
+  }
+
+  if (payload.type === "entitlement_grant.delivered") {
+    await callHandler(config.onEntitlementGrantDelivered, payload);
+  }
+
+  if (payload.type === "entitlement_grant.failed") {
+    await callHandler(config.onEntitlementGrantFailed, payload);
+  }
+
+  if (payload.type === "entitlement_grant.revoked") {
+    await callHandler(config.onEntitlementGrantRevoked, payload);
+  }
+
+  if (payload.type === "payout.not_initiated") {
+    await callHandler(config.onPayoutNotInitiated, payload);
+  }
+
+  if (payload.type === "payout.on_hold") {
+    await callHandler(config.onPayoutOnHold, payload);
+  }
+
+  if (payload.type === "payout.in_progress") {
+    await callHandler(config.onPayoutInProgress, payload);
+  }
+
+  if (payload.type === "payout.failed") {
+    await callHandler(config.onPayoutFailed, payload);
+  }
+
+  if (payload.type === "payout.success") {
+    await callHandler(config.onPayoutSuccess, payload);
   }
 }
 
