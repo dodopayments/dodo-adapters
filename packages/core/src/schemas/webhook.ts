@@ -514,42 +514,6 @@ export const SubscriptionCancelledPayloadSchema = z.object({
   data: SubscriptionSchema,
 });
 
-/**
- * Fired when a subscription cancellation has been scheduled for a future
- * date (e.g. end of the current billing period) but has not yet taken
- * effect. Introduced in API v1.98.0.
- */
-export const SubscriptionCancellationScheduledPayloadSchema = z.object({
-  business_id: z.string(),
-  type: z.literal("subscription.cancellation_scheduled"),
-  timestamp: z.string().transform((d) => new Date(d)),
-  data: SubscriptionSchema,
-});
-
-/**
- * Fired ahead of the end of a subscription's trial period so merchants can
- * prompt the customer to add a payment method or convert. Introduced in
- * API v1.98.0.
- */
-export const SubscriptionTrialEndingPayloadSchema = z.object({
-  business_id: z.string(),
-  type: z.literal("subscription.trial_ending"),
-  timestamp: z.string().transform((d) => new Date(d)),
-  data: SubscriptionSchema,
-});
-
-/**
- * Fired in advance of an upcoming subscription renewal so merchants can
- * send pre-renewal notifications or update billing details. Introduced in
- * API v1.98.0.
- */
-export const SubscriptionUpcomingRenewalPayloadSchema = z.object({
-  business_id: z.string(),
-  type: z.literal("subscription.upcoming_renewal"),
-  timestamp: z.string().transform((d) => new Date(d)),
-  data: SubscriptionSchema,
-});
-
 export const SubscriptionFailedPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("subscription.failed"),
@@ -929,9 +893,6 @@ const KNOWN_WEBHOOK_EVENT_TYPES = [
   "subscription.renewed",
   "subscription.plan_changed",
   "subscription.cancelled",
-  "subscription.cancellation_scheduled",
-  "subscription.trial_ending",
-  "subscription.upcoming_renewal",
   "subscription.failed",
   "subscription.expired",
   "subscription.updated",
@@ -992,9 +953,6 @@ const KnownWebhookPayloadSchema = z.discriminatedUnion("type", [
   SubscriptionRenewedPayloadSchema,
   SubscriptionPlanChangedPayloadSchema,
   SubscriptionCancelledPayloadSchema,
-  SubscriptionCancellationScheduledPayloadSchema,
-  SubscriptionTrialEndingPayloadSchema,
-  SubscriptionUpcomingRenewalPayloadSchema,
   SubscriptionFailedPayloadSchema,
   SubscriptionExpiredPayloadSchema,
   SubscriptionUpdatedPayloadSchema,
@@ -1124,18 +1082,6 @@ export type WebhookEventHandlers<TContext = void> = {
   onSubscriptionCancelled?: HandlerWithContext<
     TContext,
     z.infer<typeof SubscriptionCancelledPayloadSchema>
-  >;
-  onSubscriptionCancellationScheduled?: HandlerWithContext<
-    TContext,
-    z.infer<typeof SubscriptionCancellationScheduledPayloadSchema>
-  >;
-  onSubscriptionTrialEnding?: HandlerWithContext<
-    TContext,
-    z.infer<typeof SubscriptionTrialEndingPayloadSchema>
-  >;
-  onSubscriptionUpcomingRenewal?: HandlerWithContext<
-    TContext,
-    z.infer<typeof SubscriptionUpcomingRenewalPayloadSchema>
   >;
   onSubscriptionFailed?: HandlerWithContext<
     TContext,

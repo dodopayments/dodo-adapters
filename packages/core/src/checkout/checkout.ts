@@ -79,7 +79,9 @@ export const dynamicCheckoutBodySchema = z
         }),
       )
       .optional(),
-    metadata: z.record(z.string(), z.string()).optional(),
+    metadata: z
+      .record(z.string(), z.union([z.string(), z.number(), z.boolean()]))
+      .optional(),
     currency: z.string().optional(),
 
     // Discount codes (legacy + stacked).
@@ -463,7 +465,11 @@ export const checkoutSessionPayloadSchema = z.object({
   force_3ds: z.boolean().nullable().optional(),
   // Override the merchant mandate floor (in INR paise) for INR e-mandates.
   mandate_min_amount_inr_paise: z.number().int().nullable().optional(),
-  metadata: z.record(z.string(), z.string()).nullable().optional(),
+  // SDK `Metadata` allows string, number, and boolean values.
+  metadata: z
+    .record(z.string(), z.union([z.string(), z.number(), z.boolean()]))
+    .nullable()
+    .optional(),
   // When confirm is true, only require zipcode; other address fields optional.
   minimal_address: z.boolean().optional(),
   // Only allowed when `confirm` is true; requires an existing customer id.
