@@ -120,8 +120,6 @@ export const discountCodesSchema = z
     `At most ${MAX_STACKED_DISCOUNT_CODES} stacked discount codes are allowed`,
   );
 
-
-
 // ========================================
 // CHECKOUT SESSIONS SCHEMAS & TYPES
 // ========================================
@@ -131,9 +129,7 @@ export const discountCodesSchema = z
 // session without cloning the underlying product. The referenced
 // `credit_entitlement_id` must already be attached to the product.
 export const checkoutSessionCreditEntitlementOverrideSchema = z.object({
-  credit_entitlement_id: z
-    .string()
-    .min(1, "credit_entitlement_id is required"),
+  credit_entitlement_id: z.string().min(1, "credit_entitlement_id is required"),
   credits_amount: z
     .string()
     .min(1, "credits_amount is required (string for precision)"),
@@ -193,36 +189,163 @@ export const checkoutSessionBillingAddressSchema = z
   })
   .optional();
 
-// Payment method types enum based on Dodo Payments documentation
+// Payment method types enum.
 export const paymentMethodTypeSchema = z.enum([
+  "ach",
+  "affirm",
+  "afterpay_clearpay",
+  "alfamart",
+  "ali_pay",
+  "ali_pay_hk",
+  "alma",
+  "amazon_pay",
+  "apple_pay",
+  "atome",
+  "bacs",
+  "bancontact_card",
+  "becs",
+  "benefit",
+  "bizum",
+  "blik",
+  "boleto",
+  "bca_bank_transfer",
+  "bni_va",
+  "bri_va",
+  "card_redirect",
+  "cimb_va",
+  "classic",
   "credit",
+  "crypto_currency",
+  "cashapp",
+  "dana",
+  "danamon_va",
   "debit",
+  "duit_now",
+  "efecty",
+  "eft",
+  "eps",
+  "fps",
+  "evoucher",
+  "giropay",
+  "givex",
+  "google_pay",
+  "go_pay",
+  "gcash",
+  "ideal",
+  "interac",
+  "indomaret",
+  "klarna",
+  "kakao_pay",
+  "local_bank_redirect",
+  "mandiri_va",
+  "knet",
+  "mb_way",
+  "mobile_pay",
+  "momo",
+  "momo_atm",
+  "multibanco",
+  "online_banking_thailand",
+  "online_banking_czech_republic",
+  "online_banking_finland",
+  "online_banking_fpx",
+  "online_banking_poland",
+  "online_banking_slovakia",
+  "oxxo",
+  "pago_efectivo",
+  "permata_bank_transfer",
+  "open_banking_uk",
+  "pay_bright",
+  "paypal",
+  "paze",
+  "pix",
+  "pay_safe_card",
+  "przelewy24",
+  "prompt_pay",
+  "pse",
+  "red_compra",
+  "red_pagos",
+  "samsung_pay",
+  "sepa",
+  "sepa_bank_transfer",
+  "sofort",
+  "sunbit",
+  "swish",
+  "touch_n_go",
+  "trustly",
+  "twint",
   "upi_collect",
   "upi_intent",
-  "apple_pay",
-  "cashapp",
-  "google_pay",
-  "multibanco",
-  "bancontact_card",
-  "eps",
-  "ideal",
-  "przelewy24",
-  "paypal",
-  "affirm",
-  "klarna",
-  "sepa",
-  "ach",
-  "amazon_pay",
-  "afterpay_clearpay",
+  "vipps",
+  "viet_qr",
+  "venmo",
+  "walley",
+  "we_chat_pay",
+  "seven_eleven",
+  "lawson",
+  "mini_stop",
+  "family_mart",
+  "seicomart",
+  "pay_easy",
+  "local_bank_transfer",
+  "mifinity",
+  "open_banking_pis",
+  "direct_carrier_billing",
+  "instant_bank_transfer",
+  "billie",
+  "zip",
+  "revolut_pay",
+  "naver_pay",
+  "payco",
+  "satispay",
 ]);
+
+// Color configuration for a single theme mode. All color fields accept
+// standard CSS color formats (hex, rgb/rgba, hsl/hsla, named colors, etc.).
+export const checkoutSessionThemeModeConfigSchema = z.object({
+  bg_primary: z.string().nullable().optional(),
+  bg_secondary: z.string().nullable().optional(),
+  border_primary: z.string().nullable().optional(),
+  border_secondary: z.string().nullable().optional(),
+  button_primary: z.string().nullable().optional(),
+  button_primary_hover: z.string().nullable().optional(),
+  button_secondary: z.string().nullable().optional(),
+  button_secondary_hover: z.string().nullable().optional(),
+  button_text_primary: z.string().nullable().optional(),
+  button_text_secondary: z.string().nullable().optional(),
+  input_focus_border: z.string().nullable().optional(),
+  text_error: z.string().nullable().optional(),
+  text_placeholder: z.string().nullable().optional(),
+  text_primary: z.string().nullable().optional(),
+  text_secondary: z.string().nullable().optional(),
+  text_success: z.string().nullable().optional(),
+});
+
+// Custom theme configuration with colors for light and dark modes.
+export const checkoutSessionThemeConfigSchema = z.object({
+  dark: checkoutSessionThemeModeConfigSchema.nullable().optional(),
+  font_primary_url: z.string().nullable().optional(),
+  font_secondary_url: z.string().nullable().optional(),
+  font_size: z
+    .enum(["xs", "sm", "md", "lg", "xl", "2xl"])
+    .nullable()
+    .optional(),
+  font_weight: z
+    .enum(["normal", "medium", "bold", "extraBold"])
+    .nullable()
+    .optional(),
+  light: checkoutSessionThemeModeConfigSchema.nullable().optional(),
+  pay_button_text: z.string().nullable().optional(),
+  radius: z.string().nullable().optional(),
+});
 
 // Customization options schema
 export const checkoutSessionCustomizationSchema = z
   .object({
-    theme: z.enum(["light", "dark", "system"]).optional(),
-    show_order_details: z.boolean().optional(),
+    force_language: z.string().nullable().optional(),
     show_on_demand_tag: z.boolean().optional(),
-    force_language: z.string().optional(),
+    show_order_details: z.boolean().optional(),
+    theme: z.enum(["dark", "light", "system"]).nullable().optional(),
+    theme_config: checkoutSessionThemeConfigSchema.nullable().optional(),
   })
   .optional();
 
@@ -230,17 +353,22 @@ export const checkoutSessionCustomizationSchema = z
 export const checkoutSessionFeatureFlagsSchema = z
   .object({
     allow_currency_selection: z.boolean().optional(),
+    allow_customer_editing_business_name: z.boolean().optional(),
     allow_customer_editing_city: z.boolean().optional(),
     allow_customer_editing_country: z.boolean().optional(),
     allow_customer_editing_email: z.boolean().optional(),
     allow_customer_editing_name: z.boolean().optional(),
     allow_customer_editing_state: z.boolean().optional(),
     allow_customer_editing_street: z.boolean().optional(),
+    allow_customer_editing_tax_id: z.boolean().optional(),
     allow_customer_editing_zipcode: z.boolean().optional(),
     allow_discount_code: z.boolean().optional(),
+    allow_editing_addons: z.boolean().optional(),
     allow_phone_number_collection: z.boolean().optional(),
     allow_tax_id: z.boolean().optional(),
     always_create_new_customer: z.boolean().optional(),
+    redirect_immediately: z.boolean().optional(),
+    require_phone_number: z.boolean().optional(),
   })
   .optional();
 
@@ -248,20 +376,38 @@ export const checkoutSessionFeatureFlagsSchema = z
 export const checkoutSessionOnDemandSchema = z
   .object({
     mandate_only: z.boolean(),
-    product_price: z.number().int().optional(),
-    product_currency: z.string().length(3).optional(),
-    product_description: z.string().optional(),
-    adaptive_currency_fees_inclusive: z.boolean().optional(),
+    adaptive_currency_fees_inclusive: z.boolean().nullable().optional(),
+    product_currency: z.string().nullable().optional(),
+    product_description: z.string().nullable().optional(),
+    product_price: z.number().int().nullable().optional(),
   })
   .optional();
 
 // Subscription data schema
 export const checkoutSessionSubscriptionDataSchema = z
   .object({
-    trial_period_days: z.number().int().nonnegative().optional(),
-    on_demand: checkoutSessionOnDemandSchema,
+    on_demand: checkoutSessionOnDemandSchema.nullable(),
+    trial_period_days: z.number().int().nonnegative().nullable().optional(),
   })
   .optional();
+
+// Custom field definition schema for checkout sessions
+export const checkoutSessionCustomFieldSchema = z.object({
+  field_type: z.enum([
+    "text",
+    "number",
+    "email",
+    "url",
+    "date",
+    "dropdown",
+    "boolean",
+  ]),
+  key: z.string(),
+  label: z.string(),
+  options: z.array(z.string()).nullable().optional(),
+  placeholder: z.string().nullable().optional(),
+  required: z.boolean().optional(),
+});
 
 // Main checkout session payload schema
 //
@@ -278,33 +424,57 @@ export const checkoutSessionPayloadSchema = z.object({
     .min(1, "At least one product is required"),
 
   // Optional fields
-  customer: checkoutSessionCustomerSchema,
+  allowed_payment_method_types: z
+    .array(paymentMethodTypeSchema)
+    .nullable()
+    .optional(),
   billing_address: checkoutSessionBillingAddressSchema,
-  return_url: z.string().url().optional(),
-  allowed_payment_method_types: z.array(paymentMethodTypeSchema).optional(),
   billing_currency: z
     .string()
     .length(3, "Currency must be a 3-letter ISO code")
+    .nullable()
     .optional(),
-  show_saved_payment_methods: z.boolean().optional(),
+  // URL to redirect to if the customer cancels/goes back; back button is
+  // hidden when unset.
+  cancel_url: z.string().nullable().optional(),
   confirm: z.boolean().optional(),
+  // Custom fields to collect from the customer during checkout (max 5).
+  custom_fields: z
+    .array(checkoutSessionCustomFieldSchema)
+    .nullable()
+    .optional(),
+  customer: checkoutSessionCustomerSchema,
+  // Business/legal name shown on the invoice for B2B purchases with a tax id.
+  customer_business_name: z.string().nullable().optional(),
+  customization: checkoutSessionCustomizationSchema,
   /**
    * @deprecated Use `discount_codes` instead. The singular `discount_code`
    * field continues to work for backward compatibility but cannot be
    * combined with the new `discount_codes` array in the same request.
    */
-  discount_code: z.string().optional(),
+  discount_code: z.string().nullable().optional(),
   /**
    * Stacked discount codes to apply, in order of application. Up to 20
    * codes. Cannot be combined with the deprecated singular `discount_code`
    * in the same request.
    */
-  discount_codes: discountCodesSchema.optional(),
-  metadata: z.record(z.string(), z.string()).optional(),
-  customization: checkoutSessionCustomizationSchema,
+  discount_codes: discountCodesSchema.nullable().optional(),
   feature_flags: checkoutSessionFeatureFlagsSchema,
+  force_3ds: z.boolean().nullable().optional(),
+  // Override the merchant mandate floor (in INR paise) for INR e-mandates.
+  mandate_min_amount_inr_paise: z.number().int().nullable().optional(),
+  metadata: z.record(z.string(), z.string()).nullable().optional(),
+  // When confirm is true, only require zipcode; other address fields optional.
+  minimal_address: z.boolean().optional(),
+  // Only allowed when `confirm` is true; requires an existing customer id.
+  payment_method_id: z.string().nullable().optional(),
+  product_collection_id: z.string().nullable().optional(),
+  return_url: z.string().url().nullable().optional(),
+  short_link: z.boolean().optional(),
+  show_saved_payment_methods: z.boolean().optional(),
   subscription_data: checkoutSessionSubscriptionDataSchema,
-  force_3ds: z.boolean().optional(),
+  // VAT/tax number. Requires billing_address with country.
+  tax_id: z.string().nullable().optional(),
 });
 
 /**
@@ -328,10 +498,16 @@ export function assertDiscountFieldsExclusive(input: {
   }
 }
 
-// Checkout session response schema
+// Checkout session response schema.
+// `checkout_url` is null when a `payment_method_id` is provided (confirm-mode
+// sessions that create a PaymentIntent at creation time); in that case
+// `client_secret`, `payment_id`, and `publishable_key` are returned instead.
 export const checkoutSessionResponseSchema = z.object({
   session_id: z.string().min(1, "Session ID is required"),
-  checkout_url: z.string().url("Invalid checkout URL"),
+  checkout_url: z.string().url("Invalid checkout URL").nullable().optional(),
+  client_secret: z.string().nullable().optional(),
+  payment_id: z.string().nullable().optional(),
+  publishable_key: z.string().nullable().optional(),
 });
 
 // Type exports for external use
@@ -356,6 +532,15 @@ export type CheckoutSessionBillingAddress = z.infer<
 >;
 export type CheckoutSessionCustomization = z.infer<
   typeof checkoutSessionCustomizationSchema
+>;
+export type CheckoutSessionThemeConfig = z.infer<
+  typeof checkoutSessionThemeConfigSchema
+>;
+export type CheckoutSessionThemeModeConfig = z.infer<
+  typeof checkoutSessionThemeModeConfigSchema
+>;
+export type CheckoutSessionCustomField = z.infer<
+  typeof checkoutSessionCustomFieldSchema
 >;
 export type CheckoutSessionFeatureFlags = z.infer<
   typeof checkoutSessionFeatureFlagsSchema
@@ -502,6 +687,14 @@ export const buildCheckoutUrl = async ({
       bearerToken,
       environment,
     });
+
+    // `checkout_url` is null for confirm-mode sessions (payment_method_id).
+    // buildCheckoutUrl must return a redirectable URL, so treat that as an error.
+    if (!session.checkout_url) {
+      throw new Error(
+        "No checkout_url returned from Dodo Payments API. This can happen for confirm-mode sessions created with a payment_method_id; use createCheckoutSession directly to access client_secret/payment_id.",
+      );
+    }
 
     return session.checkout_url;
   }
