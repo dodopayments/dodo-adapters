@@ -6,6 +6,27 @@ import {
 } from "@dodopayments/core/checkout";
 import DodoPayments from "dodopayments";
 
+// Color configuration for a single theme mode; all fields accept standard CSS
+// color formats.
+const themeModeConfigValidator = v.object({
+  bg_primary: v.optional(v.string()),
+  bg_secondary: v.optional(v.string()),
+  border_primary: v.optional(v.string()),
+  border_secondary: v.optional(v.string()),
+  button_primary: v.optional(v.string()),
+  button_primary_hover: v.optional(v.string()),
+  button_secondary: v.optional(v.string()),
+  button_secondary_hover: v.optional(v.string()),
+  button_text_primary: v.optional(v.string()),
+  button_text_secondary: v.optional(v.string()),
+  input_focus_border: v.optional(v.string()),
+  text_error: v.optional(v.string()),
+  text_placeholder: v.optional(v.string()),
+  text_primary: v.optional(v.string()),
+  text_secondary: v.optional(v.string()),
+  text_success: v.optional(v.string()),
+});
+
 const checkoutSessionPayloadValidator = v.object({
   product_cart: v.array(
     v.object({
@@ -57,29 +78,81 @@ const checkoutSessionPayloadValidator = v.object({
   return_url: v.optional(v.string()),
   allowed_payment_method_types: v.optional(v.array(v.string())),
   billing_currency: v.optional(v.string()),
+  cancel_url: v.optional(v.string()),
   show_saved_payment_methods: v.optional(v.boolean()),
   confirm: v.optional(v.boolean()),
+  custom_fields: v.optional(
+    v.array(
+      v.object({
+        field_type: v.union(
+          v.literal("text"),
+          v.literal("number"),
+          v.literal("email"),
+          v.literal("url"),
+          v.literal("date"),
+          v.literal("dropdown"),
+          v.literal("boolean"),
+        ),
+        key: v.string(),
+        label: v.string(),
+        options: v.optional(v.array(v.string())),
+        placeholder: v.optional(v.string()),
+        required: v.optional(v.boolean()),
+      }),
+    ),
+  ),
+  customer_business_name: v.optional(v.string()),
   // `discount_code` (singular) is deprecated but still supported for
   // backward compatibility. Prefer `discount_codes` (stacked, max 20).
   // The two cannot be combined in the same request.
   discount_code: v.optional(v.string()),
   discount_codes: v.optional(v.array(v.string())),
+  mandate_min_amount_inr_paise: v.optional(v.number()),
   metadata: v.optional(v.record(v.string(), v.string())),
+  minimal_address: v.optional(v.boolean()),
+  payment_method_id: v.optional(v.string()),
+  product_collection_id: v.optional(v.string()),
+  short_link: v.optional(v.boolean()),
+  tax_id: v.optional(v.string()),
   customization: v.optional(
     v.object({
-      theme: v.optional(v.string()),
-      show_order_details: v.optional(v.boolean()),
-      show_on_demand_tag: v.optional(v.boolean()),
       force_language: v.optional(v.string()),
+      show_on_demand_tag: v.optional(v.boolean()),
+      show_order_details: v.optional(v.boolean()),
+      theme: v.optional(v.string()),
+      theme_config: v.optional(
+        v.object({
+          dark: v.optional(themeModeConfigValidator),
+          font_primary_url: v.optional(v.string()),
+          font_secondary_url: v.optional(v.string()),
+          font_size: v.optional(v.string()),
+          font_weight: v.optional(v.string()),
+          light: v.optional(themeModeConfigValidator),
+          pay_button_text: v.optional(v.string()),
+          radius: v.optional(v.string()),
+        }),
+      ),
     }),
   ),
   feature_flags: v.optional(
     v.object({
       allow_currency_selection: v.optional(v.boolean()),
+      allow_customer_editing_business_name: v.optional(v.boolean()),
+      allow_customer_editing_city: v.optional(v.boolean()),
+      allow_customer_editing_country: v.optional(v.boolean()),
+      allow_customer_editing_email: v.optional(v.boolean()),
+      allow_customer_editing_name: v.optional(v.boolean()),
+      allow_customer_editing_state: v.optional(v.boolean()),
+      allow_customer_editing_street: v.optional(v.boolean()),
+      allow_customer_editing_tax_id: v.optional(v.boolean()),
+      allow_customer_editing_zipcode: v.optional(v.boolean()),
       allow_discount_code: v.optional(v.boolean()),
+      allow_editing_addons: v.optional(v.boolean()),
       allow_phone_number_collection: v.optional(v.boolean()),
       allow_tax_id: v.optional(v.boolean()),
       always_create_new_customer: v.optional(v.boolean()),
+      redirect_immediately: v.optional(v.boolean()),
+      require_phone_number: v.optional(v.boolean()),
     }),
   ),
   subscription_data: v.optional(
