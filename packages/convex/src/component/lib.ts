@@ -108,7 +108,9 @@ const checkoutSessionPayloadValidator = v.object({
   discount_code: v.optional(v.string()),
   discount_codes: v.optional(v.array(v.string())),
   mandate_min_amount_inr_paise: v.optional(v.number()),
-  metadata: v.optional(v.record(v.string(), v.string())),
+  metadata: v.optional(
+    v.record(v.string(), v.union(v.string(), v.number(), v.boolean())),
+  ),
   minimal_address: v.optional(v.boolean()),
   payment_method_id: v.optional(v.string()),
   product_collection_id: v.optional(v.string()),

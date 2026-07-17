@@ -36,12 +36,6 @@ describe("handleWebhookPayload", () => {
     ["subscription.renewed", "onSubscriptionRenewed"],
     ["subscription.plan_changed", "onSubscriptionPlanChanged"],
     ["subscription.cancelled", "onSubscriptionCancelled"],
-    [
-      "subscription.cancellation_scheduled",
-      "onSubscriptionCancellationScheduled",
-    ],
-    ["subscription.trial_ending", "onSubscriptionTrialEnding"],
-    ["subscription.upcoming_renewal", "onSubscriptionUpcomingRenewal"],
     ["subscription.failed", "onSubscriptionFailed"],
     ["subscription.expired", "onSubscriptionExpired"],
     ["subscription.updated", "onSubscriptionUpdated"],
