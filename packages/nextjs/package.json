@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/nextjs",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.10"
+    "@dodopayments/core": "^0.3.13"
   },
   "keywords": [
     "payments",
