@@ -2,18 +2,24 @@ name: SonarQube Analysis
 
 on:
   workflow_dispatch:
-  # NO `pull_request:` trigger. SonarQube Community Build has no pull request
-  # analysis (/api/project_pull_requests/list is not a registered endpoint on
-  # 26.7.0.124771, and the instance knows only the `main` branch). A scan
-  # triggered from a PR is stored against MAIN and overwrites main's results
-  # with the PR's code, silently corrupting main's quality history.
+  # NO `pull_request:` trigger. SonarQube Community Build analyses only the
+  # main branch -- PR analysis is a Developer Edition feature. With no usable
+  # PR parameters the scanner attributes the analysis to MAIN, so a
+  # PR-triggered scan overwrites main's results with the PR's code and
+  # silently corrupts main's quality history.
+  # Re-add this trigger only if/when the instance moves to Developer Edition.
   push:
     branches: [main]
 
 jobs:
   sonarqube:
     name: SonarQube Scan
+    # workflow_dispatch accepts an arbitrary ref, so without this guard a
+    # manual dispatch from a feature branch causes the same main-overwrite the
+    # comment above exists to prevent -- just through a different door.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
