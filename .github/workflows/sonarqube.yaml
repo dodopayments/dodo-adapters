@@ -2,8 +2,11 @@ name: SonarQube Analysis
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
+  # NO `pull_request:` trigger. SonarQube Community Build has no pull request
+  # analysis (/api/project_pull_requests/list is not a registered endpoint on
+  # 26.7.0.124771, and the instance knows only the `main` branch). A scan
+  # triggered from a PR is stored against MAIN and overwrites main's results
+  # with the PR's code, silently corrupting main's quality history.
   push:
     branches: [main]
 
