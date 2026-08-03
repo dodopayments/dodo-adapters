@@ -2,19 +2,28 @@ name: SonarQube Analysis
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
+  # NO `pull_request:` trigger. SonarQube Community Build analyses only the
+  # main branch -- PR analysis is a Developer Edition feature. With no usable
+  # PR parameters the scanner attributes the analysis to MAIN, so a
+  # PR-triggered scan overwrites main's results with the PR's code and
+  # silently corrupts main's quality history.
+  # Re-add this trigger only if/when the instance moves to Developer Edition.
   push:
     branches: [main]
 
 jobs:
   sonarqube:
     name: SonarQube Scan
+    # workflow_dispatch accepts an arbitrary ref, so without this guard a
+    # manual dispatch from a feature branch causes the same main-overwrite the
+    # comment above exists to prevent -- just through a different door.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
 
@@ -31,7 +40,9 @@ jobs:
         run: npx turbo run test --filter='./packages/*'
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v7.0.0
+        # SHA-pinned: this step receives SONAR_TOKEN, and tags are mutable.
+        # v8.0.0 also enabled scanner-binary signature verification by default.
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f # v8.2.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
