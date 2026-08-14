@@ -40,6 +40,7 @@ describe("handleWebhookPayload", () => {
     ["subscription.expired", "onSubscriptionExpired"],
     ["subscription.updated", "onSubscriptionUpdated"],
     ["subscription.paused", "onSubscriptionPaused"],
+    ["subscription.unpaused", "onSubscriptionUnpaused"],
     ["subscription.update_payment_method", "onSubscriptionUpdatePaymentMethod"],
     ["license_key.created", "onLicenseKeyCreated"],
     ["abandoned_checkout.detected", "onAbandonedCheckoutDetected"],

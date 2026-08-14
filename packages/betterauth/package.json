@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/better-auth",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "publishConfig": {
     "access": "public"
   },
@@ -23,7 +23,7 @@
   },
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@dodopayments/core": "^0.3.13"
+    "@dodopayments/core": "^0.3.14"
   },
   "engines": {
     "node": ">=16.0.0"

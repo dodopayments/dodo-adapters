@@ -113,6 +113,7 @@ describe("WebhookPayloadSchema", () => {
   it("parses newly-added subscription event types", () => {
     for (const type of [
       "subscription.paused",
+      "subscription.unpaused",
       "subscription.update_payment_method",
     ]) {
       const result = WebhookPayloadSchema.safeParse({

@@ -542,6 +542,13 @@ export const SubscriptionPausedPayloadSchema = z.object({
   data: SubscriptionSchema,
 });
 
+export const SubscriptionUnpausedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("subscription.unpaused"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: SubscriptionSchema,
+});
+
 export const SubscriptionUpdatePaymentMethodPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("subscription.update_payment_method"),
@@ -897,6 +904,7 @@ const KNOWN_WEBHOOK_EVENT_TYPES = [
   "subscription.expired",
   "subscription.updated",
   "subscription.paused",
+  "subscription.unpaused",
   "subscription.update_payment_method",
   "license_key.created",
   "abandoned_checkout.detected",
@@ -957,6 +965,7 @@ const KnownWebhookPayloadSchema = z.discriminatedUnion("type", [
   SubscriptionExpiredPayloadSchema,
   SubscriptionUpdatedPayloadSchema,
   SubscriptionPausedPayloadSchema,
+  SubscriptionUnpausedPayloadSchema,
   SubscriptionUpdatePaymentMethodPayloadSchema,
   LicenseKeyCreatedPayloadSchema,
   AbandonedCheckoutDetectedPayloadSchema,
@@ -1098,6 +1107,10 @@ export type WebhookEventHandlers<TContext = void> = {
   onSubscriptionPaused?: HandlerWithContext<
     TContext,
     z.infer<typeof SubscriptionPausedPayloadSchema>
+  >;
+  onSubscriptionUnpaused?: HandlerWithContext<
+    TContext,
+    z.infer<typeof SubscriptionUnpausedPayloadSchema>
   >;
   onSubscriptionUpdatePaymentMethod?: HandlerWithContext<
     TContext,

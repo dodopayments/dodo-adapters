@@ -145,6 +145,10 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onSubscriptionPaused, payload);
   }
 
+  if (payload.type === "subscription.unpaused") {
+    await callHandler(config.onSubscriptionUnpaused, payload);
+  }
+
   if (payload.type === "subscription.update_payment_method") {
     await callHandler(config.onSubscriptionUpdatePaymentMethod, payload);
   }

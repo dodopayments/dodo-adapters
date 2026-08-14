@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/fastify",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.13"
+    "@dodopayments/core": "^0.3.14"
   },
   "keywords": [
     "payments",

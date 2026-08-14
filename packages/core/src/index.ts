@@ -70,6 +70,7 @@ export {
   SubscriptionExpiredPayloadSchema,
   SubscriptionUpdatedPayloadSchema,
   SubscriptionPausedPayloadSchema,
+  SubscriptionUnpausedPayloadSchema,
   SubscriptionUpdatePaymentMethodPayloadSchema,
   LicenseKeyCreatedPayloadSchema,
   AbandonedCheckoutSchema,
