@@ -212,6 +212,7 @@ export const subscriptionStatusSchema = z.enum([
   "pending",
   "active",
   "on_hold",
+  "paused",
   "cancelled",
   "failed",
   "expired",
@@ -339,9 +340,15 @@ export const SubscriptionSchema = z.object({
     .transform((d) => new Date(d))
     .nullable()
     .optional(),
+  paused_at: z
+    .string()
+    .transform((d) => new Date(d))
+    .nullable()
+    .optional(),
   payment_method_id: z.string().nullable().optional(),
   scheduled_change: scheduledPlanChangeSchema.nullable().optional(),
   tax_id: z.string().nullable().optional(),
+  trial_amount: z.number().nullable().optional(),
 });
 
 export const RefundSchema = z.object({
@@ -839,52 +846,70 @@ export const EntitlementGrantRevokedPayloadSchema = z.object({
   data: EntitlementGrantSchema,
 });
 
-// payout.* events have no modeled data payload in the SDK, so `data` is left
-// permissive.
-const payoutEventDataSchema = z.record(z.any());
+export const payoutStatusSchema = z.enum([
+  "not_initiated",
+  "in_progress",
+  "on_hold",
+  "failed",
+  "success",
+]);
+
+// Shared payout `data` shape across every payout.* event (all five events
+// carry the same payload).
+export const PayoutSchema = z.object({
+  amount: z.number(),
+  business_id: z.string(),
+  /** @deprecated Use the v3 payout breakup endpoints instead. */
+  chargebacks: z.number(),
+  created_at: z.string().transform((d) => new Date(d)),
+  currency: z.string(),
+  fee: z.number(),
+  payment_method: z.string(),
+  payout_id: z.string(),
+  /** @deprecated Use the v3 payout breakup endpoints instead. */
+  refunds: z.number(),
+  status: payoutStatusSchema,
+  /** @deprecated Use the v3 payout breakup endpoints instead. */
+  tax: z.number(),
+  updated_at: z.string().transform((d) => new Date(d)),
+  name: z.string().nullable().optional(),
+  payout_document_url: z.string().nullable().optional(),
+  remarks: z.string().nullable().optional(),
+});
 
 export const PayoutCreatedPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("payout.created"),
   timestamp: z.string().transform((d) => new Date(d)),
-  data: payoutEventDataSchema,
-});
-
-// `payout.created` was previously emitted as `payout.not_initiated`; kept for
-// backward compatibility with endpoints still receiving the old event type.
-export const PayoutNotInitiatedPayloadSchema = z.object({
-  business_id: z.string(),
-  type: z.literal("payout.not_initiated"),
-  timestamp: z.string().transform((d) => new Date(d)),
-  data: payoutEventDataSchema,
+  data: PayoutSchema,
 });
 
 export const PayoutOnHoldPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("payout.on_hold"),
   timestamp: z.string().transform((d) => new Date(d)),
-  data: payoutEventDataSchema,
+  data: PayoutSchema,
 });
 
 export const PayoutInProgressPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("payout.in_progress"),
   timestamp: z.string().transform((d) => new Date(d)),
-  data: payoutEventDataSchema,
+  data: PayoutSchema,
 });
 
 export const PayoutFailedPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("payout.failed"),
   timestamp: z.string().transform((d) => new Date(d)),
-  data: payoutEventDataSchema,
+  data: PayoutSchema,
 });
 
 export const PayoutSuccessPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("payout.success"),
   timestamp: z.string().transform((d) => new Date(d)),
-  data: payoutEventDataSchema,
+  data: PayoutSchema,
 });
 
 // Known event types are excluded from the fallback below so unmodeled/future
@@ -934,7 +959,6 @@ const KNOWN_WEBHOOK_EVENT_TYPES = [
   "entitlement_grant.failed",
   "entitlement_grant.revoked",
   "payout.created",
-  "payout.not_initiated",
   "payout.on_hold",
   "payout.in_progress",
   "payout.failed",
@@ -996,7 +1020,6 @@ const KnownWebhookPayloadSchema = z.discriminatedUnion("type", [
   EntitlementGrantFailedPayloadSchema,
   EntitlementGrantRevokedPayloadSchema,
   PayoutCreatedPayloadSchema,
-  PayoutNotInitiatedPayloadSchema,
   PayoutOnHoldPayloadSchema,
   PayoutInProgressPayloadSchema,
   PayoutFailedPayloadSchema,
@@ -1022,6 +1045,7 @@ export type CreditBalanceLow = z.infer<typeof CreditBalanceLowSchema>;
 export type AbandonedCheckout = z.infer<typeof AbandonedCheckoutSchema>;
 export type DunningAttempt = z.infer<typeof DunningAttemptSchema>;
 export type EntitlementGrant = z.infer<typeof EntitlementGrantSchema>;
+export type Payout = z.infer<typeof PayoutSchema>;
 export type DiscountDetail = z.infer<typeof discountDetailSchema>;
 export type WebhookPayload = z.infer<typeof WebhookPayloadSchema>;
 
@@ -1202,10 +1226,6 @@ export type WebhookEventHandlers<TContext = void> = {
   onPayoutCreated?: HandlerWithContext<
     TContext,
     z.infer<typeof PayoutCreatedPayloadSchema>
-  >;
-  onPayoutNotInitiated?: HandlerWithContext<
-    TContext,
-    z.infer<typeof PayoutNotInitiatedPayloadSchema>
   >;
   onPayoutOnHold?: HandlerWithContext<
     TContext,

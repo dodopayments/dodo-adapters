@@ -229,10 +229,6 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onPayoutCreated, payload);
   }
 
-  if (payload.type === "payout.not_initiated") {
-    await callHandler(config.onPayoutNotInitiated, payload);
-  }
-
   if (payload.type === "payout.on_hold") {
     await callHandler(config.onPayoutOnHold, payload);
   }

@@ -109,6 +109,21 @@ const mkEntitlementGrant = () => ({
   license_key: { activations_used: 0, key: "XYZ" },
 });
 
+const mkPayout = () => ({
+  amount: 1000,
+  business_id: "biz_1",
+  chargebacks: 0,
+  created_at: ts,
+  currency: "USD",
+  fee: 50,
+  payment_method: "bank_transfer",
+  payout_id: "po_1",
+  refunds: 0,
+  status: "success",
+  tax: 0,
+  updated_at: ts,
+});
+
 describe("WebhookPayloadSchema", () => {
   it("parses newly-added subscription event types", () => {
     for (const type of [
@@ -200,10 +215,9 @@ describe("WebhookPayloadSchema", () => {
     }
   });
 
-  it("parses payout.* events (permissive data)", () => {
+  it("parses every payout.* event with the typed payout payload", () => {
     for (const type of [
       "payout.created",
-      "payout.not_initiated",
       "payout.on_hold",
       "payout.in_progress",
       "payout.failed",
@@ -213,10 +227,54 @@ describe("WebhookPayloadSchema", () => {
         business_id: "biz_1",
         type,
         timestamp: ts,
-        data: { payout_id: "po_1", amount: 1000 },
+        data: mkPayout(),
       });
       expect(result.success, `${type} should parse`).toBe(true);
     }
+  });
+
+  it("transforms typed payout payload fields (Date coercion, status enum)", () => {
+    const result = WebhookPayloadSchema.safeParse({
+      business_id: "biz_1",
+      type: "payout.created",
+      timestamp: ts,
+      data: mkPayout(),
+    });
+    expect(result.success).toBe(true);
+    if (result.success && result.data.type === "payout.created") {
+      expect(result.data.data.created_at).toBeInstanceOf(Date);
+      expect(result.data.data.updated_at).toBeInstanceOf(Date);
+      expect(result.data.data.status).toBe("success");
+      expect(result.data.data.payout_id).toBe("po_1");
+    }
+  });
+
+  it("no longer recognizes the deprecated payout.not_initiated as a typed event", () => {
+    // It now falls through to the permissive unknown-payload branch.
+    const result = WebhookPayloadSchema.safeParse({
+      business_id: "biz_1",
+      type: "payout.not_initiated",
+      timestamp: ts,
+      data: { payout_id: "po_1" },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.type).toBe("payout.not_initiated");
+    }
+  });
+
+  it("rejects a known payout event whose data is missing a required field", () => {
+    const { payout_id, ...incomplete } = mkPayout();
+    void payout_id;
+    const result = WebhookPayloadSchema.safeParse({
+      business_id: "biz_1",
+      type: "payout.created",
+      timestamp: ts,
+      data: incomplete,
+    });
+    // `payout.created` is a known type, so it cannot fall through to the
+    // permissive unknown-payload branch — an invalid payload is rejected.
+    expect(result.success).toBe(false);
   });
 
   it("does NOT reject unknown/future event types (fallback branch)", () => {

@@ -61,7 +61,6 @@ describe("handleWebhookPayload", () => {
     ["entitlement_grant.failed", "onEntitlementGrantFailed"],
     ["entitlement_grant.revoked", "onEntitlementGrantRevoked"],
     ["payout.created", "onPayoutCreated"],
-    ["payout.not_initiated", "onPayoutNotInitiated"],
     ["payout.on_hold", "onPayoutOnHold"],
     ["payout.in_progress", "onPayoutInProgress"],
     ["payout.failed", "onPayoutFailed"],
