@@ -202,6 +202,7 @@ describe("WebhookPayloadSchema", () => {
 
   it("parses payout.* events (permissive data)", () => {
     for (const type of [
+      "payout.created",
       "payout.not_initiated",
       "payout.on_hold",
       "payout.in_progress",

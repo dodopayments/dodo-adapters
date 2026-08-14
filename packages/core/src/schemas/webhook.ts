@@ -843,6 +843,15 @@ export const EntitlementGrantRevokedPayloadSchema = z.object({
 // permissive.
 const payoutEventDataSchema = z.record(z.any());
 
+export const PayoutCreatedPayloadSchema = z.object({
+  business_id: z.string(),
+  type: z.literal("payout.created"),
+  timestamp: z.string().transform((d) => new Date(d)),
+  data: payoutEventDataSchema,
+});
+
+// `payout.created` was previously emitted as `payout.not_initiated`; kept for
+// backward compatibility with endpoints still receiving the old event type.
 export const PayoutNotInitiatedPayloadSchema = z.object({
   business_id: z.string(),
   type: z.literal("payout.not_initiated"),
@@ -924,6 +933,7 @@ const KNOWN_WEBHOOK_EVENT_TYPES = [
   "entitlement_grant.delivered",
   "entitlement_grant.failed",
   "entitlement_grant.revoked",
+  "payout.created",
   "payout.not_initiated",
   "payout.on_hold",
   "payout.in_progress",
@@ -985,6 +995,7 @@ const KnownWebhookPayloadSchema = z.discriminatedUnion("type", [
   EntitlementGrantDeliveredPayloadSchema,
   EntitlementGrantFailedPayloadSchema,
   EntitlementGrantRevokedPayloadSchema,
+  PayoutCreatedPayloadSchema,
   PayoutNotInitiatedPayloadSchema,
   PayoutOnHoldPayloadSchema,
   PayoutInProgressPayloadSchema,
@@ -1187,6 +1198,10 @@ export type WebhookEventHandlers<TContext = void> = {
   onEntitlementGrantRevoked?: HandlerWithContext<
     TContext,
     z.infer<typeof EntitlementGrantRevokedPayloadSchema>
+  >;
+  onPayoutCreated?: HandlerWithContext<
+    TContext,
+    z.infer<typeof PayoutCreatedPayloadSchema>
   >;
   onPayoutNotInitiated?: HandlerWithContext<
     TContext,

@@ -95,6 +95,7 @@ export {
   EntitlementGrantDeliveredPayloadSchema,
   EntitlementGrantFailedPayloadSchema,
   EntitlementGrantRevokedPayloadSchema,
+  PayoutCreatedPayloadSchema,
   PayoutNotInitiatedPayloadSchema,
   PayoutOnHoldPayloadSchema,
   PayoutInProgressPayloadSchema,
