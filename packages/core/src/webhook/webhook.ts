@@ -145,6 +145,10 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onSubscriptionPaused, payload);
   }
 
+  if (payload.type === "subscription.unpaused") {
+    await callHandler(config.onSubscriptionUnpaused, payload);
+  }
+
   if (payload.type === "subscription.update_payment_method") {
     await callHandler(config.onSubscriptionUpdatePaymentMethod, payload);
   }
@@ -221,8 +225,8 @@ export async function handleWebhookPayload<TContext = void>(
     await callHandler(config.onEntitlementGrantRevoked, payload);
   }
 
-  if (payload.type === "payout.not_initiated") {
-    await callHandler(config.onPayoutNotInitiated, payload);
+  if (payload.type === "payout.created") {
+    await callHandler(config.onPayoutCreated, payload);
   }
 
   if (payload.type === "payout.on_hold") {
