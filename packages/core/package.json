@@ -44,7 +44,7 @@
   "devDependencies": {
     "@dodo/typescript-config": "*",
     "@vitest/coverage-v8": "^2.0.4",
-    "vitest": "^2.0.4"
+    "vitest": "^4.1.11"
   },
   "files": [
     "dist"
