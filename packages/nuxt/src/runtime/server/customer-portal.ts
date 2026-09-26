@@ -1,5 +1,5 @@
 import DodoPayments, { ClientOptions } from "dodopayments";
-import { getQuery, sendRedirect, H3Event } from "h3";
+import { getQuery, sendRedirect, H3Event, createError } from "h3";
 
 export type CustomerPortalConfig = Pick<
   ClientOptions,
@@ -14,7 +14,10 @@ export function customerPortalHandler(config: CustomerPortalConfig) {
     const params = { send_email: sendEmail };
 
     if (!customerId) {
-      return { status: 400, body: "Missing customer_id in query parameters" };
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Missing customer_id in query parameters",
+      });
     }
 
     const dodopayments = new DodoPayments({
@@ -29,10 +32,10 @@ export function customerPortalHandler(config: CustomerPortalConfig) {
       );
       return sendRedirect(event, session.link, 302);
     } catch (error: any) {
-      return {
-        status: 500,
-        body: `Failed to create customer portal session: ${error.message}`,
-      };
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to create customer portal session: ${error.message}`,
+      });
     }
   };
 }
