@@ -37,13 +37,13 @@
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-typescript": "^11.0.0",
-    "fastify": "^5.4.0",
+    "fastify": "^5.12.5",
     "rimraf": "^5.0.0",
     "rollup": "^4.0.0",
     "rollup-plugin-dts": "^6.1.0"
   },
   "peerDependencies": {
-    "fastify": "^5.4.0",
+    "fastify": "^5.12.5",
     "zod": "^3.25.0 || ^4.0.0"
   },
   "type": "module",
