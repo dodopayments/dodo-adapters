@@ -9,7 +9,9 @@ test.describe("Customer Portal Endpoint", () => {
     await page.goto(`/customer-portal?customer_id=${CUSTOMER_ID}`);
 
     // Should redirect to Dodo Payments customer portal
-    await expect(page).toHaveURL(/test\.customer\.dodopayments\.com/);
+    await expect(page).toHaveURL(
+      /^https:\/\/test\.customer\.dodopayments\.com\//,
+    );
   });
 
   test("should redirect to Dodo Payments customer portal with customer_id and send_email", async ({
@@ -20,7 +22,9 @@ test.describe("Customer Portal Endpoint", () => {
     );
 
     // Should redirect to Dodo Payments customer portal
-    await expect(page).toHaveURL(/test\.customer\.dodopayments\.com/);
+    await expect(page).toHaveURL(
+      /^https:\/\/test\.customer\.dodopayments\.com\//,
+    );
   });
 
   test("should redirect to customer portal with additional parameters", async ({
@@ -31,7 +35,9 @@ test.describe("Customer Portal Endpoint", () => {
     );
 
     // Should redirect to Dodo Payments customer portal
-    await expect(page).toHaveURL(/test\.customer\.dodopayments\.com/);
+    await expect(page).toHaveURL(
+      /^https:\/\/test\.customer\.dodopayments\.com\//,
+    );
   });
 
   test("should not accept POST requests to customer portal endpoint", async ({

@@ -12,17 +12,24 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
     const queryParams = req.query;
 
     if (!queryParams.productId) {
-      return res.status(400).send("Please provide productId query parameter");
+      return res
+        .status(400)
+        .type("text/plain")
+        .send("Please provide productId query parameter");
     }
 
     const { success, data, error } = checkoutQuerySchema.safeParse(queryParams);
 
     if (!success) {
       if (error.errors.some((e: any) => e.path.toString() === "productId")) {
-        return res.status(400).send("Please provide productId query parameter");
+        return res
+          .status(400)
+          .type("text/plain")
+          .send("Please provide productId query parameter");
       }
       return res
         .status(400)
+        .type("text/plain")
         .send(`Invalid query parameters.\n ${error.message}`);
     }
 
@@ -31,7 +38,7 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
     try {
       url = await buildCheckoutUrl({ queryParams: data, ...config });
     } catch (error: any) {
-      return res.status(400).send(error.message);
+      return res.status(400).type("text/plain").send(error.message);
     }
 
     return res.json({ checkout_url: url });
@@ -44,7 +51,10 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
       );
 
       if (!success) {
-        return res.status(400).send(`Invalid request body.\n ${error.message}`);
+        return res
+          .status(400)
+          .type("text/plain")
+          .send(`Invalid request body.\n ${error.message}`);
       }
 
       let url = "";
@@ -55,7 +65,7 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
           type: "dynamic",
         });
       } catch (error: any) {
-        return res.status(400).send(error.message);
+        return res.status(400).type("text/plain").send(error.message);
       }
       return res.json({ checkout_url: url });
     } else {
@@ -67,6 +77,7 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
       if (!success) {
         return res
           .status(400)
+          .type("text/plain")
           .send(`Invalid checkout session payload.\n ${error.message}`);
       }
 
@@ -78,7 +89,7 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
           type: "session",
         });
       } catch (error: any) {
-        return res.status(400).send(error.message);
+        return res.status(400).type("text/plain").send(error.message);
       }
       return res.json({ checkout_url: url });
     }
@@ -93,6 +104,6 @@ export function checkoutHandler(config: CheckoutHandlerConfig) {
       return getHandler(req, res);
     }
 
-    return res.status(405).send("Method Not Allowed");
+    return res.status(405).type("text/plain").send("Method Not Allowed");
   };
 }

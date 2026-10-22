@@ -17,7 +17,10 @@ export const Webhooks = ({
 
   return async (req: Request, res: Response) => {
     if (req.method !== "POST") {
-      return res.status(405).send("Method not allowed. Use POST");
+      return res
+        .status(405)
+        .type("text/plain")
+        .send("Method not allowed. Use POST");
     }
 
     const headers = {
@@ -32,11 +35,14 @@ export const Webhooks = ({
       standardWebhook.verify(requestBody, headers);
     } catch (err) {
       if (err instanceof WebhookVerificationError) {
-        return res.status(401).send(err.message);
+        return res.status(401).type("text/plain").send(err.message);
       }
 
       console.error("Error while verifying webhook", err);
-      return res.status(500).send("Error while verifying webhook");
+      return res
+        .status(500)
+        .type("text/plain")
+        .send("Error while verifying webhook");
     }
 
     const {
@@ -49,6 +55,7 @@ export const Webhooks = ({
       console.error("Error parsing webhook payload", error.issues);
       return res
         .status(400)
+        .type("text/plain")
         .send(`Error parsing webhook payload: ${error.message}`);
     }
 

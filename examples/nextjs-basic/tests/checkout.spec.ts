@@ -9,7 +9,9 @@ test.describe("Checkout Endpoints", () => {
     await page.goto(`/checkout?productId=${PRODUCT_ID}`);
 
     // Should redirect to Dodo Payments checkout
-    await expect(page).toHaveURL(/test\.checkout\.dodopayments\.com/);
+    await expect(page).toHaveURL(
+      /^https:\/\/test\.checkout\.dodopayments\.com\//,
+    );
 
     // Should contain the product ID in the URL
     expect(page.url()).toContain(PRODUCT_ID);
@@ -26,7 +28,9 @@ test.describe("Checkout Endpoints", () => {
     );
 
     // Should redirect to Dodo Payments checkout
-    await expect(page).toHaveURL(/test\.checkout\.dodopayments\.com/);
+    await expect(page).toHaveURL(
+      /^https:\/\/test\.checkout\.dodopayments\.com\//,
+    );
 
     // Should contain the product ID in the URL
     expect(page.url()).toContain(PRODUCT_ID);
