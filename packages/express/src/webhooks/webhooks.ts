@@ -35,7 +35,11 @@ export const Webhooks = ({
       standardWebhook.verify(requestBody, headers);
     } catch (err) {
       if (err instanceof WebhookVerificationError) {
-        return res.status(401).type("text/plain").send(err.message);
+        console.error("Webhook verification failed:", err.message);
+        return res
+          .status(401)
+          .type("text/plain")
+          .send("Webhook verification failed");
       }
 
       console.error("Error while verifying webhook", err);
