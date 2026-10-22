@@ -82,6 +82,8 @@ export default defineEventHandler((event) => {
 - Accepts GET requests with `customer_id` as a query parameter.
 - Returns 400 if `customer_id` is missing.
 
+> **Security:** this handler does not authenticate the caller. It creates a portal session for whatever `customer_id` is in the query string, and that portal link gives access to the customer's subscriptions, payments and billing details. Only mount it behind your own authentication, and check that the signed-in user owns the requested `customer_id` before the handler runs.
+
 ### 4. Webhook API Route
 
 Create a new file at `server/routes/api/webhook.post.ts`:
@@ -243,6 +245,7 @@ Query Parameters:
 - customer_id (required): The customer ID for the portal session (e.g., ?customer_id=cus_123)
 - send_email (optional, boolean): If set to true, sends an email to the customer with the portal link.
 - Returns 400 if customer_id is missing.
+- Security: this handler does not authenticate the caller. Protect the route with the app's existing authentication and verify that the signed-in user owns the requested customer_id before the handler runs.
 
 If Webhook API Route is selected:
 
