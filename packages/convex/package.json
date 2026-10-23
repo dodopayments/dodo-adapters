@@ -36,7 +36,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.14"
+    "@dodopayments/core": "^0.3.16"
   },
   "peerDependencies": {
     "convex": "^1.26.0",
