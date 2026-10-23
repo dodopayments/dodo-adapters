@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - The `astro` peer dependency is now `^7.2.8` (previously `^4.0.0 || ^5.0.0`). Astro 4, 5 and 6 are no longer supported.
 - Astro 7 raises the minimum Node.js version, and the floor depends on the Astro release you install: Node.js 22.12.0+ for Astro 7.2.8 to 7.3.x, 22.22.0+ for 7.4.0 and 7.4.1, and 22.23.4+ for 7.4.2. Check the `engines.node` field of your Astro version.
 
+### Changed
+
+- Requires `@dodopayments/core` `^0.3.16` (previously `^0.3.14`), so installs pick up the core release built with the dependency security updates in [#160](https://github.com/dodopayments/dodo-adapters/pull/160).
+
 ### Security
 
 - Astro releases before 7.2.8 are affected by published advisories, including:
