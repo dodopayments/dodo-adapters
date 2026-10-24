@@ -1,13 +1,14 @@
 {
   "name": "@dodopayments/express",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs"
   },
   "exports": {
     ".": {

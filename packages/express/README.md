@@ -77,6 +77,8 @@ app.get(
 
 Returns 400 if `customer_id` is missing.
 
+> **Security:** this handler does not authenticate the caller. It creates a portal session for whatever `customer_id` is in the query string, and that portal link gives access to the customer's subscriptions, payments and billing details. Only mount it behind your own authentication, and check that the signed-in user owns the requested `customer_id` before the handler runs.
+
 ---
 
 ### 3. Webhook Route Handler
@@ -220,6 +222,8 @@ Query Parameters:
     send_email (optional): if true, customer is emailed the portal link
 
 Returns 400 if customer_id is missing.
+
+Security: this handler does not authenticate the caller. Protect the route with the app's existing authentication and verify that the signed-in user owns the requested customer_id before the handler runs.
 
 If Webhook Route Handler is selected:
 

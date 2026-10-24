@@ -41,7 +41,10 @@ export const CustomerPortal = ({
     }
 
     if (!customerIdValue) {
-      return res.status(400).send("Missing customerId in query parameters");
+      return res
+        .status(400)
+        .type("text/plain")
+        .send("Missing customerId in query parameters");
     }
 
     const dodopayments = new DodoPayments({
@@ -59,6 +62,7 @@ export const CustomerPortal = ({
       console.error("Error creating customer portal session:", error);
       return res
         .status(500)
+        .type("text/plain")
         .send(`Failed to create customer portal session: ${error.message}`);
     }
   };

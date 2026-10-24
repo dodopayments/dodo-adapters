@@ -35,7 +35,7 @@ jobs:
       - name: Remove node modules
         run: rm -rf node_modules
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build
@@ -86,7 +86,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -140,7 +140,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Build core (ensure up-to-date)
         run: npm run build
         working-directory: packages/core
@@ -192,7 +192,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -246,7 +246,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -300,7 +300,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -354,7 +354,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -408,7 +408,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -462,7 +462,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -516,7 +516,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -570,7 +570,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -624,7 +624,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
@@ -678,7 +678,7 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11.6.2
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
       - name: Install dependency - Rollup
         run: npm install -D @rollup/rollup-linux-x64-gnu
       - name: Build core (ensure up-to-date)
