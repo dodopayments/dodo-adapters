@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.7] - 2026-10-22
+
+### Changed
+
+- Type declarations are regenerated against better-auth 1.6.33 (previously built against 1.4.6), following the dependency security updates in [#160](https://github.com/dodopayments/dodo-adapters/pull/160). The `better-auth` peer dependency range (`^1.4.0`) is unchanged.
+- Requires `@dodopayments/core` `^0.3.16` (previously `^0.3.14`), so installs pick up the core release built with the dependency security updates in [#160](https://github.com/dodopayments/dodo-adapters/pull/160).
+
 ## [1.6.3] - 2026-05-18
 
 ### Added

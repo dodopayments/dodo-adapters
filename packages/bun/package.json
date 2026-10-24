@@ -1,6 +1,6 @@
 {
   "name": "@dodopayments/bun",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "publishConfig": {
     "access": "public"
   },
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@dodopayments/core": "^0.3.14"
+    "@dodopayments/core": "^0.3.16"
   },
   "keywords": [
     "payments",
