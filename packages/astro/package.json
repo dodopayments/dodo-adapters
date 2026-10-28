@@ -44,7 +44,7 @@
   },
   "peerDependencies": {
     "astro": "^7.2.8",
-    "zod": "^3.25.0 || ^4.0.0"
+    "zod": "^4.6.7"
   },
   "type": "module",
   "files": [
