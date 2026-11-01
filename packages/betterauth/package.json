@@ -47,7 +47,7 @@
     "rimraf": "^5.0.0"
   },
   "peerDependencies": {
-    "better-auth": "^1.4.0",
+    "better-auth": "^1.7.7",
     "zod": "^3.25.0 || ^4.0.0"
   },
   "type": "module",
