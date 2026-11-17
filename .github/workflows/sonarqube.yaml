@@ -21,7 +21,8 @@ jobs:
     # manual dispatch from a feature branch causes the same main-overwrite the
     # comment above exists to prevent -- just through a different door.
     if: github.ref == 'refs/heads/main'
-    runs-on: arc-shared
+    # In-cluster runner: the SonarQube host is internal. The runner group accepts only this workflow from main.
+    runs-on: arc-sonar
     timeout-minutes: 15
 
     steps:
