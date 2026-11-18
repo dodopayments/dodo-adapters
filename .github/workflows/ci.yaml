@@ -33,7 +33,8 @@ jobs:
         with:
           node-version: 22
 
-      # The key is the OS, the architecture, the Node version and the lockfile. The workspace
+      # The key is the OS, the architecture, the Node version, the lockfile and each package.json, so a
+      # manifest change without a lockfile change runs npm clean-install and fails as before. The workspace
       # node_modules folders are in the same entry as the root, so the workspace links stay.
       - name: Restore node_modules
         id: node-modules
@@ -43,7 +44,7 @@ jobs:
             node_modules
             packages/*/node_modules
             examples/*/node_modules
-          key: node-modules-${{ runner.os }}-${{ runner.arch }}-node${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
+          key: node-modules-${{ runner.os }}-${{ runner.arch }}-node${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'package.json', 'packages/*/package.json', 'examples/*/package.json') }}
 
       - name: Restore npm download cache
         if: steps.node-modules.outputs.cache-hit != 'true'
@@ -58,12 +59,13 @@ jobs:
         run: npm clean-install --prefer-offline --no-audit --no-fund
 
       # Turbo replays a task only when the hash of its inputs is the same. A changed package runs again.
+      # The Node version is in the key, because the Turbo task hash does not include it.
       - name: Restore Turbo cache
         uses: actions/cache@v4
         with:
           path: .turbo/cache
-          key: turbo-${{ runner.os }}-${{ runner.arch }}-${{ github.sha }}
-          restore-keys: turbo-${{ runner.os }}-${{ runner.arch }}-
+          key: turbo-${{ runner.os }}-${{ runner.arch }}-node${{ steps.node.outputs.node-version }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-${{ runner.arch }}-node${{ steps.node.outputs.node-version }}-
 
       - name: Run CI checks
         run: npm run ci
