@@ -38,7 +38,7 @@ jobs:
       # node_modules folders are in the same entry as the root, so the workspace links stay.
       - name: Restore node_modules
         id: node-modules
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             node_modules
@@ -48,7 +48,7 @@ jobs:
 
       - name: Restore npm download cache
         if: steps.node-modules.outputs.cache-hit != 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -61,7 +61,7 @@ jobs:
       # Turbo replays a task only when the hash of its inputs is the same. A changed package runs again.
       # The Node version is in the key, because the Turbo task hash does not include it.
       - name: Restore Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo/cache
           key: turbo-${{ runner.os }}-${{ runner.arch }}-node${{ steps.node.outputs.node-version }}-${{ github.sha }}
